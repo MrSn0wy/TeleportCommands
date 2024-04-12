@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "teleport_commands",
+	"version": "${version}",
+	"name": "Teleport Commands",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/teleport_commands/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.mrsnowy.teleport_commands.TeleportCommands"
+		],
+		"client": [
+			"dev.mrsnowy.teleport_commands.TeleportCommandsClient"
+		]
+	},
+	"mixins": [
+		"teleport_commands.mixins.json",
+		{
+			"config": "teleport_commands.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.9",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

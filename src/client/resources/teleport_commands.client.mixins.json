@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "dev.mrsnowy.teleport_commands.mixin.client",
+	"compatibilityLevel": "JAVA_17",
+	"client": [
+		"ExampleClientMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
