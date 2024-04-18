@@ -71,9 +71,6 @@ public class TeleportCommands implements ModInitializer {
 			SAVE_DIR = Path.of(String.valueOf(minecraftServer.getSavePath(WorldSavePath.ROOT)));
 			CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 
-			LOGGER.error(String.valueOf(SAVE_DIR));
-			LOGGER.error(String.valueOf(CONFIG_DIR));
-
 			Server = minecraftServer;
 			StorageManager.StorageInit();
 		}

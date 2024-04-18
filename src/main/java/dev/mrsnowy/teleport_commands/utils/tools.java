@@ -43,7 +43,7 @@ public class tools {
                     world.spawnParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() , player.getZ(), 20, 0.0D, 1.0D, 0.0D, 0.01);
                     world.spawnParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.03);
                 }
-            }, 100 // hopefully good
+            }, 100 // hopefully good, 2 ticks
         );
     }
 
