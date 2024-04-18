@@ -27,21 +27,23 @@ public class tools {
     }
 
     private static void Teleporter(ServerPlayerEntity player, ServerWorld world, Vec3d coords) {
-        world.spawnParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.01);
-        world.spawnParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 10, 0.0D, 1.0D, 0.0D, 0.03);
+        world.spawnParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 20, 0.0D, 0.0D, 0.0D, 0.01);
+        world.spawnParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
         world.playSound(null, player.getBlockPos(), SoundEvent.of(ENTITY_ENDERMAN_TELEPORT.getId()), SoundCategory.PLAYERS, 0.4f, 1.0f);
 
         FabricDimensions.teleport(player, world, new TeleportTarget(coords, Vec3d.ZERO, player.getYaw(), player.getPitch()));
-        
-        new Timer().schedule(
+
+        world.playSound(null, player.getBlockPos(), SoundEvent.of(ENTITY_ENDERMAN_TELEPORT.getId()), SoundCategory.PLAYERS, 0.4f, 1.0f);
+        Timer timer = new Timer();
+
+        timer.schedule(
             new TimerTask() {
                 @Override
                 public void run() {
-                    world.playSound(null, player.getBlockPos(), SoundEvent.of(ENTITY_ENDERMAN_TELEPORT.getId()), SoundCategory.PLAYERS, 0.4f, 1.0f);
-                    world.spawnParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() , player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.01);
-                    world.spawnParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 10, 0.0D, 0.0D, 0.0D, 0.03);
+                    world.spawnParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() , player.getZ(), 20, 0.0D, 1.0D, 0.0D, 0.01);
+                    world.spawnParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.03);
                 }
-            }, 50 // 1 tick, i think?
+            }, 100 // hopefully good
         );
     }
 
