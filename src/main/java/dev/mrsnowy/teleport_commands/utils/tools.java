@@ -21,8 +21,8 @@ public class tools {
     private static ArrayList<tpaArrayClass> tpaList = new ArrayList<>();
 
     private static class tpaArrayClass {
-        private ServerPlayerEntity InitPlayer;
-        private ServerPlayerEntity RecPlayer;
+        private String InitPlayer;
+        private String RecPlayer;
         private boolean here;
     }
 
@@ -303,8 +303,8 @@ public class tools {
 
             // Store da request
             tpaArrayClass tpaRequest = new tpaArrayClass();
-            tpaRequest.InitPlayer = FromPlayer;
-            tpaRequest.RecPlayer = ToPlayer;
+            tpaRequest.InitPlayer = FromPlayer.getUuidAsString();
+            tpaRequest.RecPlayer = ToPlayer.getUuidAsString();
             tpaRequest.here = here;
             tpaList.add(tpaRequest);
 
@@ -357,8 +357,8 @@ public class tools {
             FromPlayer.sendMessage(Text.literal("No").formatted(Formatting.AQUA),true);
         } else {
             Optional<tpaArrayClass> tpaStorage = tpaList.stream()
-                    .filter(tpa -> Objects.equals(ToPlayer, tpa.InitPlayer))
-                    .filter(tpa -> Objects.equals(FromPlayer, tpa.RecPlayer))
+                    .filter(tpa -> Objects.equals(ToPlayer.getUuidAsString(), tpa.InitPlayer))
+                    .filter(tpa -> Objects.equals(FromPlayer.getUuidAsString(), tpa.RecPlayer))
                     .findFirst();
 
             if (tpaStorage.isPresent()) {
@@ -386,8 +386,8 @@ public class tools {
             FromPlayer.sendMessage(Text.literal("No").formatted(Formatting.AQUA),true);
         } else {
             Optional<tpaArrayClass> tpaStorage = tpaList.stream()
-                    .filter(tpa -> Objects.equals(ToPlayer, tpa.InitPlayer))
-                    .filter(tpa -> Objects.equals(FromPlayer, tpa.RecPlayer))
+                    .filter(tpa -> Objects.equals(ToPlayer.getUuidAsString(), tpa.InitPlayer))
+                    .filter(tpa -> Objects.equals(FromPlayer.getUuidAsString(), tpa.RecPlayer))
                     .findFirst();
 
             if (tpaStorage.isPresent()) {

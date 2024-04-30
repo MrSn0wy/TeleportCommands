@@ -1,4 +1,4 @@
-# teleportCommands
+# Teleport Commands
 
 A Minecraft fabric server-side mod that adds various teleportation related commands, like /home /tpa and /back
 
@@ -28,12 +28,14 @@ A Minecraft fabric server-side mod that adds various teleportation related comma
 
 #### Planned commands:
 - `/wild` - Teleports you to a random location in the Overworld
-- `/spawn or /worldspawn` - Teleports you to the worldspawn
-- `/bed or /spawn <dimension>` - Teleports you to your spawnpoint in a dimension, defaults to your current dimension
+- `/worldspawn` - Teleports you to the worldspawn
+- `/spawn <dimension>` - Teleports you to your spawnpoint in a dimension, defaults to your current dimension
 
 #### Improvements:
 - Modify /back to check if the location is safe and automatically choose a nearby location that is safe
 - Create a config to add any delays and disable commands, also add commands for operators in game
+- Add translation file
+- Improve responses for commands
 - Add a perm system
 - Limit tpa requests for a player
-- Add Quilt support and maybe neoforge
+- Add Quilt support and maybe NeoForge
