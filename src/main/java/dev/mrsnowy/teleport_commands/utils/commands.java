@@ -8,6 +8,7 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import javax.swing.text.html.parser.Entity;
 import java.util.Objects;
@@ -18,12 +19,16 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class commands {
     public static void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("back")
-//				.requires(source -> source.hasPermissionLevel(2))
                 .executes(context -> {
                     ServerPlayerEntity player = Objects.requireNonNull(context.getSource().getPlayer());
-
-                    player.sendMessage(Text.literal("Teleporting"), true);
-                    tools.ToDeathLocation(player);
+                    try {
+                        player.sendMessage(Text.literal("Teleporting"), true);
+                        tools.ToDeathLocation(player);
+                    } catch (Exception e) {
+                        TeleportCommands.LOGGER.error(String.valueOf(e));
+                        player.sendMessage(Text.literal("Error Teleporting!").formatted(Formatting.RED, Formatting.BOLD), true);
+                        return 1;
+                    }
                     return 0;
                 })));
 
@@ -40,7 +45,7 @@ public class commands {
 
                             } catch (Exception e) {
                                 TeleportCommands.LOGGER.error(String.valueOf(e));
-                                player.sendMessage(Text.literal("Error Setting Home"), true);
+                                player.sendMessage(Text.literal("Error Setting Home!").formatted(Formatting.RED, Formatting.BOLD), true);
                                 return 1;
                             }
                             return 0;
@@ -56,7 +61,7 @@ public class commands {
 
                     } catch (Exception e) {
                         TeleportCommands.LOGGER.error(String.valueOf(e));
-                        player.sendMessage(Text.literal("Error Going Home"), true);
+                        player.sendMessage(Text.literal("Error Going Home!").formatted(Formatting.RED, Formatting.BOLD), true);
                         return 1;
                     }
                     return 0;
@@ -71,7 +76,7 @@ public class commands {
                                 tools.GoHome(player, name);
 
                             } catch (Exception e) {
-                                player.sendMessage(Text.literal("Error Going Home"), true);
+                                player.sendMessage(Text.literal("Error Going Home!").formatted(Formatting.RED, Formatting.BOLD), true);
                                 TeleportCommands.LOGGER.error(String.valueOf(e));
                                 return 1;
                             }
@@ -90,7 +95,7 @@ public class commands {
 
                             } catch (Exception e) {
                                 TeleportCommands.LOGGER.error(String.valueOf(e));
-                                player.sendMessage(Text.literal("Error Deleting Home"), true);
+                                player.sendMessage(Text.literal("Error Deleting Home!").formatted(Formatting.RED, Formatting.BOLD), true);
                                 return 1;
                             }
                             return 0;
@@ -109,7 +114,7 @@ public class commands {
                                 tools.RenameHome(player, name, newName);
                             } catch (Exception e) {
                                 TeleportCommands.LOGGER.error(String.valueOf(e));
-                                player.sendMessage(Text.literal("Error Renaming Home"), true);
+                                player.sendMessage(Text.literal("Error Renaming Home!").formatted(Formatting.RED, Formatting.BOLD), true);
                                 return 1;
                             }
                             return 0;
@@ -119,8 +124,13 @@ public class commands {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("homes")
                 .executes(context -> {
                     ServerPlayerEntity player = Objects.requireNonNull(context.getSource().getPlayer());
-
-                    tools.PrintHomes(player);
+                    try {
+                        tools.PrintHomes(player);
+                    } catch (Exception e) {
+                        TeleportCommands.LOGGER.error(String.valueOf(e));
+                        player.sendMessage(Text.literal("Error Getting Homes!").formatted(Formatting.RED, Formatting.BOLD), true);
+                        return 1;
+                    }
                     return 0;
                 })));
 
@@ -133,7 +143,7 @@ public class commands {
                         tools.SetDefaultHome(player, name);
                     } catch (Exception e) {
                         TeleportCommands.LOGGER.error(String.valueOf(e));
-                        player.sendMessage(Text.literal("Error Changing Default Home"), true);
+                        player.sendMessage(Text.literal("Error Changing Default Home!").formatted(Formatting.RED, Formatting.BOLD), true);
                         return 1;
                     }
                     return 0;

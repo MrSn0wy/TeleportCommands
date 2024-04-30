@@ -4,6 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,15 +19,20 @@ import static dev.mrsnowy.teleport_commands.storage.StorageManager.GetPlayerStor
 public class HomesuggestionProvider implements SuggestionProvider<ServerCommandSource> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+        try {
+            ServerPlayerEntity player = Objects.requireNonNull(context.getSource().getPlayer());
+            StorageManager.StorageClass.Player playerStorage = null;
+            playerStorage = GetPlayerStorage(player.getUuidAsString()).playerStorage;
 
-        ServerPlayerEntity player = Objects.requireNonNull(context.getSource().getPlayer());
-        StorageManager.StorageClass.Player playerStorage = GetPlayerStorage(player.getUuidAsString()).playerStorage;
+            for (StorageManager.StorageClass.Player.Home currenthome : playerStorage.Homes) {
+                builder.suggest(currenthome.name);
+            }
 
-        for (StorageManager.StorageClass.Player.Home currenthome : playerStorage.Homes) {
-            builder.suggest(currenthome.name);
+            // Build and return the suggestions
+            return builder.buildFuture();
+        } catch (Exception e) {
+            TeleportCommands.LOGGER.error("Error getting suggestions!");
+            return null;
         }
-
-        // Build and return the suggestions
-        return builder.buildFuture();
     }
 }

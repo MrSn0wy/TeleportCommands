@@ -44,7 +44,6 @@ public class TeleportCommands implements ModInitializer {
 
 		// todo: /back  /tpa /tpahere  /home /homes /sethome /delhome /renamehome /defaulthome   /spawn  /worldspawn
 		commands.registerCommands();
-
 	}
 
 
@@ -52,7 +51,7 @@ public class TeleportCommands implements ModInitializer {
 	private void onPlayerUnload(Entity entity, ServerWorld world) {
 		if (entity instanceof ServerPlayerEntity player) {
 //			LOGGER.info(String.valueOf(entity.getRemovalReason()));
-            if (player.getRemovalReason() != null && Objects.equals(player.getRemovalReason().toString(), "KILLED") || Objects.equals(player.getRemovalReason().toString(), "DISCARDED")) {
+            if (player.getRemovalReason() != null && (Objects.equals(player.getRemovalReason().toString(), "KILLED") || Objects.equals(player.getRemovalReason().toString(), "DISCARDED"))) {
 				try {
 					// /back command position
 					LOGGER.info(player.getPos().toString());

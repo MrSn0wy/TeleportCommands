@@ -89,13 +89,18 @@ public class tools {
         }
     }
 
-    public static void GoHome(ServerPlayerEntity player, String homeName) {
+    public static void GoHome(ServerPlayerEntity player, String homeName) throws Exception {
         homeName = homeName.toLowerCase();
         StorageClass.Player playerStorage = GetPlayerStorage(player.getUuidAsString()).playerStorage;
 
+        // check if there is a default exists
         if (homeName.isEmpty()) {
-            homeName = playerStorage.DefaultHome;
-            // todo : can cause error if home doesnt exist
+            if (playerStorage.DefaultHome.isEmpty()) {
+                player.sendMessage(Text.literal("You Have No Homes!"), true);
+                return;
+            } else {
+                homeName = playerStorage.DefaultHome;
+            }
         }
 
         boolean foundHome = false;
@@ -122,7 +127,6 @@ public class tools {
         } else if (!foundWorld) {
             player.sendMessage(Text.literal("World Not Found!"), true);
         }
-
     }
 
     public static void DeleteHome(ServerPlayerEntity player, String homeName) throws Exception {
@@ -193,7 +197,7 @@ public class tools {
 
     }
 
-    public static void PrintHomes(ServerPlayerEntity player) {
+    public static void PrintHomes(ServerPlayerEntity player) throws Exception {
         StorageClass.Player playerStorage = GetPlayerStorage(player.getUuidAsString()).playerStorage;
         boolean anyHomes = false;
 
@@ -269,7 +273,7 @@ public class tools {
     }
 
 
-    public static void ToDeathLocation(ServerPlayerEntity player) {
+    public static void ToDeathLocation(ServerPlayerEntity player) throws Exception {
         StorageClass.Player playerStorage = GetPlayerStorage(player.getUuidAsString()).playerStorage;
 
         Vec3d pos = new Vec3d(playerStorage.deathLocation.x, playerStorage.deathLocation.y, playerStorage.deathLocation.z);

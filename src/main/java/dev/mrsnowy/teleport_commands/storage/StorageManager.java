@@ -56,7 +56,7 @@ public class StorageManager {
             StorageClass.Player newPlayer = new StorageClass.Player();
 
             newPlayer.Player_UUID = UUID;
-            newPlayer.DefaultHome = "home";
+            newPlayer.DefaultHome = "";
             newPlayer.deathLocation = new StorageClass.Player.Location();
             newPlayer.deathLocation.x = new StorageClass.Player.Location().x;
             newPlayer.deathLocation.y = new StorageClass.Player.Location().y;
@@ -91,33 +91,28 @@ public class StorageManager {
         return gson.fromJson(jsonContent, StorageClass.class);
     }
 
-    public static PlayerStorageResult GetPlayerStorage(String UUID) {
-        try {
-            StorageClass storage = StorageRetriever();
+    public static PlayerStorageResult GetPlayerStorage(String UUID) throws Exception {
+        StorageClass storage = StorageRetriever();
 
-            Optional<StorageClass.Player> playerStorage = storage.Players.stream()
+        Optional<StorageClass.Player> playerStorage = storage.Players.stream()
+                .filter(player -> Objects.equals(UUID, player.Player_UUID))
+                .findFirst();
+
+        if (playerStorage.isEmpty()) {
+            StorageAdd(UUID);
+
+            storage = StorageRetriever();
+
+            playerStorage = storage.Players.stream()
                     .filter(player -> Objects.equals(UUID, player.Player_UUID))
                     .findFirst();
 
             if (playerStorage.isEmpty()) {
-                StorageAdd(UUID);
-
-                storage = StorageRetriever();
-
-                playerStorage = storage.Players.stream()
-                        .filter(player -> Objects.equals(UUID, player.Player_UUID))
-                        .findFirst();
-
-                if (playerStorage.isEmpty()) {
-                    throw new Exception("No Player found?!");
-                }
+                throw new Exception("No Player found?!");
             }
-
-            return new PlayerStorageResult(storage, playerStorage.get());
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
+
+        return new PlayerStorageResult(storage, playerStorage.get());
     }
 
     public static class PlayerStorageResult {
