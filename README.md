@@ -1,7 +1,7 @@
 # Teleport Commands <img src="https://raw.githubusercontent.com/MrSn0wy/TeleportCommands/main/src/main/resources/assets/teleport_commands/icon.png" alt="Teleport Commands Logo" width="30"/>
 
 
-A Minecraft fabric server-side mod that adds various teleportation related commands, like /home /tpa and /back
+A Minecraft Fabric and NeoForge server-side mod that adds various teleportation related commands, like /home /tpa and /back
 
 ### This mod is still in beta, if there are any problems then let me know!
 

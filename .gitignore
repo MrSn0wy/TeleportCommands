@@ -1,39 +1,22 @@
 # gradle
-
 .gradle/
 build/
 out/
 classes/
 
-# eclipse
-
-*.launch
-
 # idea
-
-.idea/
-*.iml
+out
 *.ipr
 *.iws
+*.iml
+.idea/*
+!.idea/scopes
 
-# vscode
-
-.settings/
-.vscode/
-bin/
-.classpath
-.project
-
-# macos
-
-*.DS_Store
-
-# fabric
-
-run/
+# other
+run
+runs
 
 # java
-
 hs_err_*.log
 replay_*.log
 *.hprof
