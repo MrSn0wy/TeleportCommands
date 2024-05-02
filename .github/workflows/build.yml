@@ -36,4 +36,6 @@ jobs:
           name: Artifacts
           path: |
             */build/libs
+            !buildSrc/
+            !common/
           if-no-files-found: error
