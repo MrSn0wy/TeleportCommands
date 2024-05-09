@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "${group}",
+    "id": "${mod_id}",
+    "version": "${version}",
+    "metadata": {
+      "name": "${mod_name}",
+      "description": "${description}",
+      "contributors": {
+        "${mod_author}": "Owner"
+      },
+      "contact": {
+        "homepage": "https://mrsnowy.dev/",
+        "sources": "https://github.com/MrSn0wy/TeleportCommands",
+        "issues": "https://github.com/MrSn0wy/TeleportCommands/issues"
+      },
+      "icon": "${mod_id}.png",
+      "license": "${license}"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "init": "dev.mrsnowy.teleport_commands.quiltInit"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=${quilt_loader_version}"
+      },
+      {
+        "id": "minecraft",
+        "versions": "~${minecraft_version}"
+      },
+      {
+        "id": "java",
+        "versions": ">=${java_version}"
+      }
+    ]
+  },
+  "mixin": "${mod_id}.mixins.json"
+}

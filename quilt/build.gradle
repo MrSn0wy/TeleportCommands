@@ -1,18 +1,16 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom' version "${fabric_loom}"
+    id 'org.quiltmc.loom' version "${quilt_loom}"
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_mappings}@zip")
+//        parchment("org.parchmentmc.data:parchment-${parchment_mappings}@zip")
     }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-//    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api}"
-
-    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    modImplementation "org.quiltmc:quilt-loader:${quilt_loader_version}"
+    modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilt_fabric_api}"
 }
 
 loom {
@@ -20,19 +18,16 @@ loom {
     if (aw.exists()) {
         accessWidenerPath.set(aw)
     }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
     runs {
         client {
             client()
-            setConfigName("Fabric Client")
+            setConfigName("Quilt Client")
             ideConfigGenerated(true)
             runDir("runs/client")
         }
         server {
             server()
-            setConfigName("Fabric Server")
+            setConfigName("Quilt Server")
             ideConfigGenerated(true)
             runDir("runs/server")
         }

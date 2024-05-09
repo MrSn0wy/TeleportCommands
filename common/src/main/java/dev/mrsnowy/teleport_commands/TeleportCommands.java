@@ -24,10 +24,9 @@ public class TeleportCommands {
 	public static Path CONFIG_DIR;
 	public static MinecraftServer Server;
 
-	public static void initializeMod(MinecraftServer server, String ModLoader) {
+	public static void initializeMod(MinecraftServer server) {
 		// initialize da variables
-
-		MOD_LOADER = ModLoader;
+		LOGGER.info("Initializing Teleport Commands! Hello {}!", MOD_LOADER);
 
 		SAVE_DIR = Path.of(String.valueOf(server.getWorldPath(LevelResource.ROOT)));
 
@@ -51,7 +50,7 @@ public class TeleportCommands {
 			DeathLocationUpdater(player.position(), player.serverLevel(), player.getStringUUID());
 
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			LOGGER.error(e.toString());
 		}
 	}
 }

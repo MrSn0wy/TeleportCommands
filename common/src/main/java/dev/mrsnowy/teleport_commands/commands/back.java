@@ -12,25 +12,34 @@ import net.minecraft.world.phys.Vec3;
 
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.GetPlayerStorage;
 import static dev.mrsnowy.teleport_commands.utils.tools.Teleporter;
+import static dev.mrsnowy.teleport_commands.utils.tools.getTranslatedText;
 
 public class back {
 
     public static void register(Commands commandManager) {
 
         commandManager.getDispatcher().register(Commands.literal("back").executes(context -> {
-            ServerPlayer player = context.getSource().getPlayer();
-
-            if (player == null) {
-                TeleportCommands.LOGGER.error("Error while executing the command, No player found!");
-                return 1;
-            }
+            ServerPlayer player = context.getSource().getPlayerOrException();
 
             try {
-                player.displayClientMessage(Component.literal("Teleporting"), true);
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.teleport", player), true);
                 ToDeathLocation(player);
             } catch (Exception e) {
                 TeleportCommands.LOGGER.error(String.valueOf(e));
-                player.displayClientMessage(Component.literal("Error Teleporting!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                return 1;
+            }
+            return 0;
+        }));
+
+        commandManager.getDispatcher().register(Commands.literal("lang").executes(context -> {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+
+            try {
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.self", player), true);
+            } catch (Exception e) {
+                TeleportCommands.LOGGER.error(String.valueOf(e));
+//                player.displayClientMessage(Component.translatable("commands.teleport_commands.back.error").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                 return 1;
             }
             return 0;
@@ -47,14 +56,18 @@ public class back {
         boolean found = false;
         for (ServerLevel currentWorld : Objects.requireNonNull(player.getServer()).getAllLevels()) {
             if (Objects.equals(currentWorld.dimension().location().toString(), playerStorage.deathLocation.world)) {
-                Teleporter(player, currentWorld, pos);
+                if (!player.getPosition(0).equals(pos)) {
+                    Teleporter(player, currentWorld, pos);
+                } else {
+                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.same", player).withStyle(ChatFormatting.AQUA), true);
+                }
                 found = true;
                 break;
             }
         }
 
         if (!found) {
-            player.displayClientMessage(Component.literal("No Location Found!"), true);
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.noLocation", player).withStyle(ChatFormatting.RED), true);
         }
     }
 }

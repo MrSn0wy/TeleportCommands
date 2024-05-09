@@ -28,15 +28,26 @@ A Minecraft Fabric and NeoForge server-side mod that adds various teleportation 
 ### TODO:
 
 #### Planned commands:
-- `/wild` - Teleports you to a random location in the Overworld
-- `/worldspawn` - Teleports you to the worldspawn
-- `/spawn <dimension>` - Teleports you to your spawnpoint in a dimension, defaults to your current dimension
+-[ ] `/wild` - Teleports you to a random location in the Overworld
+-[ ] `/worldspawn` - Teleports you to the worldspawn
+-[ ] `/spawn <dimension>` - Teleports you to your spawnpoint in a dimension, defaults to your current dimension
 
 #### Improvements:
-- Modify /back to check if the location is safe and automatically choose a nearby location that is safe
-- Create a config to add any delays and disable commands, also add commands for operators in game
-- Add translation file
-- Improve responses for commands
-- Add a perm system
-- Limit tpa requests for a player
-- Add Quilt support and maybe NeoForge
+-[ ] Modify /back to check if the location is safe and automatically choose a nearby location that is safe
+-[ ] Create a config to add any delays and disable commands, also add commands for operators in game
+-[ ] Add a perm system
+-[ ] Limit tpa requests for a player
+-[x] Add translation system
+-[x] Improve responses for commands
+-[x] Add Quilt support and NeoForge
+
+
+### Want to help?
+
+#### You can create a Translation file so other people can use the mod in their native language
+1. Clone the repository
+2. Go to `common/src/main/resources/assets/teleport_commands/lang/`
+3. Go to [here](https://minecraft.wiki/w/Language) and pick the in-game locale code for the language you want to translate
+4. Copy `en_us.toml` and paste it in a new file called `[in-game locale code here].toml`
+5. Translate the file
+6. Submit a pull request with your translation :D!

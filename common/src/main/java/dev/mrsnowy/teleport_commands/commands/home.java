@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
+import static dev.mrsnowy.teleport_commands.utils.tools.getTranslatedText;
 import static net.minecraft.commands.Commands.argument;
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.GetPlayerStorage;
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.StorageSaver;
@@ -25,20 +26,15 @@ public class home {
                 .then(argument("name", StringArgumentType.string())
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
-                            ServerPlayer player = context.getSource().getPlayer();
-
-                            if (player == null) {
-                                TeleportCommands.LOGGER.error("Error while executing the command, No player found!");
-                                return 1;
-                            }
+                            ServerPlayer player = context.getSource().getPlayerOrException();
 
                             try {
-                                player.displayClientMessage(Component.literal("Home Set"), true);
+                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.set", player), true);
                                 SetHome(player, name);
 
                             } catch (Exception e) {
                                 TeleportCommands.LOGGER.error(String.valueOf(e));
-                                player.displayClientMessage(Component.literal("Error Setting Home!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.setError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
                             return 0;
@@ -47,20 +43,15 @@ public class home {
 
         commandManager.getDispatcher().register(Commands.literal("home")
                 .executes(context -> {
-                    ServerPlayer player = context.getSource().getPlayer();
-
-                    if (player == null) {
-                        TeleportCommands.LOGGER.error("Error while executing the command, No player found!");
-                        return 1;
-                    }
+                    ServerPlayer player = context.getSource().getPlayerOrException();
 
                     try {
-                        player.displayClientMessage(Component.literal("Going Home"), true);
+                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.go", player), true);
                         GoHome(player, "");
 
                     } catch (Exception e) {
                         TeleportCommands.LOGGER.error(String.valueOf(e));
-                        player.displayClientMessage(Component.literal("Error Going Home!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
                     return 0;
@@ -68,19 +59,14 @@ public class home {
                 .then(argument("name", StringArgumentType.string()).suggests(new HomesuggestionProvider())
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
-                            ServerPlayer player = context.getSource().getPlayer();
-
-                            if (player == null) {
-                                TeleportCommands.LOGGER.error("Error while executing the command, No player found!");
-                                return 1;
-                            }
+                            ServerPlayer player = context.getSource().getPlayerOrException();
 
                             try {
-                                player.displayClientMessage(Component.literal("Going Home"), true);
+                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.go", player), true);
                                 GoHome(player, name);
 
                             } catch (Exception e) {
-                                player.displayClientMessage(Component.literal("Error Going Home!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 TeleportCommands.LOGGER.error(String.valueOf(e));
                                 return 1;
                             }
@@ -91,20 +77,15 @@ public class home {
                 .then(argument("name", StringArgumentType.string()).suggests(new HomesuggestionProvider())
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
-                            ServerPlayer player = context.getSource().getPlayer();
-
-                            if (player == null) {
-                                TeleportCommands.LOGGER.error("Error while executing the command, No player found!");
-                                return 1;
-                            }
+                            ServerPlayer player = context.getSource().getPlayerOrException();;
 
                             try {
-                                player.displayClientMessage(Component.literal("Home Deleted"), true);
+                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.delete", player), true);
                                 DeleteHome(player, name);
 
                             } catch (Exception e) {
                                 TeleportCommands.LOGGER.error(String.valueOf(e));
-                                player.displayClientMessage(Component.literal("Error Deleting Home!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.deleteError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
                             return 0;
@@ -116,64 +97,50 @@ public class home {
                                 .executes(context -> {
                                     final String name = StringArgumentType.getString(context, "name");
                                     final String newName = StringArgumentType.getString(context, "newName");
-                                    ServerPlayer player = context.getSource().getPlayer();
-
-                                    if (player == null) {
-                                        TeleportCommands.LOGGER.error("Error while executing the command, No player found!");
-                                        return 1;
-                                    }
+                                    ServerPlayer player = context.getSource().getPlayerOrException();
 
                                     try {
-                                        player.displayClientMessage(Component.literal("Home Renamed"), true);
+                                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.rename", player), true);
                                         RenameHome(player, name, newName);
                                     } catch (Exception e) {
                                         TeleportCommands.LOGGER.error(String.valueOf(e));
-                                        player.displayClientMessage(Component.literal("Error Renaming Home!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.renameError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                         return 1;
                                     }
                                     return 0;
                                 }))));
 
 
+        commandManager.getDispatcher().register(Commands.literal("defaulthome")
+                .then(argument("name", StringArgumentType.string()).suggests(new HomesuggestionProvider())
+                        .executes(context -> {
+                            final String name = StringArgumentType.getString(context, "name");
+                            ServerPlayer player = context.getSource().getPlayerOrException();
+
+                            try {
+                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.default", player), true);
+                                SetDefaultHome(player, name);
+                            } catch (Exception e) {
+                                TeleportCommands.LOGGER.error(String.valueOf(e));
+                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.defaultError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                return 1;
+                            }
+                            return 0;
+                        })));
+
         commandManager.getDispatcher().register(Commands.literal("homes")
                 .executes(context -> {
-                    ServerPlayer player = context.getSource().getPlayer();
-
-                    if (player == null) {
-                        TeleportCommands.LOGGER.error("Error while executing the command, No player found!");
-                        return 1;
-                    }
+                    ServerPlayer player = context.getSource().getPlayerOrException();
 
                     try {
                         PrintHomes(player);
                     } catch (Exception e) {
                         TeleportCommands.LOGGER.error(String.valueOf(e));
-                        player.displayClientMessage(Component.literal("Error Getting Homes!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.homes.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
                     return 0;
                 }));
-
-        commandManager.getDispatcher().register(Commands.literal("defaulthome")
-                .then(argument("name", StringArgumentType.string()).suggests(new HomesuggestionProvider())
-                        .executes(context -> {
-                            final String name = StringArgumentType.getString(context, "name");
-                            ServerPlayer player = context.getSource().getPlayer();
-
-                            if (player == null) {
-                                TeleportCommands.LOGGER.error("Error while executing the command, No player found!");
-                                return 1;
-                            }
-
-                            try {
-                                SetDefaultHome(player, name);
-                            } catch (Exception e) {
-                                TeleportCommands.LOGGER.error(String.valueOf(e));
-                                player.displayClientMessage(Component.literal("Error Changing Default Home!").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
-                            }
-                            return 0;
-                        })));
     }
 
 
@@ -215,7 +182,7 @@ public class home {
 
             StorageSaver(storage);
         } else {
-            player.displayClientMessage(Component.literal("Home Already Exists!"), true);
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.exists", player).withStyle(ChatFormatting.RED), true);
         }
     }
 
@@ -226,7 +193,7 @@ public class home {
         // check if there is a default exists
         if (homeName.isEmpty()) {
             if (playerStorage.DefaultHome.isEmpty()) {
-                player.displayClientMessage(Component.literal("You Have No Homes!"), true);
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.homeless", player).withStyle(ChatFormatting.AQUA), true);
                 return;
             } else {
                 homeName = playerStorage.DefaultHome;
@@ -244,18 +211,22 @@ public class home {
                 // find correct world
                 for (ServerLevel currentWorld : Objects.requireNonNull(player.getServer()).getAllLevels()) {
                     if (Objects.equals(currentWorld.dimension().location().toString(), currentHome.world)) {
-                        Teleporter(player, currentWorld, new Vec3(currentHome.x, currentHome.y, currentHome.z));
+                        Vec3 coords = new Vec3(currentHome.x, currentHome.y, currentHome.z);
                         foundWorld = true;
+
+                        if (!player.getPosition(0).equals(coords)) {
+                            Teleporter(player, currentWorld, new Vec3(currentHome.x, currentHome.y, currentHome.z));
+                        } else {
+                            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.goSame", player).withStyle(ChatFormatting.AQUA), true);
+                        }
                         break;
                     }
                 }
             }
         }
 
-        if (!foundHome) {
-            player.displayClientMessage(Component.literal("Home Not Found!"), true);
-        } else if (!foundWorld) {
-            player.displayClientMessage(Component.literal("World Not Found!"), true);
+        if (!foundHome || !foundWorld) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
         }
     }
 
@@ -279,7 +250,7 @@ public class home {
             playerStorage.Homes.remove(homeToDelete);
             StorageSaver(storage);
         } else {
-            player.displayClientMessage(Component.literal("Home Not Found!"), true);
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
         }
     }
 
@@ -312,6 +283,7 @@ public class home {
             }
 
             if (Objects.nonNull(homeToRename)) {
+                // if the current home is the default home, then change it in the config
                 if (Objects.equals(playerStorage.DefaultHome, homeToRename.name)) {
                     playerStorage.DefaultHome = newHomeName;
                 }
@@ -319,58 +291,12 @@ public class home {
                 homeToRename.name = newHomeName;
                 StorageSaver(storage);
             } else {
-                player.displayClientMessage(Component.literal("Home Not Found!"), true);
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
             }
         } else {
-            player.displayClientMessage(Component.literal("Home Already Exists!"), true);
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.renameExists", player).withStyle(ChatFormatting.RED), true);
         }
 
-    }
-
-    private static void PrintHomes(ServerPlayer player) throws Exception {
-        StorageManager.StorageClass.Player playerStorage = GetPlayerStorage(player.getStringUUID()).playerStorage;
-        boolean anyHomes = false;
-
-        for (StorageManager.StorageClass.Player.Home currenthome : playerStorage.Homes) {
-            if (!anyHomes) {
-                player.displayClientMessage(Component.literal("Homes: \n").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD), false);
-                anyHomes = true;
-            }
-
-            String name = String.format("  - %s", currenthome.name);
-            String nameDefault = " (Default)";
-
-
-            String coords = String.format(" [X%.1f Y%.1f Z%.1f]", currenthome.x, currenthome.y, currenthome.z);
-            String dimension = String.format(" [%s]", currenthome.world);
-
-            if (Objects.equals(currenthome.name, playerStorage.DefaultHome)) {
-                player.displayClientMessage(Component.literal(name).withStyle(ChatFormatting.AQUA)
-                                .append(Component.literal(nameDefault).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)),
-                        false
-                );
-            } else {
-                player.displayClientMessage(Component.literal(name).withStyle(ChatFormatting.AQUA), false);
-            }
-
-
-            player.displayClientMessage(Component.literal("     |").withStyle(ChatFormatting.AQUA)
-                            .append(Component.literal(coords).withStyle(ChatFormatting.LIGHT_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, String.format("X%.2f Y%.2f Z%.2f", currenthome.x, currenthome.y, currenthome.z)))))
-                            .append(Component.literal(dimension).withStyle(ChatFormatting.DARK_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, currenthome.world)))),
-                    false
-            );
-
-            player.displayClientMessage(Component.literal("     |").withStyle(ChatFormatting.AQUA)
-                            .append(Component.literal(" [Tp]").withStyle(ChatFormatting.GREEN).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/home %s", currenthome.name)))))
-                            .append(Component.literal(" [Rename]").withStyle(ChatFormatting.BLUE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/renamehome %s ", currenthome.name)))))
-                            .append(Component.literal(" [Delete]\n").withStyle(ChatFormatting.RED).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/delhome %s", currenthome.name))))),
-                    false
-            );
-        }
-
-        if (!anyHomes) {
-            player.displayClientMessage(Component.literal("No homes set"), true);
-        }
     }
 
     private static void SetDefaultHome(ServerPlayer player, String homeName) throws Exception {
@@ -391,14 +317,59 @@ public class home {
 
         if (homeExists) {
             if (Objects.equals(playerStorage.DefaultHome, homeName)) {
-                player.displayClientMessage(Component.literal("Home is already set as default!"), true);
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.defaultSame", player).withStyle(ChatFormatting.AQUA), true);
 
             } else {
                 playerStorage.DefaultHome = homeName;
                 StorageSaver(storage);
             }
         } else {
-            player.displayClientMessage(Component.literal("Home not found!"), true);
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
+        }
+    }
+
+    private static void PrintHomes(ServerPlayer player) throws Exception {
+        StorageManager.StorageClass.Player playerStorage = GetPlayerStorage(player.getStringUUID()).playerStorage;
+        boolean anyHomes = false;
+
+        for (StorageManager.StorageClass.Player.Home currenthome : playerStorage.Homes) {
+            if (!anyHomes) {
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.homes.homes", player).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD), false);
+                anyHomes = true;
+            }
+
+            String name = String.format("  - %s", currenthome.name);
+
+
+            String coords = String.format(" [X%.1f Y%.1f Z%.1f]", currenthome.x, currenthome.y, currenthome.z);
+            String dimension = String.format(" [%s]", currenthome.world);
+
+            if (Objects.equals(currenthome.name, playerStorage.DefaultHome)) {
+                player.displayClientMessage(Component.literal(name).withStyle(ChatFormatting.AQUA)
+                                .append(getTranslatedText("commands.teleport_commands.homes.default", player).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)),
+                        false
+                );
+            } else {
+                player.displayClientMessage(Component.literal(name).withStyle(ChatFormatting.AQUA), false);
+            }
+
+
+            player.displayClientMessage(Component.literal("     |").withStyle(ChatFormatting.AQUA)
+                            .append(Component.literal(coords).withStyle(ChatFormatting.LIGHT_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, String.format("X%.2f Y%.2f Z%.2f", currenthome.x, currenthome.y, currenthome.z)))))
+                            .append(Component.literal(dimension).withStyle(ChatFormatting.DARK_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, currenthome.world)))),
+                    false
+            );
+
+            player.displayClientMessage(Component.literal("     |").withStyle(ChatFormatting.AQUA)
+                            .append(getTranslatedText("commands.teleport_commands.homes.tp", player).withStyle(ChatFormatting.GREEN).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/home %s", currenthome.name)))))
+                            .append(getTranslatedText("commands.teleport_commands.homes.rename", player).withStyle(ChatFormatting.BLUE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/renamehome %s ", currenthome.name)))))
+                            .append(getTranslatedText("commands.teleport_commands.homes.delete", player).withStyle(ChatFormatting.RED).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/delhome %s", currenthome.name))))),
+                    false
+            );
+        }
+
+        if (!anyHomes) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.homeless", player).withStyle(ChatFormatting.AQUA), true);
         }
     }
 }
