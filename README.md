@@ -1,7 +1,7 @@
 # Teleport Commands <img src="https://raw.githubusercontent.com/MrSn0wy/TeleportCommands/main/common/src/main/resources/teleport_commands.png" alt="Teleport Commands Logo" width="30"/>
 
 
-A Minecraft Fabric and NeoForge server-side mod that adds various teleportation related commands, like /home /tpa and /back
+A Minecraft server-side mod that adds various teleportation related commands, like /home /tpa and /back
 
 ### This mod is still in beta, if there are any problems then let me know!
 
@@ -47,7 +47,7 @@ A Minecraft Fabric and NeoForge server-side mod that adds various teleportation 
 #### You can create a Translation file so other people can use the mod in their native language
 1. Clone the repository
 2. Go to `common/src/main/resources/assets/teleport_commands/lang/`
-3. Go to [here](https://minecraft.wiki/w/Language) and pick the in-game locale code for the language you want to translate
+3. Go [here](https://minecraft.wiki/w/Language) and pick the in-game locale code for the language you want to translate
 4. Copy `en_us.toml` and paste it in a new file called `[in-game locale code here].toml`
 5. Translate the file
 6. Submit a pull request with your translation :D!
