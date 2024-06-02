@@ -1,9 +1,9 @@
-#back
-commands.teleport_commands.back.error = "Error Teleporting!"
+# back
+commands.teleport_commands.back.go = "Going Back"
 commands.teleport_commands.back.same = "Already Back"
 commands.teleport_commands.back.noLocation = "No Location Found!"
 
-#home
+# home
 commands.teleport_commands.home.set = "Home Set"
 commands.teleport_commands.home.setError = "Error Setting Home!"
 commands.teleport_commands.home.go = "Going Home"
@@ -23,22 +23,27 @@ commands.teleport_commands.home.homeless = "You Have No Homes!"
 
 # homes
 commands.teleport_commands.homes.error = "Error Getting Homes!"
-commands.teleport_commands.homes.homes = "Homes: \n"
-commands.teleport_commands.homes.default = " (Default)"
-commands.teleport_commands.homes.tp = " [Tp]"
-commands.teleport_commands.homes.rename = " [Rename]"
-commands.teleport_commands.homes.delete = " [Delete]\n"
+commands.teleport_commands.homes.homes = "Homes:"
+commands.teleport_commands.homes.default = "(Default)"
+commands.teleport_commands.homes.tp = "[Tp]"
+commands.teleport_commands.homes.rename = "[Rename]"
+commands.teleport_commands.homes.delete = "[Delete]"
 
 # tpa
 commands.teleport_commands.tpa.self = "Well, that was easy"
-commands.teleport_commands.tpa.received = "Tpa%s Request Received From "
-commands.teleport_commands.tpa.sent = "Tpa%s Request Sent to "
-commands.teleport_commands.tpa.accept = "\n[Accept]"
+commands.teleport_commands.tpa.alreadySent = "A request has already been sent to %0%"
+commands.teleport_commands.tpa.received = "Tpa%0% Request Received From %1%"
+commands.teleport_commands.tpa.sent = "Tpa%0% Request Sent to %1%"
+commands.teleport_commands.tpa.accept = "[Accept]"
 commands.teleport_commands.tpa.deny = " [Deny]"
-commands.teleport_commands.tpa.expired = "Tpa%s Request Expired"
+commands.teleport_commands.tpa.expired = "Tpa%0% Request Expired"
 commands.teleport_commands.tpa.notFound = "No Requests found!"
 commands.teleport_commands.tpa.accepted = "Request Accepted"
 commands.teleport_commands.tpa.denied = "Request Denied"
 
 # common
 commands.teleport_commands.common.teleport = "Teleporting"
+commands.teleport_commands.common.error = "Error Teleporting!"
+commands.teleport_commands.common.noSafeLocation = "No Safe Location Found!"
+commands.teleport_commands.common.safetyIsForLosers = "Teleport anyways? (Warning, you might die!)"
+commands.teleport_commands.common.forceTeleport = "[Force Teleport]"

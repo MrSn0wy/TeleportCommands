@@ -1,0 +1,50 @@
+# back
+commands.teleport_commands.back.go = "Indulás vissza"
+commands.teleport_commands.back.same = "Vissza"
+commands.teleport_commands.back.noLocation = "Nem található a koordináta"
+
+# home
+commands.teleport_commands.home.set = "Otthon beállítása"
+commands.teleport_commands.home.setError = "Hiba történt az otthon beállításával!"
+commands.teleport_commands.home.go = "Indulás haza!"
+commands.teleport_commands.home.goError = "Hiba történt az otthonnal!"
+commands.teleport_commands.home.goSame = "Otthon, édes otthon"
+commands.teleport_commands.home.delete = "Otthon törölve"
+commands.teleport_commands.home.deleteError = "Hiba történt az otthon rökésével!"
+commands.teleport_commands.home.rename = "Otthon átnevezve"
+commands.teleport_commands.home.renameError = "Hiba történt az otthon átnevezésével!"
+commands.teleport_commands.home.renameExists = "A név már létezik!"
+commands.teleport_commands.home.default = "Alap otthon beállítva"
+commands.teleport_commands.home.defaultError = "Hiba történt az alap otthon beállításával!"
+commands.teleport_commands.home.defaultSame = "Már alap ez az otthon!"
+commands.teleport_commands.home.notFound = "Otthon nem találva!"
+commands.teleport_commands.home.exists = "Az otthon már létezik!"
+commands.teleport_commands.home.homeless = "Nincs otthonod!"
+
+# homes
+commands.teleport_commands.homes.error = "Hiba történt az otthonok megtalálásával!"
+commands.teleport_commands.homes.homes = "Otthonol:"
+commands.teleport_commands.homes.default = "(Alap)"
+commands.teleport_commands.homes.tp = "[Tp]"
+commands.teleport_commands.homes.rename = "[Átnevezés]"
+commands.teleport_commands.homes.delete = "[Törlés]"
+
+# tpa
+commands.teleport_commands.tpa.self = "Hát ez gyors volt"
+commands.teleport_commands.tpa.alreadySent = "Egy kérés már el lett küldve %0%-nek"
+commands.teleport_commands.tpa.received = "Tpa%0% kérés megkapva %1%-től"
+commands.teleport_commands.tpa.sent = "tpa%0% kérés elküldve %1%-nek"
+commands.teleport_commands.tpa.accept = "[Elfogadás]"
+commands.teleport_commands.tpa.deny = " [Elutasítás]"
+commands.teleport_commands.tpa.expired = "Tpa%0% kérés lejárt"
+commands.teleport_commands.tpa.notFound = "Semmi kérésed sincsen!"
+commands.teleport_commands.tpa.accepted = "Elfogadva"
+commands.teleport_commands.tpa.denied = "Elutasítva"
+
+# common
+commands.teleport_commands.common.teleport = "Utazás"
+commands.teleport_commands.common.error = "Hiba történt a teleportálással!"
+
+commands.teleport_commands.common.noSafeLocation = "No Safe Location Found!"
+commands.teleport_commands.common.safetyIsForLosers = "Teleport anyways? (Warning, you might die!)"
+commands.teleport_commands.common.forceTeleport = "[Force Teleport]"

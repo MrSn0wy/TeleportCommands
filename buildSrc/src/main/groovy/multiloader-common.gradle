@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'com.github.johnrengelman.shadow'
 }
 
 base {
@@ -37,7 +38,7 @@ dependencies {
 //    }
 }
 
-jar {
+shadowJar {
     from(rootProject.file("LICENSE")) {
         rename { "${it}_${mod_name}" }
     }
@@ -53,6 +54,13 @@ jar {
                 'Built-On-Minecraft'    : minecraft_version
         ])
     }
+
+    dependencies {
+        include(dependency('org.tomlj:tomlj:1.1.1'))
+        relocate 'org.tomlj', "dev.mrsnowy.tomlj_${mod_id}"
+    }
+
+    exclude('mappings/**')
 }
 
 processResources {

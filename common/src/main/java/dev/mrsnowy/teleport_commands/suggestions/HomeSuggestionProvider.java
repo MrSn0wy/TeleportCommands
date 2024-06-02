@@ -13,11 +13,11 @@ import net.minecraft.server.level.ServerPlayer;
 
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.GetPlayerStorage;
 
-public class HomesuggestionProvider implements SuggestionProvider<CommandSourceStack> {
+public class HomeSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         try {
-            ServerPlayer player = Objects.requireNonNull(context.getSource().getPlayer());
+            ServerPlayer player = context.getSource().getPlayerOrException();
             StorageManager.StorageClass.Player playerStorage = GetPlayerStorage(player.getStringUUID()).playerStorage;
 
             for (StorageManager.StorageClass.Player.Home currenthome : playerStorage.Homes) {

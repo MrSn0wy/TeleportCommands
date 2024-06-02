@@ -48,13 +48,13 @@ public class StorageManager {
         StorageClass storage = StorageRetriever();
 //        Optional<StorageClass.Player> playerStorage = GetPlayerStorage(UUID, storage);
         Optional<StorageClass.Player> playerStorage = storage.Players.stream()
-                .filter(player -> Objects.equals(UUID, player.Player_UUID))
+                .filter(player -> Objects.equals(UUID, player.UUID))
                 .findFirst();
 
         if (playerStorage.isEmpty()) {
             StorageClass.Player newPlayer = new StorageClass.Player();
 
-            newPlayer.Player_UUID = UUID;
+            newPlayer.UUID = UUID;
             newPlayer.DefaultHome = "";
             newPlayer.deathLocation = new StorageClass.Player.Location();
             newPlayer.deathLocation.x = new StorageClass.Player.Location().x;
@@ -75,7 +75,7 @@ public class StorageManager {
     }
 
     public static void StorageSaver(StorageClass storage) throws Exception {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().create();
         byte[] json = gson.toJson(storage).getBytes();
         Files.write(STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
@@ -86,15 +86,15 @@ public class StorageManager {
             StorageInit();
         }
         String jsonContent = Files.readString(STORAGE_FILE);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonContent, StorageClass.class);
     }
 
-    public static PlayerStorageResult GetPlayerStorage(String UUID) throws Exception {
+    public static PlayerStorageClass GetPlayerStorage(String UUID) throws Exception {
         StorageClass storage = StorageRetriever();
 
         Optional<StorageClass.Player> playerStorage = storage.Players.stream()
-                .filter(player -> Objects.equals(UUID, player.Player_UUID))
+                .filter(player -> Objects.equals(UUID, player.UUID))
                 .findFirst();
 
         if (playerStorage.isEmpty()) {
@@ -103,7 +103,7 @@ public class StorageManager {
             storage = StorageRetriever();
 
             playerStorage = storage.Players.stream()
-                    .filter(player -> Objects.equals(UUID, player.Player_UUID))
+                    .filter(player -> Objects.equals(UUID, player.UUID))
                     .findFirst();
 
             if (playerStorage.isEmpty()) {
@@ -111,14 +111,14 @@ public class StorageManager {
             }
         }
 
-        return new PlayerStorageResult(storage, playerStorage.get());
+        return new PlayerStorageClass(storage, playerStorage.get());
     }
 
-    public static class PlayerStorageResult {
+    public static class PlayerStorageClass {
         public StorageClass storage;
         public StorageClass.Player playerStorage;
 
-        public PlayerStorageResult(StorageClass storage, StorageClass.Player playerStorage) {
+        public PlayerStorageClass(StorageClass storage, StorageClass.Player playerStorage) {
             this.storage = storage;
             this.playerStorage = playerStorage;
         }
@@ -128,15 +128,15 @@ public class StorageManager {
         public List<Player> Players;
 
         public static class Player {
-            public String Player_UUID;
+            public String UUID;
             public String DefaultHome;
             public Location deathLocation;
             public List<Home> Homes;
 
             public static class Location {
-                public double x;
-                public double y;
-                public double z;
+                public int x;
+                public int y;
+                public int z;
                 public String world;
             }
 

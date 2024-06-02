@@ -1,13 +1,12 @@
 # Teleport Commands <img src="https://raw.githubusercontent.com/MrSn0wy/TeleportCommands/main/common/src/main/resources/teleport_commands.png" alt="Teleport Commands Logo" width="30"/>
 
-
 A Minecraft server-side mod that adds various teleportation related commands, like /home /tpa and /back
 
-### This mod is still in beta, if there are any problems then let me know!
+Here is the [Changelog](CHANGELOG.md)
 
 #### Currently available commands:
 
-- `/back` -  Teleports you to the location where you last died
+- `/back [<Disable Safety>]` -  Teleports you to the location where you last died, if given true it will not do safety checks
 <br>
 
 - `/sethome <name>` - Creates a new home
@@ -33,10 +32,11 @@ A Minecraft server-side mod that adds various teleportation related commands, li
 - [ ] `/spawn <dimension>` - Teleports you to your spawnpoint in a dimension, defaults to your current dimension
 
 #### Improvements:
-- [ ] Modify /back to check if the location is safe and automatically choose a nearby location that is safe
 - [ ] Create a config to add any delays and disable commands, also add commands for operators in game
 - [ ] Add a perm system
-- [ ] Limit tpa requests for a player
+- [x] Json Storage automatic updater & cleaner
+- [x] Modify /back to check if the location is safe and automatically choose a nearby location that is safe
+- [x] Limit tpa requests for a player
 - [x] Add translation system
 - [x] Improve responses for commands
 - [x] Add Quilt support and NeoForge
@@ -44,10 +44,12 @@ A Minecraft server-side mod that adds various teleportation related commands, li
 
 ### Want to help?
 
-#### You can create a Translation file so other people can use the mod in their native language
-1. Clone the repository
-2. Go to `common/src/main/resources/assets/teleport_commands/lang/`
-3. Go [here](https://minecraft.wiki/w/Language) and pick the in-game locale code for the language you want to translate
-4. Copy `en_us.toml` and paste it in a new file called `[in-game locale code here].toml`
-5. Translate the file
-6. Submit a pull request with your translation :D!
+1. You can create a translation file so other people can use the mod in their native language: [translations.md](./common/src/main/resources/assets/teleport_commands/lang/translations.md)
+
+#### Notes
+
+Colors: 
+- Green = When something succeeds and an action will happen
+- Aqua = When something needs attention
+- White = When something is done
+- Red = When something fails
