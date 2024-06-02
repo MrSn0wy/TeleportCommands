@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [Unreleased]
 
+
+### [Planned for 1.2.0]
+
+- Add a Config System
+- Add `/spawn`
+- Add `/wild`
+- Add `/worldspawn`
+
+
+### [v1.1.0-beta]
+
 #### Added
 - Added a completely server-side translation system (UNLIKE MOJANG'S SYSTEM WHICH IS CLIENT SIDE)
 - Added a Json Storage cleaner, which automatically cleans and updates any values
