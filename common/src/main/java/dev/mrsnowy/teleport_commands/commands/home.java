@@ -7,6 +7,7 @@ import dev.mrsnowy.teleport_commands.suggestions.HomeSuggestionProvider;
 import java.util.Objects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -26,7 +27,7 @@ public class home {
                 .then(argument("name", StringArgumentType.string())
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
-                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            final ServerPlayer player = context.getSource().getPlayerOrException();
 
                             try {
                                 SetHome(player, name);
@@ -42,7 +43,7 @@ public class home {
 
         commandManager.getDispatcher().register(Commands.literal("home")
                 .executes(context -> {
-                    ServerPlayer player = context.getSource().getPlayerOrException();
+                    final ServerPlayer player = context.getSource().getPlayerOrException();
 
                     try {
                         GoHome(player, "");
@@ -57,7 +58,7 @@ public class home {
                 .then(argument("name", StringArgumentType.string()).suggests(new HomeSuggestionProvider())
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
-                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            final ServerPlayer player = context.getSource().getPlayerOrException();
 
                             try {
                                 GoHome(player, name);
@@ -74,7 +75,7 @@ public class home {
                 .then(argument("name", StringArgumentType.string()).suggests(new HomeSuggestionProvider())
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
-                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            final ServerPlayer player = context.getSource().getPlayerOrException();
 
                             try {
                                 DeleteHome(player, name);
@@ -93,7 +94,7 @@ public class home {
                                 .executes(context -> {
                                     final String name = StringArgumentType.getString(context, "name");
                                     final String newName = StringArgumentType.getString(context, "newName");
-                                    ServerPlayer player = context.getSource().getPlayerOrException();
+                                    final ServerPlayer player = context.getSource().getPlayerOrException();
 
                                     try {
                                         RenameHome(player, name, newName);
@@ -111,7 +112,7 @@ public class home {
                 .then(argument("name", StringArgumentType.string()).suggests(new HomeSuggestionProvider())
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
-                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            final ServerPlayer player = context.getSource().getPlayerOrException();
 
                             try {
                                 SetDefaultHome(player, name);
@@ -126,7 +127,7 @@ public class home {
 
         commandManager.getDispatcher().register(Commands.literal("homes")
                 .executes(context -> {
-                    ServerPlayer player = context.getSource().getPlayerOrException();
+                    final ServerPlayer player = context.getSource().getPlayerOrException();
 
                     try {
                         PrintHomes(player);
@@ -144,7 +145,7 @@ public class home {
 
     private static void SetHome(ServerPlayer player, String homeName) throws Exception {
         homeName = homeName.toLowerCase();
-        Vec3 pos = player.position();
+        BlockPos blockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
         ServerLevel world = player.serverLevel();
 
         StorageManager.PlayerStorageClass storages = GetPlayerStorage(player.getStringUUID());
@@ -166,9 +167,9 @@ public class home {
             StorageManager.StorageClass.Player.Home homeLocation = new StorageManager.StorageClass.Player.Home();
 
             homeLocation.name = homeName;
-            homeLocation.x = Double.parseDouble(String.format("%.1f", pos.x()));
-            homeLocation.y = Double.parseDouble(String.format("%.1f", pos.y()));
-            homeLocation.z = Double.parseDouble(String.format("%.1f", pos.z()));
+            homeLocation.x = blockPos.getX();
+            homeLocation.y = blockPos.getY();
+            homeLocation.z = blockPos.getZ();
             homeLocation.world = world.dimension().location().toString();
 
             playerStorage.Homes.add(homeLocation);
@@ -198,23 +199,23 @@ public class home {
             }
         }
 
-        boolean foundHome = false;
         boolean foundWorld = false;
 
         // find correct home
         for (StorageManager.StorageClass.Player.Home currentHome : playerStorage.Homes) {
             if (Objects.equals(currentHome.name, homeName)){
-                foundHome = true;
 
                 // find correct world
                 for (ServerLevel currentWorld : Objects.requireNonNull(player.getServer()).getAllLevels()) {
                     if (Objects.equals(currentWorld.dimension().location().toString(), currentHome.world)) {
-                        Vec3 coords = new Vec3(currentHome.x, currentHome.y, currentHome.z);
                         foundWorld = true;
 
-                        if (!player.getPosition(0).equals(coords)) {
+                        BlockPos coords = new BlockPos(currentHome.x, currentHome.y, currentHome.z);
+                        BlockPos playerBlockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+
+                        if (!playerBlockPos.equals(coords)) {
                             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.go", player), true);
-                            Teleporter(player, currentWorld, new Vec3(currentHome.x, currentHome.y, currentHome.z));
+                            Teleporter(player, currentWorld, new Vec3(currentHome.x + 0.5, currentHome.y, currentHome.z + 0.5));
                         } else {
                             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.goSame", player).withStyle(ChatFormatting.AQUA), true);
                         }
@@ -224,7 +225,7 @@ public class home {
             }
         }
 
-        if (!foundHome || !foundWorld) {
+        if (!foundWorld) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
         }
     }
@@ -346,7 +347,7 @@ public class home {
             String name = String.format("  - %s", currenthome.name);
 
 
-            String coords = String.format("[X%.1f Y%.1f Z%.1f]", currenthome.x, currenthome.y, currenthome.z);
+            String coords = String.format("[X%d Y%d Z%d]", currenthome.x, currenthome.y, currenthome.z);
             String dimension = String.format(" [%s]", currenthome.world);
 
             if (Objects.equals(currenthome.name, playerStorage.DefaultHome)) {
@@ -361,7 +362,7 @@ public class home {
 
 
             player.displayClientMessage(Component.literal("     | ").withStyle(ChatFormatting.AQUA)
-                            .append(Component.literal(coords).withStyle(ChatFormatting.LIGHT_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, String.format("X%.2f Y%.2f Z%.2f", currenthome.x, currenthome.y, currenthome.z)))))
+                            .append(Component.literal(coords).withStyle(ChatFormatting.LIGHT_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, String.format("X%d Y%d Z%d", currenthome.x, currenthome.y, currenthome.z)))))
                             .append(Component.literal(dimension).withStyle(ChatFormatting.DARK_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, currenthome.world)))),
                     false
             );

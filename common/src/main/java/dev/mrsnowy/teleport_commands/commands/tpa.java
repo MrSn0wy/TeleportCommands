@@ -2,6 +2,7 @@ package dev.mrsnowy.teleport_commands.commands;
 
 import java.util.*;
 
+import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.suggestions.tpaSuggestionProvider;
 
 import net.minecraft.ChatFormatting;
@@ -10,9 +11,9 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
-import static dev.mrsnowy.teleport_commands.utils.tools.Teleporter;
-import static dev.mrsnowy.teleport_commands.utils.tools.getTranslatedText;
+import static dev.mrsnowy.teleport_commands.utils.tools.*;
 
 public class tpa {
 
@@ -30,7 +31,7 @@ public class tpa {
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
-                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            final ServerPlayer player = context.getSource().getPlayerOrException();
 
                             tpaCommandHandler(player, TargetPlayer, false);
                             return 0;
@@ -40,7 +41,7 @@ public class tpa {
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
-                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            final ServerPlayer player = context.getSource().getPlayerOrException();
 
 
                             tpaCommandHandler(player, TargetPlayer, true);
@@ -51,7 +52,7 @@ public class tpa {
                 .then(Commands.argument("player", EntityArgument.player()).suggests(new tpaSuggestionProvider())
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
-                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            final ServerPlayer player = context.getSource().getPlayerOrException();
 
                             tpaAccept(player, TargetPlayer);
                             return 0;
@@ -61,7 +62,7 @@ public class tpa {
                 .then(Commands.argument("player", EntityArgument.player()).suggests(new tpaSuggestionProvider())
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
-                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            final ServerPlayer player = context.getSource().getPlayerOrException();
 
                             tpaDeny(player, TargetPlayer);
                             return 0;
@@ -81,7 +82,7 @@ public class tpa {
             FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.self", FromPlayer).withStyle(ChatFormatting.AQUA),true);
 
         } else if (playerTpaList >= 1) {
-            FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.alreadySent", FromPlayer, Component.literal(Objects.requireNonNull(ToPlayer.getName().tryCollapseToString())).withStyle(ChatFormatting.BOLD)).withStyle(ChatFormatting.AQUA)
+            FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.alreadySent", FromPlayer, Component.literal(Objects.requireNonNull(ToPlayer.getName().getString())).withStyle(ChatFormatting.BOLD)).withStyle(ChatFormatting.AQUA)
                     ,true
             );
 
@@ -95,8 +96,8 @@ public class tpa {
             tpaRequest.here = here;
             tpaList.add(tpaRequest);
 
-            String ReceivedFromPlayer = Objects.requireNonNull(FromPlayer.getName().tryCollapseToString());
-            String SentToPlayer = Objects.requireNonNull(ToPlayer.getName().tryCollapseToString());
+            String ReceivedFromPlayer = Objects.requireNonNull(FromPlayer.getName().getString());
+            String SentToPlayer = Objects.requireNonNull(ToPlayer.getName().getString());
 
             FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.sent", FromPlayer, Component.literal(hereText), Component.literal(SentToPlayer).withStyle(ChatFormatting.BOLD))
                     //                            .append(Text.literal("\n[Cancel]").formatted(Formatting.BLUE, Formatting.BOLD))
@@ -123,7 +124,7 @@ public class tpa {
 //                            else {
 //                                TeleportCommands.LOGGER.error("Error removing tpaRequest from tpaList!");
 //                            }
-                            // else not needed since it may be cancelled
+                            // else not needed since it may be denied/cancelled
                         }
                     }, 30 * 1000 // 30 seconds
             );
@@ -140,19 +141,36 @@ public class tpa {
                     .filter(tpa -> Objects.equals(FromPlayer.getStringUUID(), tpa.RecPlayer))
                     .findFirst();
 
+            // Check if there is a request
             if (tpaStorage.isPresent()) {
 
-                if (tpaStorage.get().here) {
-                    Teleporter(FromPlayer, ToPlayer.serverLevel(), ToPlayer.position());
+                ServerPlayer destinationPlayer = tpaStorage.get().here ? ToPlayer : FromPlayer;
+                ServerPlayer toSentPlayer = tpaStorage.get().here ? FromPlayer : ToPlayer;
 
-                } else {
-                    Teleporter(ToPlayer, FromPlayer.serverLevel(), FromPlayer.position());
+                Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(destinationPlayer.getBlockX(), destinationPlayer.getBlockY(), destinationPlayer.getBlockZ(), destinationPlayer.serverLevel(), toSentPlayer);
+
+                switch (teleportData.getFirst()) {
+                    case 1: // same (let it fall through)
+                    case 0: // safe!
+                        if (teleportData.getSecond().isPresent() ) {
+
+                            Teleporter(toSentPlayer, destinationPlayer.serverLevel(), teleportData.getSecond().get());
+                            break;
+                        } else {
+                            toSentPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", toSentPlayer).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                            return; // exit
+                        }
+                    case 2:  // if no safe location then just teleport to the player
+                        Teleporter(toSentPlayer, destinationPlayer.serverLevel(), destinationPlayer.position());
+                        break;
                 }
 
+                // if the player teleported then these messages get sent && the request gets removed
                 FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.accepted", FromPlayer).withStyle(ChatFormatting.WHITE),true);
                 ToPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.accepted", ToPlayer).withStyle(ChatFormatting.GREEN),true);
-
                 tpaList.remove(tpaStorage.get());
+
+            // No request found
             } else {
                 FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.notFound", FromPlayer).withStyle(ChatFormatting.RED),true);
             }

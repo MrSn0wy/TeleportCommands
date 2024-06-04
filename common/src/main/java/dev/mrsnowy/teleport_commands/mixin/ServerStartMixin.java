@@ -16,4 +16,3 @@ public class ServerStartMixin {
         TeleportCommands.initializeMod((MinecraftServer) (Object) this);
     }
 }
-

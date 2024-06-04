@@ -7,7 +7,7 @@ pluginManagement {
         }
         maven {
             name = 'Quilt'
-            url = 'https://maven.quiltmc.org/repository/release'
+            url = uri("https://maven.quiltmc.org/repository/release")
         }
         maven {
             name = 'NeoForge'
@@ -29,5 +29,4 @@ rootProject.name = "Teleport Commands"
 include("common")
 include("fabric")
 include("neoforge")
-include("quilt")
-
+//include("quilt") // disabled since the fabric port works better then the native quilt port

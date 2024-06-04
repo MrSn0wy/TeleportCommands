@@ -4,6 +4,7 @@ import com.google.gson.*;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.commands.*;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.LevelResource;
@@ -26,7 +27,6 @@ public class TeleportCommands {
 	public static String MOD_LOADER;
 	public static Path SAVE_DIR;
 	public static Path CONFIG_DIR;
-//	public static MinecraftServer Server;
 
 
 	// Gets ran when the server starts
@@ -38,8 +38,6 @@ public class TeleportCommands {
 
 		// Construct the game directory path
 		CONFIG_DIR = Paths.get(System.getProperty("user.dir")).resolve("config");
-
-//		Server = server;
 
 		cleanStorage();
 
@@ -53,7 +51,7 @@ public class TeleportCommands {
 	public static void onPlayerDeath(ServerPlayer player) {
 		try {
 			// update /back command position
-			DeathLocationUpdater(player.position(), player.serverLevel(), player.getStringUUID());
+			DeathLocationUpdater(new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ()), player.serverLevel(), player.getStringUUID());
 
 		} catch (Exception e) {
 			LOGGER.error(e.toString());
@@ -65,10 +63,11 @@ public class TeleportCommands {
 		LOGGER.info("Cleaning and updating Storage!");
 		try {
 			StorageManager.StorageInit();
+			long startFileSize = Files.size(StorageManager.STORAGE_FILE);
+
 			FileReader reader = new FileReader(StorageManager.STORAGE_FILE.toString());
 			JsonElement jsonElement = JsonParser.parseReader(reader);
 
-			boolean done = false;
 
 			if (jsonElement.isJsonObject()) {
 				JsonObject mainJsonObject = jsonElement.getAsJsonObject();
@@ -80,7 +79,6 @@ public class TeleportCommands {
 
 					// players
 					for (JsonElement playerElement : mainJsonObject.get("Players").getAsJsonArray()) {
-						System.out.println("Element: " + playerElement);
 
 						// player
 						if (playerElement.isJsonObject()) {
@@ -109,7 +107,7 @@ public class TeleportCommands {
 
 							if (player.has("Homes") && player.get("Homes").isJsonArray() ) {
 								JsonArray tempHomes = player.get("Homes").getAsJsonArray();
-								boolean defaultFound = false;
+								boolean defaultHomeFound = false;
 
 
 								for (JsonElement homeElement : tempHomes) {
@@ -119,25 +117,25 @@ public class TeleportCommands {
 										String homeName = home.has("name")
 												? home.get("name").getAsString() : "";
 
-										Double homeX = home.has("x")
-												? home.get("x").getAsDouble() : null;
+										// upgrade doubles to int
+										Integer homeX = home.has("x") && home.get("x").isJsonPrimitive() && home.get("x").getAsJsonPrimitive().isNumber()
+												? (int) Math.floor(home.get("x").getAsDouble()) : null;
 
-										Double homeY = home.has("y")
-												? home.get("y").getAsDouble() : null;
+										Integer homeY = home.has("y") && home.get("y").isJsonPrimitive() && home.get("y").getAsJsonPrimitive().isNumber()
+												? (int) Math.floor(home.get("y").getAsDouble()) : null;
 
-										Double homeZ = home.has("z")
-												? home.get("z").getAsDouble() : null;
+										Integer homeZ = home.has("z") && home.get("z").isJsonPrimitive() && home.get("z").getAsJsonPrimitive().isNumber()
+												? (int) Math.floor(home.get("z").getAsDouble()) : null;
 
 										String homeWorld = home.has("world")
 												? home.get("world").getAsString() : "";
-
 
 										// check if it is valid
 										if (!homeName.isBlank() && !homeWorld.isBlank() && homeX != null && homeY != null && homeZ != null) {
 
 											// check if it is the default home
 											if (!DefaultHome.isBlank() && homeName.equals(DefaultHome)) {
-												defaultFound = true;
+												defaultHomeFound = true;
 											}
 
 											JsonObject newHome = new JsonObject();
@@ -155,7 +153,7 @@ public class TeleportCommands {
 								}
 
 								// clean DefaultHome if there is no home with the name
-								if (!defaultFound) {
+								if (!defaultHomeFound) {
 									DefaultHome = "";
 								}
 							}
@@ -182,6 +180,10 @@ public class TeleportCommands {
 					Gson gson = new GsonBuilder().create();
 					byte[] json = gson.toJson(mainJsonObject).getBytes();
 					Files.write(StorageManager.STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+
+					long endFileSize = Files.size(StorageManager.STORAGE_FILE);
+
+					LOGGER.info("Success! Cleaned: " + Math.round((startFileSize - endFileSize)) + "B");
 				}
 			}
 

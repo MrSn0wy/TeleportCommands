@@ -142,9 +142,9 @@ public class StorageManager {
 
             public static class Home {
                 public String name;
-                public double x;
-                public double y;
-                public double z;
+                public int x;
+                public int y;
+                public int z;
                 public String world;
             }
         }

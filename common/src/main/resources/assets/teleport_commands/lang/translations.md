@@ -10,8 +10,8 @@ Things to know:
 #### Want to make a translation?
 1. Make a fork of the mod
 2. Go [here](https://minecraft.wiki/w/Language) and pick the in-game locale code for the language you want to translate
-3. Copy `en_us.toml` and paste it in a new file called `[in-game locale code here].toml`
-4. Translate the values (everything between " ") in the file
+3. Copy `en_us.json` and paste it in a new file called `[in-game locale code here].json`
+4. Translate the values in the file
 5. Submit a pull request with your translation :D!
 
 #### Want to improve an existing translation?

@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    id 'com.github.johnrengelman.shadow'
 }
 
 base {
@@ -23,7 +22,6 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains:annotations:24.1.0'
-    implementation 'org.tomlj:tomlj:1.1.1'
 }
 
 // Declare capabilities on the outgoing configurations.
@@ -38,7 +36,8 @@ dependencies {
 //    }
 }
 
-shadowJar {
+
+jar {
     from(rootProject.file("LICENSE")) {
         rename { "${it}_${mod_name}" }
     }
@@ -54,13 +53,6 @@ shadowJar {
                 'Built-On-Minecraft'    : minecraft_version
         ])
     }
-
-    dependencies {
-        include(dependency('org.tomlj:tomlj:1.1.1'))
-        relocate 'org.tomlj', "dev.mrsnowy.tomlj_${mod_id}"
-    }
-
-    exclude('mappings/**')
 }
 
 processResources {
@@ -69,15 +61,14 @@ processResources {
             "group": project.group, //Else we target the task's group.
             "minecraft_version": minecraft_version,
             "minecraft_version_range": minecraft_version_range,
-            "parchment_mappings": parchment_mappings,
 //            "fabric_api": fabric_api,
             "fabric_loader_version": fabric_loader_version,
             "fabric_loom": fabric_loom,
             "neoforge_version": neoforge_version,
             "neoforge_loader_version_range": neoforge_loader_version_range,
-            "quilt_loader_version": quilt_loader_version,
-            "quilt_fabric_api": quilt_fabric_api,
-            "quilt_loom": quilt_loom,
+//            "quilt_loader_version": quilt_loader_version,
+//            "quilt_fabric_api": quilt_fabric_api,
+//            "quilt_loom": quilt_loom,
             "mod_name": mod_name,
             "mod_author": mod_author,
             "mod_id": mod_id,

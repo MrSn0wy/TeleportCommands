@@ -6,7 +6,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;

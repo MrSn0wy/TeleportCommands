@@ -5,29 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### [Unreleased]
 
-
-### [Planned for 1.2.0]
-
-- Add a Config System
-- Add `/spawn`
-- Add `/wild`
-- Add `/worldspawn`
-
-
-### [v1.1.0-beta]
+### [v1.1.0]
 
 #### Added
 - Added a completely server-side translation system (UNLIKE MOJANG'S SYSTEM WHICH IS CLIENT SIDE)
 - Added a Json Storage cleaner, which automatically cleans and updates any values
-- Added a safety check with /back that automatically chooses a nearby safe location
+- Added a safety check with `/back` and `/tpa[here]` that automatically chooses a nearby safe location
 - Added quilt support
 - Added a CHANGELOG.md
 - Added Tpa Accept/Deny Suggestions
 - Added Dutch translations
 - Added Hungarian translations (Thanks to [Martin Morningstar](https://github.com/RMI637))
-
 
 #### Changed
 - Limited the requests a player can do to the same player to 1
@@ -38,12 +27,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved performance by changing the death event to be player specific (not all entities)
 - Replaced all loader specific api events with Mixins
 - Edited /back to have a DisableSafety option: `/back [<Disable Safety>]`
+- Improved /back and /home `Already there` detection
 
 #### Removed
 - Removed Sources and Javadoc files to improve build speed
 - Removed Fabric API dependency
 - Removed pretty json printing (to save storage)
 
+#### Breaking changes (non-backwards compatible)
+- Replaced `Player_UUID` in the storage json to `UUID`
+- Changed Death location coords in the storage json from `double` to `int`
+- Changed Home coords in the storage json from `double` to `int`
+- 
 
 ### [v1.0.5]
 
