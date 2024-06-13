@@ -12,7 +12,7 @@ jobs:
       matrix:
         # Use these Java versions
         java:
-          - 17    # Currently min for minecraft
+          - 21    # Currently min for minecraft
     runs-on: ubuntu-22.04
     steps:
       - name: checkout repository

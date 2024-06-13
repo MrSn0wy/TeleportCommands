@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [v1.1.1]
+- Added support for 1.21
+- Changed Java version to `21`
+
 
 ### [v1.1.0]
 
@@ -38,7 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced `Player_UUID` in the storage json to `UUID`
 - Changed Death location coords in the storage json from `double` to `int`
 - Changed Home coords in the storage json from `double` to `int`
-- 
 
 ### [v1.0.5]
 

@@ -2,7 +2,7 @@
 
 A Minecraft server-side mod that adds various teleportation related commands, like /home /tpa and /back
 
-Here is the [Changelog](CHANGELOG.md)
+Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CHANGELOG.md)
 
 #### Currently available commands:
 
@@ -32,7 +32,7 @@ Here is the [Changelog](CHANGELOG.md)
 - [ ] `/spawn <dimension>` - Teleports you to your spawnpoint in a dimension, defaults to your current dimension
 
 #### Improvements:
-- [ ] Create a config to add any delays and disable commands, also add commands for operators in game
+- [ ] Create a config to add any delays and disable commands, with commands for operators in game
 - [ ] Add a perm system
 - [x] Json Storage automatic updater & cleaner
 - [x] Modify /back to check if the location is safe and automatically choose a nearby location that is safe
