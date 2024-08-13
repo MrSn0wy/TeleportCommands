@@ -102,7 +102,6 @@ public class TeleportCommands {
 							deathLocation.addProperty("z", 0);
 							deathLocation.addProperty("world", "");
 
-
 							JsonArray homes = new JsonArray();
 
 							if (player.has("Homes") && player.get("Homes").isJsonArray() ) {

@@ -24,3 +24,4 @@ Things to know:
 - English (en_us): [Mr. Snowy](https://github.com/MrSn0wy)
 - Dutch (nl_nl): [Mr. Snowy](https://github.com/MrSn0wy)
 - Hungarian (hu_hu): [Martin Morningstar](https://github.com/RMI637)
+- Italian (it_it): [Vlad Andrei Morariu](https://github.com/VladAndreiMorariu)
