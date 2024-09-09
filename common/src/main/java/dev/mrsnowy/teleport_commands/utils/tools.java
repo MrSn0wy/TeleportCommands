@@ -33,7 +33,8 @@ public class tools {
     public static void Teleporter(ServerPlayer player, ServerLevel world, Vec3 coords) {
         // before teleportation effects
         world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 20, 0.0D, 0.0D, 0.0D, 0.01);
-        world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
+        // world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
+        world.sendParticles(ParticleTypes.WHITE_ASH, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
         world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.getLocation()), SoundSource.PLAYERS, 0.4f, 1.0f);
 
         var flying = player.getAbilities().flying;
@@ -57,7 +58,8 @@ public class tools {
                 @Override
                 public void run() {
                     world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() , player.getZ(), 20, 0.0D, 1.0D, 0.0D, 0.01);
-                    world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.03);
+                    // world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.03);
+                    world.sendParticles(ParticleTypes.WHITE_ASH, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.03);
                 }
             }, 100 // hopefully good, ~ 2 ticks
         );
@@ -133,7 +135,9 @@ public class tools {
 
     // Gets the translated text for each player based on their language, this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear)
     public static MutableComponent getTranslatedText(String key, ServerPlayer player, MutableComponent... args) {
-        String language = player.clientInformation().language();
+//        String language = player.clientInformation().language();
+        String language = "en_US";
+//        player.getLanguage()
         String regex = "%(\\d+)%";
         Pattern pattern = Pattern.compile(regex);
 
