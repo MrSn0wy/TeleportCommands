@@ -68,9 +68,9 @@ public class StorageManager {
             playerList.add(newPlayer);
 
             StorageSaver(storage);
-            TeleportCommands.LOGGER.info("Player '" + UUID + "' added successfully in storage!");
+            TeleportCommands.LOGGER.info("Player '{}' added successfully in storage!", UUID);
         } else {
-            TeleportCommands.LOGGER.info("Player '" + UUID + "' already exists!");
+            TeleportCommands.LOGGER.info("Player '{}' already exists!", UUID);
         }
     }
 

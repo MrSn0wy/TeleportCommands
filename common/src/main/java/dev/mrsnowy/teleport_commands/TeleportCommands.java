@@ -182,7 +182,7 @@ public class TeleportCommands {
 
 					long endFileSize = Files.size(StorageManager.STORAGE_FILE);
 
-					LOGGER.info("Success! Cleaned: " + Math.round((startFileSize - endFileSize)) + "B");
+                    LOGGER.info("Success! Cleaned: {}B", Math.round((startFileSize - endFileSize)));
 				}
 			}
 
