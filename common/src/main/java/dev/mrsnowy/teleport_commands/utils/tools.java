@@ -39,7 +39,7 @@ public class tools {
         var flying = player.getAbilities().flying;
 
         // teleport!
-        player.teleportTo(world, coords.x, coords.y, coords.z , player.getYRot(), player.getXRot(), false);
+        player.teleportTo(world, coords.x, coords.y, coords.z, Set.of(), player.getYRot(), player.getXRot(), false);
 
         // Restore flying when teleporting dimensions
         if (flying) {
@@ -217,10 +217,10 @@ public class tools {
 
         // check if the death location isn't safe
         if (
-                (belowPlayerId.equals("block.minecraft.water") || !world.getBlockState(belowPlayer).getCollisionShape(world, belowPlayer).isEmpty()) // check if the player is going to fall on teleport
-                        && (world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty() && !unsafeCollisionFreeBlocks.contains(BottomPlayerId)) // check if it is a collision free block, that isn't dangerous
-                        && (!unsafeCollisionFreeBlocks.contains(TopPlayerId)) // check if it is a dangerous collision free block, if it is solid then the player crawls
-        ){
+            (belowPlayerId.equals("block.minecraft.water") || !world.getBlockState(belowPlayer).getCollisionShape(world, belowPlayer).isEmpty()) // check if the player is going to fall on teleport
+                    && (world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty() && !unsafeCollisionFreeBlocks.contains(BottomPlayerId)) // check if it is a collision free block, that isn't dangerous
+                    && (!unsafeCollisionFreeBlocks.contains(TopPlayerId)) // check if it is a dangerous collision free block, if it is solid then the player crawls
+        ) {
             return false; // it's safe
         }
         return true; // it's not safe!
