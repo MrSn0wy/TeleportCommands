@@ -1,8 +1,5 @@
-Конечно, вот перевод на русский язык:
-
-```json
 {
-  "commands.teleport_commands.back.go": "Возвращение",
+  "commands.teleport_commands.back.go": "Возвращение назад",
   "commands.teleport_commands.back.same": "Уже на месте",
   "commands.teleport_commands.back.noLocation": "Местоположение не найдено!",
 
@@ -15,7 +12,7 @@
   "commands.teleport_commands.home.deleteError": "Ошибка удаления дома!",
   "commands.teleport_commands.home.rename": "Дом переименован",
   "commands.teleport_commands.home.renameError": "Ошибка переименования дома!",
-  "commands.teleport_commands.home.renameExists": "Это имя уже существует!",
+  "commands.teleport_commands.home.renameExists": "Это имя уже занято!",
   "commands.teleport_commands.home.default": "Дом по умолчанию установлен",
   "commands.teleport_commands.home.defaultError": "Ошибка изменения дома по умолчанию!",
   "commands.teleport_commands.home.defaultSame": "Дом уже установлен по умолчанию!",
@@ -23,7 +20,7 @@
   "commands.teleport_commands.home.exists": "Дом уже существует!",
   "commands.teleport_commands.home.homeless": "У вас нет домов!",
 
-  "commands.teleport_commands.homes.error": "Ошибка получения домов!",
+  "commands.teleport_commands.homes.error": "Ошибка получения списка домов!",
   "commands.teleport_commands.homes.homes": "Дома:",
   "commands.teleport_commands.homes.default": "(По умолчанию)",
   "commands.teleport_commands.homes.tp": "[Тп]",
@@ -47,4 +44,3 @@
   "commands.teleport_commands.common.safetyIsForLosers": "Телепортироваться всё равно? (Внимание, вы можете погибнуть!)",
   "commands.teleport_commands.common.forceTeleport": "[Принудительная телепортация]"
 }
-```
