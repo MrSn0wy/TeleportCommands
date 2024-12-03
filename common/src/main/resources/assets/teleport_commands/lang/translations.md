@@ -25,3 +25,4 @@ Things to know:
 - Dutch (nl_nl): [Mr. Snowy](https://github.com/MrSn0wy)
 - Hungarian (hu_hu): [Martin Morningstar](https://github.com/RMI637)
 - Italian (it_it): [Vlad Andrei Morariu](https://github.com/VladAndreiMorariu)
+- Russian (ru_ru): [rfin0](https://github.com/rfin0)

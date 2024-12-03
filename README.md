@@ -7,19 +7,26 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 #### Currently available commands:
 
 - `/back [<Disable Safety>]` -  Teleports you to the location where you last died, if given true it will not do safety checks
-<br>
-
+<br><br>
+    **Homes are player specific locations that only that player can teleport to**
 - `/sethome <name>` - Creates a new home
-- `/home [<name>]` - Teleports you home, if no name is giving it will go to the default home
+- `/home [<name>]` - Teleports you to the home, if no name is giving it will go to the default home
 - `/delhome <name>` - Deletes a home
 - `/renamehome <name> <newName>` - Renames a home
 - `/homes` - Shows a list of your homes
 - `/defaulthome <name>` - Sets the default home
-<br>
-
+<br><br>
+    **Warps are op managed locations that all players can teleport to**
+- `/warp <name>` - Teleports you to the warp
+- `/warps` - Shows a list of the available warp
+- `/setwarp <name>` - Sets a warp. Permission level of 4 required (op)
+- `/delwarp <name>` - Deletes a warp. Permission level of 4 required (op)
+- `/renamewarp <name> <newName>` - Renames a warp. Permission level of 4 required (op)
+<br><br>
+    **With tpa you can teleport to other players or make them teleport to you**
 - `/tpa <player>` - Sends a tpa request to another player
 - `/tpahere <player>` - Sends a tpaHere request to another player
-- `/tpaaccept <player>` -  Accepts the tpa/ tpahere request of that player
+- `/tpaaccept <player>` -  Accepts the tpa/tpahere request of that player
 - `/tpadeny <player>` - Denies the tpa/tpaHere request of that player
 
 <br>

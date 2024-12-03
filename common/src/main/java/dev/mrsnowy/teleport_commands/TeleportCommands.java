@@ -27,6 +27,7 @@ public class TeleportCommands {
 	public static String MOD_LOADER;
 	public static Path SAVE_DIR;
 	public static Path CONFIG_DIR;
+	public static MinecraftServer SERVER;
 
 
 	// Gets ran when the server starts
@@ -39,6 +40,8 @@ public class TeleportCommands {
 		// Construct the game directory path
 		CONFIG_DIR = Paths.get(System.getProperty("user.dir")).resolve("config");
 
+		SERVER = server;
+
 		cleanStorage();
 
 		// initialize commands, also allows me to easily disable any when there is a config
@@ -46,6 +49,8 @@ public class TeleportCommands {
 		back.register(commandManager);
 		home.register(commandManager);
 		tpa.register(commandManager);
+		warp.register(commandManager);
+		worldspawn.register(commandManager);
 	}
 
 	public static void onPlayerDeath(ServerPlayer player) {
@@ -68,14 +73,49 @@ public class TeleportCommands {
 			FileReader reader = new FileReader(StorageManager.STORAGE_FILE.toString());
 			JsonElement jsonElement = JsonParser.parseReader(reader);
 
-
 			if (jsonElement.isJsonObject()) {
 				JsonObject mainJsonObject = jsonElement.getAsJsonObject();
+				JsonArray newWarpsArray = new JsonArray();
+				JsonArray newPlayersArray = new JsonArray();
+
+				// get the Warps list
+				if (mainJsonObject.has("Warps") && mainJsonObject.get("Warps").isJsonArray()) {
+
+					// Warps
+					for (JsonElement warpElement : mainJsonObject.get("Warps").getAsJsonArray()) {
+
+						// Warp
+						if (warpElement.isJsonObject()) {
+							JsonObject warp = warpElement.getAsJsonObject();
+
+
+							String warpName = warp.has("name") ? warp.get("name").getAsString()  : "";
+							Integer warpX = warp.has("x") ? warp.get("x").getAsInt() : null;
+							Integer warpY = warp.has("y") ? warp.get("y").getAsInt() : null;
+							Integer warpZ = warp.has("z") ? warp.get("z").getAsInt() : null;
+							String warpWorld = warp.has("world") ? warp.get("world").getAsString() : "";
+
+							// check if it is valid
+							if (!warpName.isBlank() && !warpWorld.isBlank() && warpX != null && warpY != null && warpZ != null) {
+								JsonObject newWarp = new JsonObject();
+
+								newWarp.addProperty("name", warpName);
+								newWarp.addProperty("x", warpX);
+								newWarp.addProperty("y", warpY);
+								newWarp.addProperty("z", warpZ);
+								newWarp.addProperty("world", warpWorld);
+
+								newWarpsArray.add(newWarp);
+							}
+						}
+					}
+
+
+				}
+
 
 				// get the Players list
 				if (mainJsonObject.has("Players") && mainJsonObject.get("Players").isJsonArray()) {
-
-					JsonArray newPlayersArray = new JsonArray();
 
 					// players
 					for (JsonElement playerElement : mainJsonObject.get("Players").getAsJsonArray()) {
@@ -171,23 +211,26 @@ public class TeleportCommands {
 							}
 						}
 					}
-
-					// save the cleaned and updated file
-					mainJsonObject.remove("Players");
-					mainJsonObject.add("Players", newPlayersArray);
-
-					Gson gson = new GsonBuilder().create();
-					byte[] json = gson.toJson(mainJsonObject).getBytes();
-					Files.write(StorageManager.STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-
-					long endFileSize = Files.size(StorageManager.STORAGE_FILE);
-
-                    LOGGER.info("Success! Cleaned: {}B", Math.round((startFileSize - endFileSize)));
 				}
-			}
 
+				// save the cleaned and updated file
+				mainJsonObject.remove("Warps");
+				mainJsonObject.add("Warps", newWarpsArray);
+
+				mainJsonObject.remove("Players");
+				mainJsonObject.add("Players", newPlayersArray);
+
+				// save the cleaned database
+				Gson gson = new GsonBuilder().create();
+				byte[] json = gson.toJson(mainJsonObject).getBytes();
+				Files.write(StorageManager.STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+
+				long endFileSize = Files.size(StorageManager.STORAGE_FILE);
+
+				LOGGER.info("Success! Cleaned: {}B", Math.round((startFileSize - endFileSize)));
+			}
 		} catch (IOException e) {
-			LOGGER.error(e.toString());
+			LOGGER.error("Error while cleaning the database!", e);
 		}
 	}
 }

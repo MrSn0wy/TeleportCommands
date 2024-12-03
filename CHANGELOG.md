@@ -5,10 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [v1.2.0] WIP!
+- Added the following warp related commands: `/warp` `/setwarp` `/delwarp` `/renamewarp` and `/warps`
+- Improved error handling and error messages a lot, this will make bug reporting (and fixing) a lot easier since it says on what command it fails, and it also gives a stack trace.
+- Fixed some small things which may cause errors.
+- Improved code of some commands to make them more sane and readable
+- Modified storage code to make it more sane
+- Fixed bug with /home when in a diff dimension. (apparently I did this for /back already but forgot to add it to /home)
+- Added Russian Translations (Thanks to [rfin0](https://github.com/rfin0))
 
 ### [v1.1.3]
 - Added support for 1.21.2 - 1.21.3
-
 
 ### [v1.1.2]
 - Added Italian Translations (Thanks to [Vlad Andrei Morariu](https://github.com/VladAndreiMorariu)

@@ -12,7 +12,6 @@
   "commands.teleport_commands.home.deleteError": "Errore Durante L'Eliminazione Della Casa!",
   "commands.teleport_commands.home.rename": "Casa Rinominata",
   "commands.teleport_commands.home.renameError": "Errore Durante La Rinomina Della Casa!",
-  "commands.teleport_commands.home.renameExists": "Quel Nome Esiste Già!",
   "commands.teleport_commands.home.default": "Casa Predefinita Impostata",
   "commands.teleport_commands.home.defaultError": "Errore Durante Il Cambio Della Casa Predefinita!",
   "commands.teleport_commands.home.defaultSame": "La Casa È Già Impostata Come Predefinita!",
@@ -22,10 +21,22 @@
 
   "commands.teleport_commands.homes.error": "Errore Durante Il Recupero Delle Case!",
   "commands.teleport_commands.homes.homes": "Case:",
-  "commands.teleport_commands.homes.default": "(Predefinita)",
-  "commands.teleport_commands.homes.tp": "[Tp]",
-  "commands.teleport_commands.homes.rename": "[Rinomina]",
-  "commands.teleport_commands.homes.delete": "[Elimina]",
+
+  "commands.teleport_commands.warp.set": "Warp set",
+  "commands.teleport_commands.warp.setError": "Error setting the warp!",
+  "commands.teleport_commands.warp.exists": "Warp already exists!",
+  "commands.teleport_commands.warp.go": "Going to the warp",
+  "commands.teleport_commands.warp.goSame": "Already at the warp",
+  "commands.teleport_commands.warp.goError": "Error going to the warp!",
+  "commands.teleport_commands.warp.delete": "Warp deleted",
+  "commands.teleport_commands.warp.deleteError": "Error deleting warp!",
+  "commands.teleport_commands.warp.rename": "Warp renamed",
+  "commands.teleport_commands.warp.renameError": "Error renaming warp!",
+  "commands.teleport_commands.warp.notFound": "Warp not found!",
+  "commands.teleport_commands.warp.homeless": "There are no warps!",
+
+  "commands.teleport_commands.warps.error": "Error getting warps!",
+  "commands.teleport_commands.warps.warps": "Warps:",
 
   "commands.teleport_commands.tpa.self": "Bene, È Stato Facile",
   "commands.teleport_commands.tpa.alreadySent": "Una Richiesta È Già Stata Inviata A %0%",
@@ -42,5 +53,10 @@
   "commands.teleport_commands.common.error": "Errore Durante Il Teletrasporto!",
   "commands.teleport_commands.common.noSafeLocation": "Nessuna Posizione Sicura Trovata!",
   "commands.teleport_commands.common.safetyIsForLosers": "Teletrasporto In Ogni Caso? (Attenzione, Potresti Morire!)",
-  "commands.teleport_commands.common.forceTeleport": "[Teletrasporto Forzato]"
+  "commands.teleport_commands.common.forceTeleport": "[Teletrasporto Forzato]",
+  "commands.teleport_commands.common.tp": "[Tp]",
+  "commands.teleport_commands.common.rename": "[Rinomina]",
+  "commands.teleport_commands.common.delete": "[Elimina]",
+  "commands.teleport_commands.common.default": "(Predefinita)",
+  "commands.teleport_commands.common.renameExists": "Quel Nome Esiste Già!"
 }

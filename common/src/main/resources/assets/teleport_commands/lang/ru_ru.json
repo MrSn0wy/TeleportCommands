@@ -12,7 +12,6 @@
   "commands.teleport_commands.home.deleteError": "Ошибка удаления дома!",
   "commands.teleport_commands.home.rename": "Дом переименован",
   "commands.teleport_commands.home.renameError": "Ошибка переименования дома!",
-  "commands.teleport_commands.home.renameExists": "Это имя уже занято!",
   "commands.teleport_commands.home.default": "Дом по умолчанию установлен",
   "commands.teleport_commands.home.defaultError": "Ошибка изменения дома по умолчанию!",
   "commands.teleport_commands.home.defaultSame": "Дом уже установлен по умолчанию!",
@@ -22,10 +21,22 @@
 
   "commands.teleport_commands.homes.error": "Ошибка получения списка домов!",
   "commands.teleport_commands.homes.homes": "Дома:",
-  "commands.teleport_commands.homes.default": "(По умолчанию)",
-  "commands.teleport_commands.homes.tp": "[Тп]",
-  "commands.teleport_commands.homes.rename": "[Переименовать]",
-  "commands.teleport_commands.homes.delete": "[Удалить]",
+
+  "commands.teleport_commands.warp.set": "Warp set",
+  "commands.teleport_commands.warp.setError": "Error setting the warp!",
+  "commands.teleport_commands.warp.exists": "Warp already exists!",
+  "commands.teleport_commands.warp.go": "Going to the warp",
+  "commands.teleport_commands.warp.goSame": "Already at the warp",
+  "commands.teleport_commands.warp.goError": "Error going to the warp!",
+  "commands.teleport_commands.warp.delete": "Warp deleted",
+  "commands.teleport_commands.warp.deleteError": "Error deleting warp!",
+  "commands.teleport_commands.warp.rename": "Warp renamed",
+  "commands.teleport_commands.warp.renameError": "Error renaming warp!",
+  "commands.teleport_commands.warp.notFound": "Warp not found!",
+  "commands.teleport_commands.warp.homeless": "There are no warps!",
+
+  "commands.teleport_commands.warps.error": "Error getting warps!",
+  "commands.teleport_commands.warps.warps": "Warps:",
 
   "commands.teleport_commands.tpa.self": "Ну, это было легко",
   "commands.teleport_commands.tpa.alreadySent": "Запрос уже отправлен %0%",
@@ -42,5 +53,10 @@
   "commands.teleport_commands.common.error": "Ошибка телепортации!",
   "commands.teleport_commands.common.noSafeLocation": "Безопасное место не найдено!",
   "commands.teleport_commands.common.safetyIsForLosers": "Телепортироваться всё равно? (Внимание, вы можете погибнуть!)",
-  "commands.teleport_commands.common.forceTeleport": "[Принудительная телепортация]"
+  "commands.teleport_commands.common.forceTeleport": "[Принудительная телепортация]",
+  "commands.teleport_commands.common.tp": "[Тп]",
+  "commands.teleport_commands.common.rename": "[Переименовать]",
+  "commands.teleport_commands.common.delete": "[Удалить]",
+  "commands.teleport_commands.common.default": "(По умолчанию)",
+  "commands.teleport_commands.common.renameExists": "Это имя уже занято!"
 }

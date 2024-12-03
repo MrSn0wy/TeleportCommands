@@ -23,41 +23,45 @@ public class back {
 
     public static void register(Commands commandManager) {
 
-        commandManager.getDispatcher().register(Commands.literal("back").executes(context -> {
-            final ServerPlayer player = context.getSource().getPlayerOrException();
-
-            try {
-                ToDeathLocation(player, false);
-
-            } catch (Exception e) {
-                TeleportCommands.LOGGER.error(String.valueOf(e));
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                return 1;
-            }
-            return 0;
-        })
-        .then(argument("Disable Safety", BoolArgumentType.bool()).executes(context -> {
-                final boolean safety = BoolArgumentType.getBool(context, "Disable Safety");
+        commandManager.getDispatcher().register(Commands.literal("back")
+            .requires(source -> source.getPlayer() != null)
+            .executes(context -> {
                 final ServerPlayer player = context.getSource().getPlayerOrException();
 
                 try {
-                    ToDeathLocation(player, safety);
+                    ToDeathLocation(player, false);
 
                 } catch (Exception e) {
-                    TeleportCommands.LOGGER.error(String.valueOf(e));
+                    TeleportCommands.LOGGER.error("Error while going back! => ", e);
                     player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                     return 1;
                 }
                 return 0;
-            }))
+            })
+            .then(argument("Disable Safety", BoolArgumentType.bool())
+                .requires(source -> source.getPlayer() != null)
+                .executes(context -> {
+                    final boolean safety = BoolArgumentType.getBool(context, "Disable Safety");
+                    final ServerPlayer player = context.getSource().getPlayerOrException();
+
+                    try {
+                        ToDeathLocation(player, safety);
+
+                    } catch (Exception e) {
+                        TeleportCommands.LOGGER.error("Error while going back! => ", e);
+                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                        return 1;
+                    }
+                    return 0;
+                }))
         );
     }
 
 
     private static void ToDeathLocation(ServerPlayer player, boolean safetyDisabled) throws Exception {
-        StorageManager.StorageClass.Player playerStorage = GetPlayerStorage(player.getStringUUID()).playerStorage;
+        StorageManager.StorageClass.Player playerStorage = GetPlayerStorage(player.getStringUUID()).getSecond();
 
-        // todo : fix
+        // todo : fix... what do i need to fix LMAO
 
         if (playerStorage.deathLocation == null) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.noLocation", player).withStyle(ChatFormatting.RED), true);
@@ -65,7 +69,7 @@ public class back {
             final BlockPos pos = new BlockPos(playerStorage.deathLocation.x, playerStorage.deathLocation.y, playerStorage.deathLocation.z);
 
             boolean found = false;
-            for (ServerLevel currentWorld : Objects.requireNonNull(player.getServer()).getAllLevels()) {
+            for (ServerLevel currentWorld : TeleportCommands.SERVER.getAllLevels()) {
 
                 if (Objects.equals(currentWorld.dimension().location().toString(), playerStorage.deathLocation.world)) {
 
@@ -75,7 +79,7 @@ public class back {
                         Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(pos.getX(), pos.getY(), pos.getZ(), currentWorld, player);
 
                         switch (teleportData.getFirst()) {
-                            case 0: // safe!
+                            case 0: // safe location found!
                                 if (teleportData.getSecond().isPresent()) {
                                     player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
                                     Teleporter(player, currentWorld, teleportData.getSecond().get());

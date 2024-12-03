@@ -6,21 +6,23 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
-import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 
-import static dev.mrsnowy.teleport_commands.storage.StorageManager.GetPlayerStorage;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-public class HomeSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
+import static dev.mrsnowy.teleport_commands.storage.StorageManager.GetPlayerStorage;
+import static dev.mrsnowy.teleport_commands.storage.StorageManager.getWarpStorage;
+
+public class WarpSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         try {
-            ServerPlayer player = context.getSource().getPlayerOrException();
-            StorageManager.StorageClass.Player playerStorage = GetPlayerStorage(player.getStringUUID()).getSecond();
+            List<StorageManager.StorageClass.NamedLocation> WarpStorage = getWarpStorage().getSecond();
 
-            for (StorageManager.StorageClass.NamedLocation currentHome : playerStorage.Homes) {
-                builder.suggest(currentHome.name);
+            for (StorageManager.StorageClass.NamedLocation currentWarp :  WarpStorage) {
+                builder.suggest(currentWarp.name);
             }
 
             // Build and return the suggestions
