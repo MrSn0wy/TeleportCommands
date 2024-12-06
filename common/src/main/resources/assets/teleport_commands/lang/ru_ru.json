@@ -1,7 +1,9 @@
 {
   "commands.teleport_commands.back.go": "Возвращение назад",
   "commands.teleport_commands.back.same": "Уже на месте",
-  "commands.teleport_commands.back.noLocation": "Местоположение не найдено!",
+
+  "commands.teleport_commands.worldspawn.go": "Going To The Worldspawn",
+  "commands.teleport_commands.worldspawn.same": "Already At Worldspawn",
 
   "commands.teleport_commands.home.set": "Дом установлен",
   "commands.teleport_commands.home.setError": "Ошибка установки дома!",
@@ -58,5 +60,6 @@
   "commands.teleport_commands.common.rename": "[Переименовать]",
   "commands.teleport_commands.common.delete": "[Удалить]",
   "commands.teleport_commands.common.default": "(По умолчанию)",
-  "commands.teleport_commands.common.renameExists": "Это имя уже занято!"
+  "commands.teleport_commands.common.renameExists": "Это имя уже занято!",
+  "commands.teleport_commands.common.noLocation": "Местоположение не найдено!"
 }

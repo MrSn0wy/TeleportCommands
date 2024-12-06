@@ -1,7 +1,9 @@
 {
   "commands.teleport_commands.back.go": "Tornando Indietro",
   "commands.teleport_commands.back.same": "Già Tornato Indietro",
-  "commands.teleport_commands.back.noLocation": "Nessuna Posizione Trovata!",
+
+  "commands.teleport_commands.worldspawn.go": "Going To The Worldspawn",
+  "commands.teleport_commands.worldspawn.same": "Already At Worldspawn",
 
   "commands.teleport_commands.home.set": "Casa Impostata",
   "commands.teleport_commands.home.setError": "Errore Nell'Impostazione Della Casa!",
@@ -58,5 +60,6 @@
   "commands.teleport_commands.common.rename": "[Rinomina]",
   "commands.teleport_commands.common.delete": "[Elimina]",
   "commands.teleport_commands.common.default": "(Predefinita)",
-  "commands.teleport_commands.common.renameExists": "Quel Nome Esiste Già!"
+  "commands.teleport_commands.common.renameExists": "Quel Nome Esiste Già!",
+  "commands.teleport_commands.common.noLocation": "Nessuna Posizione Trovata!"
 }

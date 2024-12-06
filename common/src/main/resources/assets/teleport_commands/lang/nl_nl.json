@@ -1,7 +1,9 @@
 {
   "commands.teleport_commands.back.go": "Terug gaan",
   "commands.teleport_commands.back.same": "Al Terug",
-  "commands.teleport_commands.back.noLocation": "Geen Locatie Gevonden!",
+
+  "commands.teleport_commands.worldspawn.go": "Naar de Worldspawn",
+  "commands.teleport_commands.worldspawn.same": "Al bij de Worldspawn",
 
   "commands.teleport_commands.home.set": "Huis Ingesteld",
   "commands.teleport_commands.home.setError": "Probleem tijdens het instellen van het Huis!",
@@ -58,5 +60,6 @@
   "commands.teleport_commands.common.rename ": "[Naam Wijzigen]",
   "commands.teleport_commands.common.delete": "[Verwijderen]",
   "commands.teleport_commands.common.default": "(Standaard)",
-  "commands.teleport_commands.common.renameExists": "Die Naam Bestaat Al!"
+  "commands.teleport_commands.common.renameExists": "Die Naam Bestaat Al!",
+  "commands.teleport_commands.common.noLocation": "Geen Locatie Gevonden!"
 }

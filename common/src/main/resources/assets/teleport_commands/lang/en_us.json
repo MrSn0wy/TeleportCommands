@@ -1,7 +1,9 @@
 {
   "commands.teleport_commands.back.go": "Going Back",
   "commands.teleport_commands.back.same": "Already Back",
-  "commands.teleport_commands.back.noLocation": "No Location Found!",
+
+  "commands.teleport_commands.worldspawn.go": "Going To The Worldspawn",
+  "commands.teleport_commands.worldspawn.same": "Already At Worldspawn",
 
   "commands.teleport_commands.home.set": "Home Set",
   "commands.teleport_commands.home.setError": "Error Setting Home!",
@@ -58,5 +60,6 @@
   "commands.teleport_commands.common.rename": "[Rename]",
   "commands.teleport_commands.common.delete": "[Delete]",
   "commands.teleport_commands.common.default": "(Default)",
-  "commands.teleport_commands.common.renameExists": "That Name Already Exists!"
+  "commands.teleport_commands.common.renameExists": "That Name Already Exists!",
+  "commands.teleport_commands.common.noLocation": "No Location Found!"
 }

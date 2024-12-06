@@ -119,7 +119,7 @@ public class back {
             }
 
             if (!found) {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.noLocation", player).withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player).withStyle(ChatFormatting.RED), true);
             }
         }
     }

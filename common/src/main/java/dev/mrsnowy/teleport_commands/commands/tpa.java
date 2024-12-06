@@ -114,7 +114,7 @@ public class tpa {
             FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.self", FromPlayer).withStyle(ChatFormatting.AQUA), true);
 
         } else if (playerTpaList >= 1) {
-            FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.alreadySent", FromPlayer, Component.literal(Objects.requireNonNull(ToPlayer.getName().getString())).withStyle(ChatFormatting.BOLD)).withStyle(ChatFormatting.AQUA)
+            FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.alreadySent", FromPlayer, Component.literal(Objects.requireNonNull(ToPlayer.getName().getString(), "ToPlayer name cannot be null")).withStyle(ChatFormatting.BOLD)).withStyle(ChatFormatting.AQUA)
                     , true
             );
 
@@ -128,8 +128,8 @@ public class tpa {
             tpaRequest.here = here;
             tpaList.add(tpaRequest);
 
-            String ReceivedFromPlayer = Objects.requireNonNull(FromPlayer.getName().getString());
-            String SentToPlayer = Objects.requireNonNull(ToPlayer.getName().getString());
+            String ReceivedFromPlayer = Objects.requireNonNull(FromPlayer.getName().getString(), "FromPlayer name cannot be null");
+            String SentToPlayer = Objects.requireNonNull(ToPlayer.getName().getString(), "ToPlayer name cannot be null");
 
             FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.sent", FromPlayer, Component.literal(hereText), Component.literal(SentToPlayer).withStyle(ChatFormatting.BOLD))
                     //                            .append(Text.literal("\n[Cancel]").formatted(Formatting.BLUE, Formatting.BOLD))

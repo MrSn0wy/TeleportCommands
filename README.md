@@ -6,6 +6,7 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 
 #### Currently available commands:
 
+- `/worldspawn [<Disable Safety>]` - Teleports you to the world spawn (in the overworld), if given true it will not do safety checks
 - `/back [<Disable Safety>]` -  Teleports you to the location where you last died, if given true it will not do safety checks
 <br><br>
     **Homes are player specific locations that only that player can teleport to**
@@ -35,10 +36,13 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 
 #### Planned commands:
 - [ ] `/wild` - Teleports you to a random location in the Overworld
-- [ ] `/worldspawn` - Teleports you to the worldspawn
+- [x] `/worldspawn` - Teleports you to the worldspawn
 - [ ] `/spawn <dimension>` - Teleports you to your spawnpoint in a dimension, defaults to your current dimension
 
 #### Improvements:
+- [ ] Look into changing the mod into the more safe and sane kotlin (I love java)
+- [ ] Find a way to combine the mod loader specific jars into one
+- [ ] Find the easiest way to backport the mod to older version (help)
 - [ ] Create a config to add any delays and disable commands, with commands for operators in game
 - [ ] Add a perm system
 - [x] Json Storage automatic updater & cleaner

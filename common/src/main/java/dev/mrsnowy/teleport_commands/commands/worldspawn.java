@@ -58,10 +58,9 @@ public class worldspawn {
 
     }
 
-    private static void toWorldSpawn(ServerPlayer player, boolean safetyDisabled) {
+    private static void toWorldSpawn(ServerPlayer player, boolean safetyDisabled) throws NullPointerException {
         ServerLevel world = TeleportCommands.SERVER.getLevel(OVERWORLD);
-        BlockPos worldSpawn = Objects.requireNonNull(world).getSharedSpawnPos();
-
+        BlockPos worldSpawn = Objects.requireNonNull(world,"Overworld cannot be null").getSharedSpawnPos();
 
         if (!safetyDisabled) {
             Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(worldSpawn.getX(), worldSpawn.getY(), worldSpawn.getZ(), world, player);
@@ -69,7 +68,7 @@ public class worldspawn {
             switch (teleportData.getFirst()) {
                 case 0: // safe location found!
                     if (teleportData.getSecond().isPresent()) {
-                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
+                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.go", player), true);
                         Teleporter(player, world, teleportData.getSecond().get());
                     } else {
                         player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
@@ -77,7 +76,7 @@ public class worldspawn {
 
                     break;
                 case 1: // the location is already safe!
-                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.same", player).withStyle(ChatFormatting.AQUA), true);
+                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.same", player).withStyle(ChatFormatting.AQUA), true);
                     break;
                 case 2: // no safe location found!
 
@@ -87,9 +86,17 @@ public class worldspawn {
                             .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/worldspawn true"))),false);
                     break;
             }
+        } else {
+            BlockPos playerBlockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+
+            if (!playerBlockPos.equals(worldSpawn) || player.level() != world) {
+
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.go", player), true);
+                Teleporter(player, world, new Vec3(worldSpawn.getX() + 0.5, worldSpawn.getY(), worldSpawn.getZ() + 0.5));
+
+            } else {
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.same", player).withStyle(ChatFormatting.AQUA), true);
+            }
         }
-
-        TeleportCommands.LOGGER.error("{}", world.getSharedSpawnPos());
     }
-
 }

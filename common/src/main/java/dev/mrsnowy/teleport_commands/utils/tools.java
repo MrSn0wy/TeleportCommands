@@ -174,12 +174,12 @@ public class tools {
                     String filePath = String.format("/assets/%s/lang/en_us.json", MOD_ID);
                     InputStream stream = TeleportCommands.class.getResourceAsStream(filePath);
 
-                    Reader reader = new InputStreamReader(Objects.requireNonNull(stream), StandardCharsets.UTF_8);
+                    Reader reader = new InputStreamReader(Objects.requireNonNull(stream, "translation file stream cannot be null"), StandardCharsets.UTF_8);
                     JsonElement json = JsonParser.parseReader(reader);
                     String translation = json.getAsJsonObject().get(key).getAsString();
 
-
-                    Matcher matcher = pattern.matcher(Objects.requireNonNull(translation));
+                    // Adds the optional MutableComponents in the correct places
+                    Matcher matcher = pattern.matcher(Objects.requireNonNull(translation, "translation cannot be null"));
 
                     MutableComponent component = Component.literal("");
                     int lastIndex = 0;

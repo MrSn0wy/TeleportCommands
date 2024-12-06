@@ -1,7 +1,9 @@
 {
   "commands.teleport_commands.back.go": "Indulás vissza",
   "commands.teleport_commands.back.same": "Vissza",
-  "commands.teleport_commands.back.noLocation": "Nem található a koordináta",
+
+  "commands.teleport_commands.worldspawn.go": "Going To The Worldspawn",
+  "commands.teleport_commands.worldspawn.same": "Already At Worldspawn",
 
   "commands.teleport_commands.home.set": "Otthon beállítása",
   "commands.teleport_commands.home.setError": "Hiba történt az otthon beállításával!",
@@ -58,5 +60,6 @@
   "commands.teleport_commands.common.rename": "[Átnevezés]",
   "commands.teleport_commands.common.delete": "[Törlés]",
   "commands.teleport_commands.common.default": "(Alap)",
-  "commands.teleport_commands.common.renameExists": "A név már létezik!"
+  "commands.teleport_commands.common.renameExists": "A név már létezik!",
+  "commands.teleport_commands.common.noLocation": "Nem található a koordináta"
 }
