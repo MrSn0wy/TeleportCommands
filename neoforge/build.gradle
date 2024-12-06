@@ -10,6 +10,7 @@ def at = file('src/main/resources/META-INF/accesstransformer.cfg')
 if (at.exists()) {
     minecraft.accessTransformers.file at
 }
+
 runs {
     configureEach {
         modSource project.sourceSets.main
@@ -26,13 +27,23 @@ runs {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     }
 
-    data {
-        getArguments().addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-    }
+//    data {
+//        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+//    }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
 
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
 }
