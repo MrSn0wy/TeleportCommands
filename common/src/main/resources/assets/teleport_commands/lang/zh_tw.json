@@ -1,7 +1,9 @@
 {
   "commands.teleport_commands.back.go": "正在返回",
   "commands.teleport_commands.back.same": "已經回來了",
-  "commands.teleport_commands.back.noLocation": "找不到位置！",
+
+  "commands.teleport_commands.worldspawn.go": "Going To The Worldspawn",
+  "commands.teleport_commands.worldspawn.same": "Already At Worldspawn",
 
   "commands.teleport_commands.home.set": "家已設定",
   "commands.teleport_commands.home.setError": "設定家時發生錯誤！",
@@ -12,7 +14,6 @@
   "commands.teleport_commands.home.deleteError": "刪除家時發生錯誤！",
   "commands.teleport_commands.home.rename": "家已重新命名",
   "commands.teleport_commands.home.renameError": "重新命名家時發生錯誤！",
-  "commands.teleport_commands.home.renameExists": "這個名稱已經存在了！",
   "commands.teleport_commands.home.default": "預設家已設定",
   "commands.teleport_commands.home.defaultError": "變更預設家時發生錯誤！",
   "commands.teleport_commands.home.defaultSame": "家已經是設定為預設了！",
@@ -22,10 +23,22 @@
 
   "commands.teleport_commands.homes.error": "獲取家時發生錯誤！",
   "commands.teleport_commands.homes.homes": "家：",
-  "commands.teleport_commands.homes.default": "（預設）",
-  "commands.teleport_commands.homes.tp": "[傳送]",
-  "commands.teleport_commands.homes.rename": "[重新命名]",
-  "commands.teleport_commands.homes.delete": "[刪除]",
+
+  "commands.teleport_commands.warp.set": "Warp set",
+  "commands.teleport_commands.warp.setError": "Error setting the warp!",
+  "commands.teleport_commands.warp.exists": "Warp already exists!",
+  "commands.teleport_commands.warp.go": "Going to the warp",
+  "commands.teleport_commands.warp.goSame": "Already at the warp",
+  "commands.teleport_commands.warp.goError": "Error going to the warp!",
+  "commands.teleport_commands.warp.delete": "Warp deleted",
+  "commands.teleport_commands.warp.deleteError": "Error deleting warp!",
+  "commands.teleport_commands.warp.rename": "Warp renamed",
+  "commands.teleport_commands.warp.renameError": "Error renaming warp!",
+  "commands.teleport_commands.warp.notFound": "Warp not found!",
+  "commands.teleport_commands.warp.homeless": "There are no warps!",
+
+  "commands.teleport_commands.warps.error": "Error getting warps!",
+  "commands.teleport_commands.warps.warps": "Warps:",
 
   "commands.teleport_commands.tpa.self": "嗯，這很容易",
   "commands.teleport_commands.tpa.alreadySent": "請求已經發送至 %0%",
@@ -42,5 +55,11 @@
   "commands.teleport_commands.common.error": "傳送時發生錯誤！",
   "commands.teleport_commands.common.noSafeLocation": "找不到安全位置！",
   "commands.teleport_commands.common.safetyIsForLosers": "仍要傳送？（警告，你可能會死！）",
-  "commands.teleport_commands.common.forceTeleport": "[強制傳送]"
+  "commands.teleport_commands.common.forceTeleport": "[強制傳送]",
+  "commands.teleport_commands.common.tp": "[傳送]",
+  "commands.teleport_commands.common.rename": "[重新命名]",
+  "commands.teleport_commands.common.delete": "[刪除]",
+  "commands.teleport_commands.common.default": "（預設）",
+  "commands.teleport_commands.common.renameExists": "這個名稱已經存在了！",
+  "commands.teleport_commands.common.noLocation": "找不到位置！"
 }
