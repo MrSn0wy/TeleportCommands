@@ -1,7 +1,9 @@
 {
   "commands.teleport_commands.back.go": "Indulás vissza",
   "commands.teleport_commands.back.same": "Vissza",
-  "commands.teleport_commands.back.noLocation": "Nem található a koordináta",
+
+  "commands.teleport_commands.worldspawn.go": "Going To The Worldspawn",
+  "commands.teleport_commands.worldspawn.same": "Already At Worldspawn",
 
   "commands.teleport_commands.home.set": "Otthon beállítása",
   "commands.teleport_commands.home.setError": "Hiba történt az otthon beállításával!",
@@ -12,7 +14,6 @@
   "commands.teleport_commands.home.deleteError": "Hiba történt az otthon rökésével!",
   "commands.teleport_commands.home.rename": "Otthon átnevezve",
   "commands.teleport_commands.home.renameError": "Hiba történt az otthon átnevezésével!",
-  "commands.teleport_commands.home.renameExists": "A név már létezik!",
   "commands.teleport_commands.home.default": "Alap otthon beállítva",
   "commands.teleport_commands.home.defaultError": "Hiba történt az alap otthon beállításával!",
   "commands.teleport_commands.home.defaultSame": "Már alap ez az otthon!",
@@ -22,10 +23,22 @@
 
   "commands.teleport_commands.homes.error": "Hiba történt az otthonok megtalálásával!",
   "commands.teleport_commands.homes.homes": "Otthonol:",
-  "commands.teleport_commands.homes.default": "(Alap)",
-  "commands.teleport_commands.homes.tp": "[Tp]",
-  "commands.teleport_commands.homes.rename": "[Átnevezés]",
-  "commands.teleport_commands.homes.delete": "[Törlés]",
+
+  "commands.teleport_commands.warp.set": "Warp set",
+  "commands.teleport_commands.warp.setError": "Error setting the warp!",
+  "commands.teleport_commands.warp.exists": "Warp already exists!",
+  "commands.teleport_commands.warp.go": "Going to the warp",
+  "commands.teleport_commands.warp.goSame": "Already at the warp",
+  "commands.teleport_commands.warp.goError": "Error going to the warp!",
+  "commands.teleport_commands.warp.delete": "Warp deleted",
+  "commands.teleport_commands.warp.deleteError": "Error deleting warp!",
+  "commands.teleport_commands.warp.rename": "Warp renamed",
+  "commands.teleport_commands.warp.renameError": "Error renaming warp!",
+  "commands.teleport_commands.warp.notFound": "Warp not found!",
+  "commands.teleport_commands.warp.homeless": "There are no warps!",
+
+  "commands.teleport_commands.warps.error": "Error getting warps!",
+  "commands.teleport_commands.warps.warps": "Warps:",
 
   "commands.teleport_commands.tpa.self": "Hát ez gyors volt",
   "commands.teleport_commands.tpa.alreadySent": "Egy kérés már el lett küldve %0%-nek",
@@ -42,5 +55,11 @@
   "commands.teleport_commands.common.error": "Hiba történt a teleportálással!",
   "commands.teleport_commands.common.noSafeLocation": "Nem találtunk biztonságos helyet!",
   "commands.teleport_commands.common.safetyIsForLosers": "Biztos teleportálsz?",
-  "commands.teleport_commands.common.forceTeleport": "[Teleportálás mindenképp]"
+  "commands.teleport_commands.common.forceTeleport": "[Teleportálás mindenképp]",
+  "commands.teleport_commands.common.tp": "[Tp]",
+  "commands.teleport_commands.common.rename": "[Átnevezés]",
+  "commands.teleport_commands.common.delete": "[Törlés]",
+  "commands.teleport_commands.common.default": "(Alap)",
+  "commands.teleport_commands.common.renameExists": "A név már létezik!",
+  "commands.teleport_commands.common.noLocation": "Nem található a koordináta"
 }

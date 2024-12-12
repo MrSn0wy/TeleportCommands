@@ -65,10 +65,10 @@ public class tools {
 
 
     public static void DeathLocationUpdater(BlockPos pos, ServerLevel world, String UUID) throws Exception {
-        StorageManager.PlayerStorageClass storages = GetPlayerStorage(UUID);
+        Pair<StorageManager.StorageClass, StorageManager.StorageClass.Player> storages = GetPlayerStorage(UUID);
 
-        StorageManager.StorageClass storage = storages.storage;
-        StorageManager.StorageClass.Player playerStorage = storages.playerStorage;
+        StorageManager.StorageClass storage = storages.getFirst();
+        StorageManager.StorageClass.Player playerStorage = storages.getSecond();
 
         playerStorage.deathLocation.x = pos.getX();
         playerStorage.deathLocation.y = pos.getY();
@@ -104,10 +104,10 @@ public class tools {
                                 if (!isBlockPosUnsafe(newSafePos, world)) {
 
                                     if (!playerBlockPos.equals(newSafePos) || player.level() != world) {
-                                        return new Pair<>(0, Optional.of(new Vec3(newSafePos.getX() + 0.5, newSafePos.getY(), newSafePos.getZ() + 0.5))); // safe!
+                                        return new Pair<>(0, Optional.of(new Vec3(newSafePos.getX() + 0.5, newSafePos.getY(), newSafePos.getZ() + 0.5))); // safe location found!
 
                                     } else {
-                                        return new Pair<>(1, Optional.of(new Vec3(newSafePos.getX() + 0.5, newSafePos.getY(), newSafePos.getZ() + 0.5))); // same
+                                        return new Pair<>(1, Optional.of(new Vec3(newSafePos.getX() + 0.5, newSafePos.getY(), newSafePos.getZ() + 0.5))); // the location is already safe!
                                     }
                                 }
                             }
@@ -118,14 +118,14 @@ public class tools {
                 row++;
             }
             // no safe location
-            return new Pair<>(2, Optional.empty()); // no safe location
+            return new Pair<>(2, Optional.empty()); // no safe location found!
 
         // check if the location is the same
         } else if (!playerBlockPos.equals(blockPos) || player.level() != world) {
-            return new Pair<>(0, Optional.of(new Vec3(playerX + 0.5, playerY, playerZ + 0.5))); // good and safe!
+            return new Pair<>(0, Optional.of(new Vec3(playerX + 0.5, playerY, playerZ + 0.5))); // safe location found!
 
         } else {
-            return new Pair<>(1, Optional.of(new Vec3(playerX + 0.5, playerY, playerZ + 0.5))); // same
+            return new Pair<>(1, Optional.of(new Vec3(playerX + 0.5, playerY, playerZ + 0.5))); // the location is already safe!
         }
     }
 
@@ -174,12 +174,12 @@ public class tools {
                     String filePath = String.format("/assets/%s/lang/en_us.json", MOD_ID);
                     InputStream stream = TeleportCommands.class.getResourceAsStream(filePath);
 
-                    Reader reader = new InputStreamReader(Objects.requireNonNull(stream), StandardCharsets.UTF_8);
+                    Reader reader = new InputStreamReader(Objects.requireNonNull(stream, "translation file stream cannot be null"), StandardCharsets.UTF_8);
                     JsonElement json = JsonParser.parseReader(reader);
                     String translation = json.getAsJsonObject().get(key).getAsString();
 
-
-                    Matcher matcher = pattern.matcher(Objects.requireNonNull(translation));
+                    // Adds the optional MutableComponents in the correct places
+                    Matcher matcher = pattern.matcher(Objects.requireNonNull(translation, "translation cannot be null"));
 
                     MutableComponent component = Component.literal("");
                     int lastIndex = 0;
@@ -217,10 +217,10 @@ public class tools {
 
         // check if the death location isn't safe
         if (
-                (belowPlayerId.equals("block.minecraft.water") || !world.getBlockState(belowPlayer).getCollisionShape(world, belowPlayer).isEmpty()) // check if the player is going to fall on teleport
-                        && (world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty() && !unsafeCollisionFreeBlocks.contains(BottomPlayerId)) // check if it is a collision free block, that isn't dangerous
-                        && (!unsafeCollisionFreeBlocks.contains(TopPlayerId)) // check if it is a dangerous collision free block, if it is solid then the player crawls
-        ){
+            (belowPlayerId.equals("block.minecraft.water") || !world.getBlockState(belowPlayer).getCollisionShape(world, belowPlayer).isEmpty()) // check if the player is going to fall on teleport
+                    && (world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty() && !unsafeCollisionFreeBlocks.contains(BottomPlayerId)) // check if it is a collision free block, that isn't dangerous
+                    && (!unsafeCollisionFreeBlocks.contains(TopPlayerId)) // check if it is a dangerous collision free block, if it is solid then the player crawls
+        ) {
             return false; // it's safe
         }
         return true; // it's not safe!

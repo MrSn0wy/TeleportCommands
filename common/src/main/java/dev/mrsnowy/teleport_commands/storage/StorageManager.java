@@ -2,6 +2,7 @@ package dev.mrsnowy.teleport_commands.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 
 import java.io.File;
@@ -34,11 +35,12 @@ public class StorageManager {
             if (new File(String.valueOf(STORAGE_FILE)).length() == 0) {
                 StorageClass root = new StorageClass();
                 root.Players = new ArrayList<>();
+                root.Warps = new ArrayList<>();
                 StorageSaver(root);
             }
 
         } catch (Exception e) {
-            TeleportCommands.LOGGER.error(e.getMessage());
+            TeleportCommands.LOGGER.error("Error while creating the storage file! Exiting! {}", e.getMessage());
             // crashing is probably better here, otherwise the whole mod will be broken
             System.exit(1);
         }
@@ -46,7 +48,7 @@ public class StorageManager {
 
     public static void StorageAdd(String UUID) throws Exception {
         StorageClass storage = StorageRetriever();
-//        Optional<StorageClass.Player> playerStorage = GetPlayerStorage(UUID, storage);
+
         Optional<StorageClass.Player> playerStorage = storage.Players.stream()
                 .filter(player -> Objects.equals(UUID, player.UUID))
                 .findFirst();
@@ -56,10 +58,10 @@ public class StorageManager {
 
             newPlayer.UUID = UUID;
             newPlayer.DefaultHome = "";
-            newPlayer.deathLocation = new StorageClass.Player.Location();
-            newPlayer.deathLocation.x = new StorageClass.Player.Location().x;
-            newPlayer.deathLocation.y = new StorageClass.Player.Location().y;
-            newPlayer.deathLocation.z = new StorageClass.Player.Location().z;
+            newPlayer.deathLocation = new StorageClass.Location();
+            newPlayer.deathLocation.x = new StorageClass.Location().x;
+            newPlayer.deathLocation.y = new StorageClass.Location().y;
+            newPlayer.deathLocation.z = new StorageClass.Location().z;
             newPlayer.deathLocation.world = "";
 
             newPlayer.Homes = new ArrayList<>();
@@ -68,9 +70,9 @@ public class StorageManager {
             playerList.add(newPlayer);
 
             StorageSaver(storage);
-            TeleportCommands.LOGGER.info("Player '" + UUID + "' added successfully in storage!");
+            TeleportCommands.LOGGER.info("Player '{}' added successfully in storage!", UUID);
         } else {
-            TeleportCommands.LOGGER.info("Player '" + UUID + "' already exists!");
+            TeleportCommands.LOGGER.info("Player '{}' already exists!", UUID);
         }
     }
 
@@ -90,7 +92,13 @@ public class StorageManager {
         return gson.fromJson(jsonContent, StorageClass.class);
     }
 
-    public static PlayerStorageClass GetPlayerStorage(String UUID) throws Exception {
+    public static Pair<StorageClass, List<StorageClass.NamedLocation>> getWarpStorage() throws Exception {
+        StorageClass storage = StorageRetriever();
+        return new Pair<>(storage, storage.Warps);
+    }
+
+
+    public static Pair<StorageClass, StorageClass.Player> GetPlayerStorage(String UUID) throws Exception {
         StorageClass storage = StorageRetriever();
 
         Optional<StorageClass.Player> playerStorage = storage.Players.stream()
@@ -111,42 +119,34 @@ public class StorageManager {
             }
         }
 
-        return new PlayerStorageClass(storage, playerStorage.get());
+        return new Pair<>(storage, playerStorage.get());
     }
 
-    public static class PlayerStorageClass {
-        public StorageClass storage;
-        public StorageClass.Player playerStorage;
-
-        public PlayerStorageClass(StorageClass storage, StorageClass.Player playerStorage) {
-            this.storage = storage;
-            this.playerStorage = playerStorage;
-        }
-    }
 
     public static class StorageClass {
+        public List<NamedLocation> Warps;
         public List<Player> Players;
+
+        public static class NamedLocation {
+            public String name;
+            public int x;
+            public int y;
+            public int z;
+            public String world;
+        }
+
+        public static class Location {
+            public int x;
+            public int y;
+            public int z;
+            public String world;
+        }
 
         public static class Player {
             public String UUID;
             public String DefaultHome;
             public Location deathLocation;
-            public List<Home> Homes;
-
-            public static class Location {
-                public int x;
-                public int y;
-                public int z;
-                public String world;
-            }
-
-            public static class Home {
-                public String name;
-                public int x;
-                public int y;
-                public int z;
-                public String world;
-            }
+            public List<NamedLocation> Homes;
         }
     }
 }
