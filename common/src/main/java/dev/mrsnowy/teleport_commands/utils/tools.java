@@ -133,7 +133,7 @@ public class tools {
 
     // Gets the translated text for each player based on their language, this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear)
     public static MutableComponent getTranslatedText(String key, ServerPlayer player, MutableComponent... args) {
-        String language = player.clientInformation().language();
+        String language = player.clientInformation().language().toLowerCase();
         String regex = "%(\\d+)%";
         Pattern pattern = Pattern.compile(regex);
 
@@ -142,7 +142,7 @@ public class tools {
             String filePath = String.format("/assets/%s/lang/%s.json", MOD_ID, language);
             InputStream stream = TeleportCommands.class.getResourceAsStream(filePath);
 
-            Reader reader = new InputStreamReader(Objects.requireNonNull(stream), StandardCharsets.UTF_8);
+            Reader reader = new InputStreamReader(Objects.requireNonNull(stream, String.format("Couldn't find the required language file for \"%s\"", language)), StandardCharsets.UTF_8);
             JsonElement json = JsonParser.parseReader(reader);
             String translation = json.getAsJsonObject().get(key).getAsString();
 
@@ -166,7 +166,7 @@ public class tools {
             return component;
 
         } catch (Exception e) {
-            TeleportCommands.LOGGER.error(e.toString());
+
             try {
                 if (!Objects.equals(language, "en_us")) {
 //                    TeleportCommands.LOGGER.warn("Key \"{}\" not found in the language: {}, falling back to default (en_us)", key, language);
@@ -174,7 +174,7 @@ public class tools {
                     String filePath = String.format("/assets/%s/lang/en_us.json", MOD_ID);
                     InputStream stream = TeleportCommands.class.getResourceAsStream(filePath);
 
-                    Reader reader = new InputStreamReader(Objects.requireNonNull(stream, "translation file stream cannot be null"), StandardCharsets.UTF_8);
+                    Reader reader = new InputStreamReader(Objects.requireNonNull(stream, String.format("Couldn't find the required language file for \"%s\"", language)), StandardCharsets.UTF_8);
                     JsonElement json = JsonParser.parseReader(reader);
                     String translation = json.getAsJsonObject().get(key).getAsString();
 

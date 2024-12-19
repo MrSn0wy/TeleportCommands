@@ -17,7 +17,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "dev.mrsnowy.teleport_commands.fabricInit"
+            "${group}.fabricInit"
         ]
     },
     "mixins": [
