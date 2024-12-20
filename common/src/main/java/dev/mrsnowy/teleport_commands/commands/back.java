@@ -3,10 +3,10 @@ package dev.mrsnowy.teleport_commands.commands;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.storage.StorageManager;
 
 import java.util.*;
 
+import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -15,11 +15,24 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
-import static dev.mrsnowy.teleport_commands.storage.StorageManager.GetPlayerStorage;
 import static dev.mrsnowy.teleport_commands.utils.tools.*;
 import static net.minecraft.commands.Commands.argument;
 
 public class back {
+    public static final ArrayList<deathLocationClass> backList = new ArrayList<>();
+
+    public static class deathLocationClass {
+        final public String UUID;
+        final public BlockPos pos;
+        final public String world;
+
+        public deathLocationClass(String uuid, BlockPos pos, String world) {
+            this.UUID = uuid;
+            this.pos = pos;
+            this.world = world;
+            backList.add(this);
+        }
+    }
 
     public static void register(Commands commandManager) {
 
@@ -58,69 +71,66 @@ public class back {
     }
 
 
-    private static void ToDeathLocation(ServerPlayer player, boolean safetyDisabled) throws Exception {
-        StorageManager.StorageClass.Player playerStorage = GetPlayerStorage(player.getStringUUID()).getSecond();
+    private static void ToDeathLocation(ServerPlayer player, boolean safetyDisabled) {
 
-        // todo : fix... what do i need to fix LMAO
+        Optional<deathLocationClass> OptionalDeathLocation = backList.stream()
+                .filter( deathLocation -> Objects.equals( deathLocation.UUID, player.getStringUUID() ))
+                .findFirst();
 
-        if (playerStorage.deathLocation == null) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.noLocation", player).withStyle(ChatFormatting.RED), true);
-        } else {
-            final BlockPos pos = new BlockPos(playerStorage.deathLocation.x, playerStorage.deathLocation.y, playerStorage.deathLocation.z);
+        if (OptionalDeathLocation.isEmpty()) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player).withStyle(ChatFormatting.RED), true);
+            return;
+        }
 
-            boolean found = false;
-            for (ServerLevel currentWorld : TeleportCommands.SERVER.getAllLevels()) {
+        deathLocationClass deathLocation = OptionalDeathLocation.get();
 
-                if (Objects.equals(currentWorld.dimension().location().toString(), playerStorage.deathLocation.world)) {
+        Optional<ServerLevel> OptionalWorld = tools.getWorld( deathLocation.world );
+        if (OptionalWorld.isEmpty()) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player).withStyle(ChatFormatting.RED), true);
+            return;
+        }
 
-                    // check if the death location isn't safe and that safety isn't enabled
-                    if (!safetyDisabled) {
+        ServerLevel world = OptionalWorld.get();
 
-                        Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(pos.getX(), pos.getY(), pos.getZ(), currentWorld, player);
+        // check if the death location isn't safe and that safety isn't enabled
+        if (!safetyDisabled) {
 
-                        switch (teleportData.getFirst()) {
-                            case 0: // safe location found!
-                                if (teleportData.getSecond().isPresent()) {
-                                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
-                                    Teleporter(player, currentWorld, teleportData.getSecond().get());
-                                } else {
-                                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                }
+            Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(deathLocation.pos, world, player);
 
-                                break;
-                            case 1: // same
-                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.same", player).withStyle(ChatFormatting.AQUA), true);
-                                break;
-                            case 2:  // no safe location
-
-                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), false);
-                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player).withStyle(ChatFormatting.AQUA), false);
-                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.forceTeleport", player).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
-                                        .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/back true"))),false);
-                                break;
-                        }
-
+            switch (teleportData.getFirst()) {
+                case 0: // safe location found!
+                    if (teleportData.getSecond().isPresent()) {
+                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
+                        Teleporter(player, world, teleportData.getSecond().get());
                     } else {
-                        BlockPos playerBlockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
-                        if (!playerBlockPos.equals(pos) || player.level() != currentWorld) {
-
-                            player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
-                            Teleporter(player, currentWorld, new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5));
-
-                        } else {
-                            player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.same", player).withStyle(ChatFormatting.AQUA), true);
-                        }
+                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                     }
 
-
-                    found = true;
                     break;
-                }
+                case 1: // same
+                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.same", player).withStyle(ChatFormatting.AQUA), true);
+                    break;
+                case 2:  // no safe location
+
+                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), false);
+                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player).withStyle(ChatFormatting.AQUA), false);
+                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.forceTeleport", player).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
+                            .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/back true"))),false);
+                    break;
             }
 
-            if (!found) {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player).withStyle(ChatFormatting.RED), true);
+        } else {
+            BlockPos playerBlockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+
+            if (!playerBlockPos.equals(deathLocation.pos) || player.level() != world) {
+
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
+                Teleporter(player, world, new Vec3(deathLocation.pos.getX() + 0.5, deathLocation.pos.getY(), deathLocation.pos.getZ() + 0.5));
+
+            } else {
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.same", player).withStyle(ChatFormatting.AQUA), true);
             }
         }
+
     }
 }

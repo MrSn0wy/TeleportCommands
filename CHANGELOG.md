@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [W.I.P]
+- Storage is loaded in memory instead of reading it again and again, Improves speed and IO usage
+- Made it so the DeathLocation is only kept in memory (WIP)
+- Improved the Storage classes and functions (I'm doing proper java, yipie)
+
 ### [v1.2.2]
 - Handled a case where the client (geyser) will return the language as uppercase instead of lowercase.
 - Fixed null-pointer exceptions being logged when a language file couldn't be found.

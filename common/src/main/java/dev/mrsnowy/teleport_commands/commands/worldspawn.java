@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -63,7 +62,7 @@ public class worldspawn {
         BlockPos worldSpawn = Objects.requireNonNull(world,"Overworld cannot be null").getSharedSpawnPos();
 
         if (!safetyDisabled) {
-            Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(worldSpawn.getX(), worldSpawn.getY(), worldSpawn.getZ(), world, player);
+            Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(worldSpawn, world, player);
 
             switch (teleportData.getFirst()) {
                 case 0: // safe location found!

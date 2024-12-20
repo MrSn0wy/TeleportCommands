@@ -3,13 +3,14 @@ package dev.mrsnowy.teleport_commands.utils;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.storage.StorageManager;
+
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,8 +23,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 
 import static dev.mrsnowy.teleport_commands.TeleportCommands.MOD_ID;
-import static dev.mrsnowy.teleport_commands.storage.StorageManager.GetPlayerStorage;
-import static dev.mrsnowy.teleport_commands.storage.StorageManager.StorageSaver;
 import static net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT;
 
 public class tools {
@@ -64,27 +63,14 @@ public class tools {
     }
 
 
-    public static void DeathLocationUpdater(BlockPos pos, ServerLevel world, String UUID) throws Exception {
-        Pair<StorageManager.StorageClass, StorageManager.StorageClass.Player> storages = GetPlayerStorage(UUID);
-
-        StorageManager.StorageClass storage = storages.getFirst();
-        StorageManager.StorageClass.Player playerStorage = storages.getSecond();
-
-        playerStorage.deathLocation.x = pos.getX();
-        playerStorage.deathLocation.y = pos.getY();
-        playerStorage.deathLocation.z = pos.getZ();
-        playerStorage.deathLocation.world = world.dimension().location().toString();
-
-        StorageSaver(storage);
-    }
-
-
-    public static Pair<Integer, Optional<Vec3>> teleportSafetyChecker(int playerX, int playerY, int playerZ, ServerLevel world, ServerPlayer player) {
+    public static Pair<Integer, Optional<Vec3>> teleportSafetyChecker(BlockPos blockPos, ServerLevel world, ServerPlayer player) {
         int row = 1;
         int rows = 3;
 
         BlockPos playerBlockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
-        BlockPos blockPos = new BlockPos(playerX, playerY, playerZ);
+        int playerX = blockPos.getX();
+        int playerY = blockPos.getY();
+        int playerZ=  blockPos.getZ();
 
         // find a safe location in an x row radius
         if (isBlockPosUnsafe(blockPos, world)) {
@@ -129,6 +115,15 @@ public class tools {
         }
     }
 
+
+    // function to quickly filter the worlds and compare them to a string
+    public static Optional<ServerLevel> getWorld(String worldString) {
+
+        return StreamSupport.stream( TeleportCommands.SERVER.getAllLevels().spliterator(), false ) // woa, this looks silly
+                .filter(level -> Objects.equals( level.dimension().location().toString(), worldString ))
+                .findFirst();
+
+    }
 
 
     // Gets the translated text for each player based on their language, this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear)
@@ -204,7 +199,6 @@ public class tools {
 
 
     private static boolean isBlockPosUnsafe(BlockPos bottomPlayer, ServerLevel world) {
-        // bottomPlayer is presumed to be the bottom of the player character
 
         BlockPos belowPlayer = new BlockPos(bottomPlayer.getX(), bottomPlayer.getY() -1, bottomPlayer.getZ()); // below the player
         String belowPlayerId = world.getBlockState(belowPlayer).getBlock().getDescriptionId(); // below the player
@@ -216,11 +210,10 @@ public class tools {
 
 
         // check if the death location isn't safe
-        if (
-            (belowPlayerId.equals("block.minecraft.water") || !world.getBlockState(belowPlayer).getCollisionShape(world, belowPlayer).isEmpty()) // check if the player is going to fall on teleport
-                    && (world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty() && !unsafeCollisionFreeBlocks.contains(BottomPlayerId)) // check if it is a collision free block, that isn't dangerous
-                    && (!unsafeCollisionFreeBlocks.contains(TopPlayerId)) // check if it is a dangerous collision free block, if it is solid then the player crawls
-        ) {
+        if ((belowPlayerId.equals("block.minecraft.water") || !world.getBlockState(belowPlayer).getCollisionShape(world, belowPlayer).isEmpty()) // check if the player is going to fall on teleport
+            && (world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty() && !unsafeCollisionFreeBlocks.contains(BottomPlayerId)) // check if it is a collision free block, that isn't dangerous
+            && (!unsafeCollisionFreeBlocks.contains(TopPlayerId))) // check if it is a dangerous collision free block, if it is solid then the player crawls
+        {
             return false; // it's safe
         }
         return true; // it's not safe!

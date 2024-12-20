@@ -172,13 +172,7 @@ public class home {
 
         if (homeNotFound) {
             // Create a new NamedLocation
-            StorageManager.StorageClass.NamedLocation homeLocation = new StorageManager.StorageClass.NamedLocation();
-
-            homeLocation.name = homeName;
-            homeLocation.x = blockPos.getX();
-            homeLocation.y = blockPos.getY();
-            homeLocation.z = blockPos.getZ();
-            homeLocation.world = world.dimension().location().toString();
+            StorageManager.StorageClass.NamedLocation homeLocation = new StorageManager.StorageClass.NamedLocation(homeName, blockPos, world.dimension().location().toString());
 
             playerStorage.Homes.add(homeLocation);
 
@@ -186,7 +180,7 @@ public class home {
                 playerStorage.DefaultHome = homeName;
             }
 
-            StorageSaver(storage);
+            StorageSaver();
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.set", player), true);
         } else {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.exists", player).withStyle(ChatFormatting.RED), true);
@@ -251,7 +245,7 @@ public class home {
             if (Objects.equals(currentHome.name, homeName)) {
                 // delete the home
                 playerStorage.Homes.remove(currentHome);
-                StorageSaver(storage);
+                StorageSaver();
 
                 deletedHome = true;
                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.delete", player), true);
@@ -294,7 +288,7 @@ public class home {
                     }
 
                     currentHome.name = newHomeName;
-                    StorageSaver(storage);
+                    StorageSaver();
 
                     WarpRenamed = true;
                     player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.rename", player), true);
@@ -332,7 +326,7 @@ public class home {
             if (!Objects.equals(playerStorage.DefaultHome, homeName)) {
 
                 playerStorage.DefaultHome = homeName;
-                StorageSaver(storage);
+                StorageSaver();
                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.default", player), true);
 
             } else {

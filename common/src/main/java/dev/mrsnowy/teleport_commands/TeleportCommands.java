@@ -1,10 +1,10 @@
 package dev.mrsnowy.teleport_commands;
 
 import com.google.gson.*;
+import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.commands.*;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.LevelResource;
@@ -17,8 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import net.minecraft.core.BlockPos;
 
-import static dev.mrsnowy.teleport_commands.utils.tools.DeathLocationUpdater;
+import static dev.mrsnowy.teleport_commands.storage.StorageManager.*;
 
 public class TeleportCommands {
 	public static final String MOD_ID = "teleport_commands";
@@ -42,7 +43,7 @@ public class TeleportCommands {
 
 		SERVER = server;
 
-		cleanStorage();
+		StorageManager.STORAGE = storageValidator();
 
 		// initialize commands, also allows me to easily disable any when there is a config
 		Commands commandManager = server.getCommands();
@@ -53,27 +54,51 @@ public class TeleportCommands {
 		worldspawn.register(commandManager);
 	}
 
+
+	// Runs when the playerDeath mixin calls it, updates the /back command position
 	public static void onPlayerDeath(ServerPlayer player) {
 		try {
-			// update /back command position
-			DeathLocationUpdater(new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ()), player.serverLevel(), player.getStringUUID());
+			BlockPos pos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+
+			Pair<StorageManager.StorageClass, StorageManager.StorageClass.Player> storages = GetPlayerStorage(player.getStringUUID());
+
+			StorageManager.StorageClass.Player playerStorage = storages.getSecond();
+
+			playerStorage.deathLocation.x = pos.getX();
+			playerStorage.deathLocation.y = pos.getY();
+			playerStorage.deathLocation.z = pos.getZ();
+			playerStorage.deathLocation.world = player.serverLevel().dimension().location().toString();
+
+			StorageSaver();
 
 		} catch (Exception e) {
-			LOGGER.error(e.toString());
+			LOGGER.error("Error while saving the player death location! => ", e);
 		}
 	}
 
-	// cleans and updates Storage to the newest "version"
-	private static void cleanStorage() {
+//	private static StorageManager.StorageClass loadStorage() throws Exception {
+//		// double check that the storage file is intact
+//		StorageInit();
+//
+//		String jsonContent = Files.readString(STORAGE_FILE);
+//		Gson gson = new GsonBuilder().create();
+//
+//}
+
+	// cleans and updates Storage to the newest "version". This is painful
+	private static StorageClass storageValidator() {
 		LOGGER.info("Cleaning and updating Storage!");
+
 		try {
-			StorageManager.StorageInit();
+			StorageInit();
+
 			long startFileSize = Files.size(StorageManager.STORAGE_FILE);
 
 			FileReader reader = new FileReader(StorageManager.STORAGE_FILE.toString());
 			JsonElement jsonElement = JsonParser.parseReader(reader);
 
 			if (jsonElement.isJsonObject()) {
+
 				JsonObject mainJsonObject = jsonElement.getAsJsonObject();
 				JsonArray newWarpsArray = new JsonArray();
 				JsonArray newPlayersArray = new JsonArray();
@@ -87,7 +112,6 @@ public class TeleportCommands {
 						// Warp
 						if (warpElement.isJsonObject()) {
 							JsonObject warp = warpElement.getAsJsonObject();
-
 
 							String warpName = warp.has("name") ? warp.get("name").getAsString()  : "";
 							Integer warpX = warp.has("x") ? warp.get("x").getAsInt() : null;
@@ -109,8 +133,6 @@ public class TeleportCommands {
 							}
 						}
 					}
-
-
 				}
 
 
@@ -204,7 +226,7 @@ public class TeleportCommands {
 
 								newPlayer.addProperty("UUID", UUID);
 								newPlayer.addProperty("DefaultHome", DefaultHome);
-								newPlayer.add("deathLocation", deathLocation);
+								newPlayer.add("deathLocationClass", deathLocation);
 								newPlayer.add("Homes", homes);
 
 								newPlayersArray.add(newPlayer);
@@ -225,12 +247,14 @@ public class TeleportCommands {
 				byte[] json = gson.toJson(mainJsonObject).getBytes();
 				Files.write(StorageManager.STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
-				long endFileSize = Files.size(StorageManager.STORAGE_FILE);
-
-				LOGGER.info("Success! Cleaned: {}B", Math.round((startFileSize - endFileSize)));
+				LOGGER.info("Success! Cleaned: {}B", Math.round(( startFileSize - Files.size(StorageManager.STORAGE_FILE) )));
+				return gson.fromJson(mainJsonObject, StorageManager.StorageClass.class);
 			}
+
 		} catch (IOException e) {
 			LOGGER.error("Error while cleaning the database!", e);
 		}
-	}
+
+        return null;
+    }
 }

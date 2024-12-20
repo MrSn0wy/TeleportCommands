@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
+import net.minecraft.core.BlockPos;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -17,136 +18,122 @@ import java.util.Optional;
 public class StorageManager {
     public static Path STORAGE_FOLDER;
     public static Path STORAGE_FILE;
+    public static StorageClass STORAGE;
 
     public static void StorageInit() {
         STORAGE_FOLDER = TeleportCommands.SAVE_DIR.resolve("TeleportCommands/");
         STORAGE_FILE = STORAGE_FOLDER.resolve("storage.json");
 
         try {
+            // check if the folder exists and create it
             if (!Files.exists(STORAGE_FOLDER)) {
                 Files.createDirectories(STORAGE_FOLDER);
             }
 
+            // check if the file exists and create it
             if (!Files.exists(STORAGE_FILE)) {
                 Files.createFile(STORAGE_FILE);
             }
 
-            // create the storage
+            // create the basic storage if it is empty
             if (new File(String.valueOf(STORAGE_FILE)).length() == 0) {
-                StorageClass root = new StorageClass();
-                root.Players = new ArrayList<>();
-                root.Warps = new ArrayList<>();
-                StorageSaver(root);
+                STORAGE = new StorageClass();
+                StorageSaver(); // todo! verify that it creates em correctly
             }
 
         } catch (Exception e) {
-            TeleportCommands.LOGGER.error("Error while creating the storage file! Exiting! {}", e.getMessage());
+            TeleportCommands.LOGGER.error("Error while creating the storage file! Exiting! => ", e);
             // crashing is probably better here, otherwise the whole mod will be broken
             System.exit(1);
         }
     }
 
-    public static void StorageAdd(String UUID) throws Exception {
-        StorageClass storage = StorageRetriever();
+    public static StorageClass.Player PlayerAdd(String UUID) {
 
-        Optional<StorageClass.Player> playerStorage = storage.Players.stream()
+        // try to find an exising storage for this player
+        Optional<StorageClass.Player> playerStorage = STORAGE.Players.stream()
                 .filter(player -> Objects.equals(UUID, player.UUID))
                 .findFirst();
 
         if (playerStorage.isEmpty()) {
-            StorageClass.Player newPlayer = new StorageClass.Player();
+            StorageClass.Player newPlayer = new StorageClass.Player(UUID); // TODO! verify that it creates the player proper
 
-            newPlayer.UUID = UUID;
-            newPlayer.DefaultHome = "";
-            newPlayer.deathLocation = new StorageClass.Location();
-            newPlayer.deathLocation.x = new StorageClass.Location().x;
-            newPlayer.deathLocation.y = new StorageClass.Location().y;
-            newPlayer.deathLocation.z = new StorageClass.Location().z;
-            newPlayer.deathLocation.world = "";
-
-            newPlayer.Homes = new ArrayList<>();
-
-            List<StorageClass.Player> playerList = storage.Players;
+            List<StorageClass.Player> playerList = STORAGE.Players;
             playerList.add(newPlayer);
 
-            StorageSaver(storage);
+//            StorageSaver(); // no need to save since no data is actually set yet!
             TeleportCommands.LOGGER.info("Player '{}' added successfully in storage!", UUID);
+            return newPlayer;
         } else {
             TeleportCommands.LOGGER.info("Player '{}' already exists!", UUID);
+            return playerStorage.get();
         }
     }
 
-    public static void StorageSaver(StorageClass storage) throws Exception {
+    public static void StorageSaver() throws Exception {
         Gson gson = new GsonBuilder().create();
-        byte[] json = gson.toJson(storage).getBytes();
+        byte[] json = gson.toJson( STORAGE ).getBytes();
+
         Files.write(STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private static StorageClass StorageRetriever() throws Exception {
-        // double check that the storage file is intact
-        if (new File(String.valueOf(STORAGE_FILE)).length() == 0) {
-            StorageInit();
-        }
-        String jsonContent = Files.readString(STORAGE_FILE);
-        Gson gson = new GsonBuilder().create();
-        return gson.fromJson(jsonContent, StorageClass.class);
+    public static Pair<StorageClass, List<StorageClass.NamedLocation>> getWarpStorage() {
+        return new Pair<>(STORAGE, STORAGE.Warps);
     }
 
-    public static Pair<StorageClass, List<StorageClass.NamedLocation>> getWarpStorage() throws Exception {
-        StorageClass storage = StorageRetriever();
-        return new Pair<>(storage, storage.Warps);
-    }
+    public static Pair<StorageClass, StorageClass.Player> GetPlayerStorage(String UUID) {
 
-
-    public static Pair<StorageClass, StorageClass.Player> GetPlayerStorage(String UUID) throws Exception {
-        StorageClass storage = StorageRetriever();
-
-        Optional<StorageClass.Player> playerStorage = storage.Players.stream()
+        // try to find an exising storage for this player
+        Optional<StorageClass.Player> playerStorage = STORAGE.Players.stream()
                 .filter(player -> Objects.equals(UUID, player.UUID))
                 .findFirst();
 
         if (playerStorage.isEmpty()) {
-            StorageAdd(UUID);
+            StorageClass.Player player = PlayerAdd(UUID); // create a new player
 
-            storage = StorageRetriever();
-
-            playerStorage = storage.Players.stream()
-                    .filter(player -> Objects.equals(UUID, player.UUID))
-                    .findFirst();
-
-            if (playerStorage.isEmpty()) {
-                throw new Exception("No Player found?!");
-            }
+            return new Pair<>(STORAGE, player);
         }
 
-        return new Pair<>(storage, playerStorage.get());
+        return new Pair<>(STORAGE, playerStorage.get());
     }
 
 
     public static class StorageClass {
-        public List<NamedLocation> Warps;
-        public List<Player> Players;
+        public static List<NamedLocation> Warps = new ArrayList<>();
+        public static List<Player> Players = new ArrayList<>();
 
         public static class NamedLocation {
             public String name;
-            public int x;
-            public int y;
-            public int z;
-            public String world;
+            public final int x;
+            public final int y;
+            public final int z;
+            public final String world;
+
+            public NamedLocation(String name, BlockPos pos, String world) {
+                this.name = name;
+                this.x = pos.getX();
+                this.y = pos.getY();
+                this.z = pos.getZ();
+                this.world = world;
+            }
         }
 
         public static class Location {
-            public int x;
-            public int y;
-            public int z;
-            public String world;
+            public int x = 0;
+            public int y = 0;
+            public int z = 0;
+            public String world = "";
         }
 
         public static class Player {
-            public String UUID;
-            public String DefaultHome;
-            public Location deathLocation;
-            public List<NamedLocation> Homes;
+            public final String UUID;
+            public String DefaultHome = "";
+            public Location deathLocation; // todo! deprecate
+            public List<NamedLocation> Homes = new ArrayList<>();
+
+            public Player(String uuid) {
+                this.UUID = uuid;
+            }
         }
     }
 }

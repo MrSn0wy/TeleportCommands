@@ -4,7 +4,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
-import dev.mrsnowy.teleport_commands.suggestions.HomeSuggestionProvider;
 import dev.mrsnowy.teleport_commands.suggestions.WarpSuggestionProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
@@ -149,17 +148,10 @@ public class warp {
 
         if (warpNotFound) {
             // Create a new NamedLocation
-            StorageClass.NamedLocation warpData = new StorageClass.NamedLocation();
-
-            warpData.name = warpName;
-            warpData.x = blockPos.getX();
-            warpData.y = blockPos.getY();
-            warpData.z = blockPos.getZ();
-            warpData.world = world.dimension().location().toString();
-
+            StorageClass.NamedLocation warpData = new StorageClass.NamedLocation(warpName, blockPos, world.dimension().location().toString());
             storage.Warps.add(warpData);
 
-            StorageSaver(storage);
+            StorageSaver();
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.set", player), true);
         } else {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.exists", player).withStyle(ChatFormatting.RED), true);
@@ -215,7 +207,7 @@ public class warp {
             if (Objects.equals(currentWarp.name, warpName)){
                 // delete the warp
                 WarpStorage.remove(currentWarp);
-                StorageSaver(storage);
+                StorageSaver();
 
                 deletedWarp = true;
                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.delete", player), true);
@@ -255,7 +247,7 @@ public class warp {
                 if (Objects.equals(currentWarp.name, warpName)){
 
                     currentWarp.name = newWarpName;
-                    StorageSaver(storage);
+                    StorageSaver();
                     WarpRenamed = true;
                     player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.rename", player), true);
 
