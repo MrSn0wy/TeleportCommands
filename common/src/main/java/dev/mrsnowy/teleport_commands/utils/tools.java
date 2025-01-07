@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -30,12 +29,13 @@ public class tools {
     private static final Set<String> unsafeCollisionFreeBlocks = Set.of("block.minecraft.lava", "block.minecraft.flowing_lava", "block.minecraft.end_portal", "block.minecraft.end_gateway","block.minecraft.fire", "block.minecraft.soul_fire", "block.minecraft.powder_snow", "block.minecraft.nether_portal");
 
     public static void Teleporter(ServerPlayer player, ServerLevel world, Vec3 coords) {
-        // before teleportation effects
+        // teleportation effects & sounds before teleporting
         world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 20, 0.0D, 0.0D, 0.0D, 0.01);
         world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
         world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
 
-        var flying = player.getAbilities().flying;
+        // check if the player is currently flying
+        boolean flying = player.getAbilities().flying;
 
         // teleport!
         player.teleportTo(world, coords.x, coords.y, coords.z, Set.of(), player.getYRot(), player.getXRot(), false);
@@ -46,11 +46,11 @@ public class tools {
             player.onUpdateAbilities();
         }
 
-
+        // teleportation sound after teleport
         world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
-        Timer timer = new Timer();
 
         // delay visual effects so the player can see it when switching dimensions
+        Timer timer = new Timer();
         timer.schedule(
             new TimerTask() {
                 @Override
@@ -58,11 +58,11 @@ public class tools {
                     world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() , player.getZ(), 20, 0.0D, 1.0D, 0.0D, 0.01);
                     world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.03);
                 }
-            }, 100 // hopefully good, ~ 2 ticks
+            }, 100 // hopefully a good delay, ~ 2 ticks
         );
     }
 
-
+    // checks a 7x7x7 location around the player in order to find a safe place to teleport them to.
     public static Pair<Integer, Optional<Vec3>> teleportSafetyChecker(BlockPos blockPos, ServerLevel world, ServerPlayer player) {
         int row = 1;
         int rows = 3;
@@ -70,7 +70,7 @@ public class tools {
         BlockPos playerBlockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
         int playerX = blockPos.getX();
         int playerY = blockPos.getY();
-        int playerZ=  blockPos.getZ();
+        int playerZ = blockPos.getZ();
 
         // find a safe location in an x row radius
         if (isBlockPosUnsafe(blockPos, world)) {
@@ -126,7 +126,7 @@ public class tools {
     }
 
 
-    // Gets the translated text for each player based on their language, this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear)
+    // Gets the translated text for each player based on their language, this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear!)
     public static MutableComponent getTranslatedText(String key, ServerPlayer player, MutableComponent... args) {
         String language = player.clientInformation().language().toLowerCase();
         String regex = "%(\\d+)%";
@@ -197,21 +197,24 @@ public class tools {
         }
     }
 
-
+    // checks if a bock position is unsafe, used by the teleportSafetyChecker.
     private static boolean isBlockPosUnsafe(BlockPos bottomPlayer, ServerLevel world) {
 
+        // get the block below the player
         BlockPos belowPlayer = new BlockPos(bottomPlayer.getX(), bottomPlayer.getY() -1, bottomPlayer.getZ()); // below the player
         String belowPlayerId = world.getBlockState(belowPlayer).getBlock().getDescriptionId(); // below the player
 
+        // get the bottom of the player
         String BottomPlayerId = world.getBlockState(bottomPlayer).getBlock().getDescriptionId(); // bottom of player
 
+        // get the top of the player
         BlockPos TopPlayer = new BlockPos(bottomPlayer.getX(), bottomPlayer.getY() + 1, bottomPlayer.getZ()); // top of player
         String TopPlayerId = world.getBlockState(TopPlayer).getBlock().getDescriptionId(); // top of player
 
 
-        // check if the death location isn't safe
+        // check if the block position isn't safe
         if ((belowPlayerId.equals("block.minecraft.water") || !world.getBlockState(belowPlayer).getCollisionShape(world, belowPlayer).isEmpty()) // check if the player is going to fall on teleport
-            && (world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty() && !unsafeCollisionFreeBlocks.contains(BottomPlayerId)) // check if it is a collision free block, that isn't dangerous
+            && (world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty() && !unsafeCollisionFreeBlocks.contains(BottomPlayerId)) // check if it is a collision free block that isn't dangerous
             && (!unsafeCollisionFreeBlocks.contains(TopPlayerId))) // check if it is a dangerous collision free block, if it is solid then the player crawls
         {
             return false; // it's safe

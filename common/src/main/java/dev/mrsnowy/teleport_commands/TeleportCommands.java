@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.commands.*;
+import dev.mrsnowy.teleport_commands.storage.backListStorage;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+
 import net.minecraft.core.BlockPos;
 
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.*;
@@ -57,23 +59,12 @@ public class TeleportCommands {
 
 	// Runs when the playerDeath mixin calls it, updates the /back command position
 	public static void onPlayerDeath(ServerPlayer player) {
-		try {
-			BlockPos pos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+		BlockPos pos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+		String world = player.serverLevel().dimension().location().toString();
+		String uuid = player.getStringUUID();
 
-			Pair<StorageManager.StorageClass, StorageManager.StorageClass.Player> storages = GetPlayerStorage(player.getStringUUID());
-
-			StorageManager.StorageClass.Player playerStorage = storages.getSecond();
-
-			playerStorage.deathLocation.x = pos.getX();
-			playerStorage.deathLocation.y = pos.getY();
-			playerStorage.deathLocation.z = pos.getZ();
-			playerStorage.deathLocation.world = player.serverLevel().dimension().location().toString();
-
-			StorageSaver();
-
-		} catch (Exception e) {
-			LOGGER.error("Error while saving the player death location! => ", e);
-		}
+		backListStorage.backList backList = backListStorage.backList;
+		backList.setDeathLocation(uuid, pos, world);
 	}
 
 //	private static StorageManager.StorageClass loadStorage() throws Exception {
@@ -83,7 +74,7 @@ public class TeleportCommands {
 //		String jsonContent = Files.readString(STORAGE_FILE);
 //		Gson gson = new GsonBuilder().create();
 //
-//}
+//	}
 
 	// cleans and updates Storage to the newest "version". This is painful
 	private static StorageClass storageValidator() {
@@ -155,15 +146,6 @@ public class TeleportCommands {
 							String DefaultHome = player.has("DefaultHome")
 									? player.get("DefaultHome").getAsString() : "";
 
-
-							// Clean death location after server restart
-							JsonObject deathLocation = new JsonObject();
-
-							deathLocation.addProperty("x", 0);
-							deathLocation.addProperty("y", 0);
-							deathLocation.addProperty("z", 0);
-							deathLocation.addProperty("world", "");
-
 							JsonArray homes = new JsonArray();
 
 							if (player.has("Homes") && player.get("Homes").isJsonArray() ) {
@@ -226,7 +208,6 @@ public class TeleportCommands {
 
 								newPlayer.addProperty("UUID", UUID);
 								newPlayer.addProperty("DefaultHome", DefaultHome);
-								newPlayer.add("deathLocationClass", deathLocation);
 								newPlayer.add("Homes", homes);
 
 								newPlayersArray.add(newPlayer);

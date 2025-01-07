@@ -6,8 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### [W.I.P]
-- Storage is loaded in memory instead of reading it again and again, Improves speed and IO usage
-- Made it so the DeathLocation is only kept in memory (WIP)
+- Storage is loaded in memory instead of reading it again and again, Improves speed and IO usage. (W.I.P)
+- Adding comments to alot of code (W.I.P)
+- Made it so the DeathLocation is only kept in memory
 - Improved the Storage classes and functions (I'm doing proper java, yipie)
 
 ### [v1.2.2]

@@ -6,6 +6,7 @@ import dev.mrsnowy.teleport_commands.TeleportCommands;
 
 import java.util.*;
 
+import dev.mrsnowy.teleport_commands.storage.backListStorage;
 import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
@@ -19,20 +20,6 @@ import static dev.mrsnowy.teleport_commands.utils.tools.*;
 import static net.minecraft.commands.Commands.argument;
 
 public class back {
-    public static final ArrayList<deathLocationClass> backList = new ArrayList<>();
-
-    public static class deathLocationClass {
-        final public String UUID;
-        final public BlockPos pos;
-        final public String world;
-
-        public deathLocationClass(String uuid, BlockPos pos, String world) {
-            this.UUID = uuid;
-            this.pos = pos;
-            this.world = world;
-            backList.add(this);
-        }
-    }
 
     public static void register(Commands commandManager) {
 
@@ -73,26 +60,29 @@ public class back {
 
     private static void ToDeathLocation(ServerPlayer player, boolean safetyDisabled) {
 
-        Optional<deathLocationClass> OptionalDeathLocation = backList.stream()
-                .filter( deathLocation -> Objects.equals( deathLocation.UUID, player.getStringUUID() ))
-                .findFirst();
+        backListStorage.backList backList = backListStorage.backList;
 
-        if (OptionalDeathLocation.isEmpty()) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player).withStyle(ChatFormatting.RED), true);
+        // get the deathLocation
+        Optional<backListStorage.deathLocationClass> optionalDeathLocation = backList.getDeathLocation( player.getStringUUID() );
+        if (optionalDeathLocation.isEmpty()) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player)
+                    .withStyle(ChatFormatting.RED), true);
             return;
         }
 
-        deathLocationClass deathLocation = OptionalDeathLocation.get();
+        backListStorage.deathLocationClass deathLocation = optionalDeathLocation.get();
 
+        // get the world
         Optional<ServerLevel> OptionalWorld = tools.getWorld( deathLocation.world );
         if (OptionalWorld.isEmpty()) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player).withStyle(ChatFormatting.RED), true);
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player)
+                    .withStyle(ChatFormatting.RED), true);
             return;
         }
 
         ServerLevel world = OptionalWorld.get();
 
-        // check if the death location isn't safe and that safety isn't enabled
+        // if safety is enabled, check if the death location is safe.
         if (!safetyDisabled) {
 
             Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(deathLocation.pos, world, player);
