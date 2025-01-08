@@ -61,5 +61,6 @@
   "commands.teleport_commands.common.delete": "[刪除]",
   "commands.teleport_commands.common.default": "（預設）",
   "commands.teleport_commands.common.renameExists": "這個名稱已經存在了！",
-  "commands.teleport_commands.common.noLocation": "找不到位置！"
+  "commands.teleport_commands.common.noLocation": "找不到位置！",
+  "commands.teleport_commands.common.hoverCopy": "Click to copy!"
 }

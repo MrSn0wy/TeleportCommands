@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -113,16 +112,6 @@ public class tools {
         } else {
             return new Pair<>(1, Optional.of(new Vec3(playerX + 0.5, playerY, playerZ + 0.5))); // the location is already safe!
         }
-    }
-
-
-    // function to quickly filter the worlds and compare them to a string
-    public static Optional<ServerLevel> getWorld(String worldString) {
-
-        return StreamSupport.stream( TeleportCommands.SERVER.getAllLevels().spliterator(), false ) // woa, this looks silly
-                .filter(level -> Objects.equals( level.dimension().location().toString(), worldString ))
-                .findFirst();
-
     }
 
 

@@ -61,5 +61,6 @@
   "commands.teleport_commands.common.delete": "[Удалить]",
   "commands.teleport_commands.common.default": "(По умолчанию)",
   "commands.teleport_commands.common.renameExists": "Это имя уже занято!",
-  "commands.teleport_commands.common.noLocation": "Местоположение не найдено!"
+  "commands.teleport_commands.common.noLocation": "Местоположение не найдено!",
+  "commands.teleport_commands.common.hoverCopy": "Click to copy!"
 }

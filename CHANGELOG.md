@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adding comments to alot of code (W.I.P)
 - Made it so the DeathLocation is only kept in memory
 - Improved the Storage classes and functions (I'm doing proper java, yipie)
+- Better error handling for command suggestions
+- Added hover effects for warp and homes text (W.I.P)
 
 ### [v1.2.2]
 - Handled a case where the client (geyser) will return the language as uppercase instead of lowercase.

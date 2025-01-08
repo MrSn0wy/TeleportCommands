@@ -58,6 +58,7 @@ public class worldspawn {
     }
 
     private static void toWorldSpawn(ServerPlayer player, boolean safetyDisabled) throws NullPointerException {
+        // todo! maybe make this more fool proof?
         ServerLevel world = TeleportCommands.SERVER.getLevel(OVERWORLD);
         BlockPos worldSpawn = Objects.requireNonNull(world,"Overworld cannot be null").getSharedSpawnPos();
 

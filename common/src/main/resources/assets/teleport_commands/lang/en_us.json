@@ -61,5 +61,6 @@
   "commands.teleport_commands.common.delete": "[Delete]",
   "commands.teleport_commands.common.default": "(Default)",
   "commands.teleport_commands.common.renameExists": "That Name Already Exists!",
-  "commands.teleport_commands.common.noLocation": "No Location Found!"
+  "commands.teleport_commands.common.noLocation": "No Location Found!",
+  "commands.teleport_commands.common.hoverCopy": "Click to copy!"
 }

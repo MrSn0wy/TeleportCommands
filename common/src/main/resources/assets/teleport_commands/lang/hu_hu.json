@@ -61,5 +61,6 @@
   "commands.teleport_commands.common.delete": "[Törlés]",
   "commands.teleport_commands.common.default": "(Alap)",
   "commands.teleport_commands.common.renameExists": "A név már létezik!",
-  "commands.teleport_commands.common.noLocation": "Nem található a koordináta"
+  "commands.teleport_commands.common.noLocation": "Nem található a koordináta",
+  "commands.teleport_commands.common.hoverCopy": "Click to copy!"
 }

@@ -36,7 +36,7 @@ public class tpaSuggestionProvider implements SuggestionProvider<CommandSourceSt
             // Build and return the suggestions
             return builder.buildFuture();
         } catch (Exception e) {
-            TeleportCommands.LOGGER.error("Error getting suggestions!");
+            TeleportCommands.LOGGER.error("Error getting tpa suggestions! ", e);
             return null;
         }
     }

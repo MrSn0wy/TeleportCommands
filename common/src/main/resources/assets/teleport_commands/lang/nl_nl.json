@@ -61,5 +61,6 @@
   "commands.teleport_commands.common.delete": "[Verwijderen]",
   "commands.teleport_commands.common.default": "(Standaard)",
   "commands.teleport_commands.common.renameExists": "Die Naam Bestaat Al!",
-  "commands.teleport_commands.common.noLocation": "Geen Locatie Gevonden!"
+  "commands.teleport_commands.common.noLocation": "Geen Locatie Gevonden!",
+  "commands.teleport_commands.common.hoverCopy": "Klik om te kopiëren!"
 }

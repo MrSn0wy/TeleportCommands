@@ -6,7 +6,7 @@ import dev.mrsnowy.teleport_commands.TeleportCommands;
 
 import java.util.*;
 
-import dev.mrsnowy.teleport_commands.storage.backListStorage;
+import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
 import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
@@ -60,17 +60,17 @@ public class back {
 
     private static void ToDeathLocation(ServerPlayer player, boolean safetyDisabled) {
 
-        backListStorage.backList backList = backListStorage.backList;
+        DeathLocationStorage.backList backList = DeathLocationStorage.backList;
 
         // get the deathLocation
-        Optional<backListStorage.deathLocationClass> optionalDeathLocation = backList.getDeathLocation( player.getStringUUID() );
+        Optional<DeathLocationStorage.deathLocationClass> optionalDeathLocation = backList.getDeathLocation( player.getStringUUID() );
         if (optionalDeathLocation.isEmpty()) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player)
                     .withStyle(ChatFormatting.RED), true);
             return;
         }
 
-        backListStorage.deathLocationClass deathLocation = optionalDeathLocation.get();
+        DeathLocationStorage.deathLocationClass deathLocation = optionalDeathLocation.get();
 
         // get the world
         Optional<ServerLevel> OptionalWorld = tools.getWorld( deathLocation.world );

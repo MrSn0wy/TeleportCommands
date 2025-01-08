@@ -1,10 +1,9 @@
 package dev.mrsnowy.teleport_commands;
 
 import com.google.gson.*;
-import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.commands.*;
-import dev.mrsnowy.teleport_commands.storage.backListStorage;
+import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,18 +62,8 @@ public class TeleportCommands {
 		String world = player.serverLevel().dimension().location().toString();
 		String uuid = player.getStringUUID();
 
-		backListStorage.backList backList = backListStorage.backList;
-		backList.setDeathLocation(uuid, pos, world);
+		DeathLocationStorage.setDeathLocation(uuid, pos, world);
 	}
-
-//	private static StorageManager.StorageClass loadStorage() throws Exception {
-//		// double check that the storage file is intact
-//		StorageInit();
-//
-//		String jsonContent = Files.readString(STORAGE_FILE);
-//		Gson gson = new GsonBuilder().create();
-//
-//	}
 
 	// cleans and updates Storage to the newest "version". This is painful
 	private static StorageClass storageValidator() {

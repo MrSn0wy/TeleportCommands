@@ -4,18 +4,24 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
+import dev.mrsnowy.teleport_commands.storage.classes.NamedLocation;
 import dev.mrsnowy.teleport_commands.suggestions.WarpSuggestionProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 
+import javax.swing.text.html.Option;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.*;
 import static dev.mrsnowy.teleport_commands.utils.tools.Teleporter;
@@ -160,12 +166,12 @@ public class warp {
 
     private static void GoToWarp(ServerPlayer player, String warpName) throws Exception {
         warpName = warpName.toLowerCase();
-        List<StorageClass.NamedLocation> WarpStorage = getWarpStorage().getSecond();
+        List<NamedLocation> WarpStorage = getWarpStorage().getSecond();
 
         boolean foundWorld = false;
 
         // find correct warp
-        for (StorageClass.NamedLocation currentWarp : WarpStorage) {
+        for (NamedLocation currentWarp : WarpStorage) {
             if (Objects.equals(currentWarp.name, warpName)) {
 
                 // find correct world
@@ -196,27 +202,16 @@ public class warp {
     private static void DeleteWarp(ServerPlayer player, String warpName) throws Exception {
         warpName = warpName.toLowerCase();
 
-        Pair<StorageClass, List<StorageClass.NamedLocation>> storages = getWarpStorage();
-        StorageClass storage = storages.getFirst();
-        List<StorageClass.NamedLocation> WarpStorage = storages.getSecond();
+        // get the existing warp
+        Optional<NamedLocation> optionalWarp = STORAGE.getWarp(warpName);
 
-        boolean deletedWarp = false;
+        if (optionalWarp.isPresent()) {
+            STORAGE.removeWarp(warpName); //todo! maybe improve double getting of warp?
 
-        // get correct warp
-        for (StorageManager.StorageClass.NamedLocation currentWarp : WarpStorage) {
-            if (Objects.equals(currentWarp.name, warpName)){
-                // delete the warp
-                WarpStorage.remove(currentWarp);
-                StorageSaver();
-
-                deletedWarp = true;
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.delete", player), true);
-                break;
-            }
-        }
-
-        if (!deletedWarp) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.notFound", player).withStyle(ChatFormatting.RED), true);
+        } else {
+            // the warp is not found
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.notFound", player)
+                    .withStyle(ChatFormatting.RED), true);
         }
     }
 
@@ -224,83 +219,128 @@ public class warp {
         warpName = warpName.toLowerCase();
         newWarpName = newWarpName.toLowerCase();
 
-        Pair<StorageClass, List<StorageClass.NamedLocation>> storages = getWarpStorage();
-        StorageClass storage = storages.getFirst();
-        List<StorageClass.NamedLocation> WarpStorage = storages.getSecond();
+        // get the existing warp
+        Optional<NamedLocation> warp = STORAGE.getWarp(warpName);
 
-        StorageManager.StorageClass.NamedLocation homeToRename = null;
+        if (warp.isPresent()) {
+            NamedLocation homeToRename = warp.get();
 
-        boolean newWarpNotFound = true;
-        boolean WarpRenamed = false;
+            // check if there is no existing warp with the new name
+            if (STORAGE.getWarp(newWarpName).isEmpty()) {
 
-        // check for duplicates
-        for (StorageClass.NamedLocation currentWarp : WarpStorage) {
-            if (Objects.equals(currentWarp.name, newWarpName)) {
-                newWarpNotFound = false;
-                break;
-            }
-        }
+                // set the new name
+                homeToRename.setName(newWarpName);
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.rename", player), true);
+            } else {
 
-        if (newWarpNotFound) {
-            // get correct warp and rename
-            for (StorageManager.StorageClass.NamedLocation currentWarp : WarpStorage) {
-                if (Objects.equals(currentWarp.name, warpName)){
-
-                    currentWarp.name = newWarpName;
-                    StorageSaver();
-                    WarpRenamed = true;
-                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.rename", player), true);
-
-                    break;
-                }
+                // there is already a warp with the new name
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.renameExists", player).withStyle(ChatFormatting.RED), true);
             }
 
-            if (!WarpRenamed) {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.notFound", player).withStyle(ChatFormatting.RED), true);
-            }
         } else {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.renameExists", player).withStyle(ChatFormatting.RED), true);
+            // the warp is not found
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.notFound", player).withStyle(ChatFormatting.RED), true);
         }
 
     }
 
     private static void PrintWarps(ServerPlayer player) throws Exception {
-        List<StorageClass.NamedLocation> WarpStorage = getWarpStorage().getSecond();
+        ArrayList<NamedLocation> warps = STORAGE.getWarps();
 
-        if (WarpStorage.isEmpty()) {
+        if (warps.isEmpty()) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.homeless", player).withStyle(ChatFormatting.AQUA), true);
 
         } else {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.warps.warps", player).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
                     .append("\n"), false);
 
-            for (StorageManager.StorageClass.NamedLocation currentWarp : WarpStorage) {
+            for (NamedLocation currentWarp : warps) {
 
-                String name = String.format("  - %s", currentWarp.name);
-                String coords = String.format("[X%d Y%d Z%d]", currentWarp.x, currentWarp.y, currentWarp.z);
-                String dimension = String.format(" [%s]", currentWarp.world);
+                String name = String.format("  - %s", currentWarp.getName());
+                String coords = String.format("[X%d Y%d Z%d]", currentWarp.getX(), currentWarp.getY(), currentWarp.getZ());
+                String dimension = String.format(" [%s]", currentWarp.getWorldString());
 
                 player.displayClientMessage(Component.literal(name).withStyle(ChatFormatting.AQUA), false);
 
                 player.displayClientMessage(Component.literal("     | ").withStyle(ChatFormatting.AQUA)
-                                .append(Component.literal(coords).withStyle(ChatFormatting.LIGHT_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, String.format("X%d Y%d Z%d", currentWarp.x, currentWarp.y, currentWarp.z)))))
-                                .append(Component.literal(dimension).withStyle(ChatFormatting.DARK_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, currentWarp.world)))),
+                                .append(Component.literal(coords)
+                                        .withStyle(ChatFormatting.LIGHT_PURPLE)
+                                        .withStyle(style -> style
+                                                .withClickEvent(new ClickEvent(
+                                                        ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                        String.format("X%d Y%d Z%d", currentWarp.getX(), currentWarp.getY(), currentWarp.getZ())
+                                                ))
+                                        )
+                                        //todo! test the hover
+                                        .withStyle(style -> style
+                                                .withHoverEvent(new HoverEvent(
+                                                        HoverEvent.Action.SHOW_TEXT, getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                                ))
+                                        )
+                                )
+                                .append(Component.literal(dimension)
+                                        .withStyle(ChatFormatting.DARK_PURPLE)
+                                        .withStyle(style -> style
+                                                .withClickEvent(new ClickEvent(
+                                                        ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                        currentWarp.getWorldString()
+                                                ))
+                                        )
+                                        .withStyle(style -> style
+                                                .withHoverEvent(new HoverEvent(
+                                                        HoverEvent.Action.SHOW_TEXT, getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                                ))
+                                        )
+                                ),
                         false
                 );
 
                 if (player.hasPermissions(4)) {
                     player.displayClientMessage(Component.literal("     | ").withStyle(ChatFormatting.AQUA)
-                                    .append(getTranslatedText("commands.teleport_commands.common.tp", player).withStyle(ChatFormatting.GREEN).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/warp %s", currentWarp.name)))))
+                                    .append(getTranslatedText("commands.teleport_commands.common.tp", player)
+                                            .withStyle(ChatFormatting.GREEN)
+                                            .withStyle(style -> style
+                                                    .withClickEvent(new ClickEvent(
+                                                            ClickEvent.Action.RUN_COMMAND,
+                                                            String.format("/warp %s", currentWarp.getName())
+                                                    ))
+                                            )
+                                    )
                                     .append(" ")
-                                    .append(getTranslatedText("commands.teleport_commands.common.rename", player).withStyle(ChatFormatting.BLUE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/renamewarp %s ", currentWarp.name)))))
+                                    .append(getTranslatedText("commands.teleport_commands.common.rename", player)
+                                            .withStyle(ChatFormatting.BLUE)
+                                            .withStyle(style -> style
+                                                    .withClickEvent(new ClickEvent(
+                                                            ClickEvent.Action.SUGGEST_COMMAND,
+                                                            String.format("/renamewarp %s ", currentWarp.getName()))
+                                                    )
+                                            )
+                                    )
                                     .append(" ")
-                                    .append(getTranslatedText("commands.teleport_commands.common.delete", player).withStyle(ChatFormatting.RED).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/delwarp %s", currentWarp.name)))))
+                                    .append(getTranslatedText("commands.teleport_commands.common.delete", player)
+                                            .withStyle(ChatFormatting.RED)
+                                            .withStyle(style -> style
+                                                    .withClickEvent(new ClickEvent(
+                                                            ClickEvent.Action.SUGGEST_COMMAND,
+                                                            String.format("/delwarp %s", currentWarp.getName()))
+                                                    )
+                                            )
+                                    )
                                     .append("\n"),
                             false
                     );
                 } else {
-                    player.displayClientMessage(Component.literal("     | ").withStyle(ChatFormatting.AQUA)
-                                    .append(getTranslatedText("commands.teleport_commands.common.tp", player).withStyle(ChatFormatting.GREEN).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/warp %s", currentWarp.name)))))
+                    player.displayClientMessage(Component.literal("     | ")
+                                    .withStyle(ChatFormatting.AQUA)
+                                    .append(getTranslatedText("commands.teleport_commands.common.tp", player)
+                                            .withStyle(ChatFormatting.GREEN)
+                                            .withStyle(style -> style
+                                                    .withClickEvent(new ClickEvent(
+                                                            ClickEvent.Action.RUN_COMMAND,
+                                                            String.format("/warp %s", currentWarp.getName()))
+                                                    )
+                                            )
+                                    )
                                     .append("\n"),
                             false
                     );
