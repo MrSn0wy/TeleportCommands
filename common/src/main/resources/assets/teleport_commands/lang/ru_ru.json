@@ -2,8 +2,8 @@
   "commands.teleport_commands.back.go": "Возвращение назад",
   "commands.teleport_commands.back.same": "Уже на месте",
 
-  "commands.teleport_commands.worldspawn.go": "Отправляемся на мировой спавн",
-  "commands.teleport_commands.worldspawn.same": "Уже на мировом спавне",
+  "commands.teleport_commands.worldspawn.go": "Телепортация к спавну",
+  "commands.teleport_commands.worldspawn.same": "Вы уже на спавне",
 
   "commands.teleport_commands.home.set": "Дом установлен",
   "commands.teleport_commands.home.setError": "Ошибка установки дома!",
@@ -62,5 +62,5 @@
   "commands.teleport_commands.common.default": "(По умолчанию)",
   "commands.teleport_commands.common.renameExists": "Это имя уже занято!",
   "commands.teleport_commands.common.noLocation": "Местоположение не найдено!",
-  "commands.teleport_commands.common.hoverCopy": "Click to copy!"
+  "commands.teleport_commands.common.hoverCopy": "Нажмите, чтобы скопировать!"
 }
