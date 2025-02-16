@@ -2,13 +2,13 @@ package dev.mrsnowy.teleport_commands.commands;
 
 import java.util.*;
 
-import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.suggestions.tpaSuggestionProvider;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +31,8 @@ public class tpa {
             this.here = here;
             tpaList.add(this);
         }
+
+
     }
 
     public static void register(Commands commandManager) {
@@ -116,7 +118,6 @@ public class tpa {
                 .filter(tpa -> Objects.equals(ToPlayer.getStringUUID(), tpa.RecPlayer))
                 .count();
 
-
         if (FromPlayer == ToPlayer) {
             FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.self", FromPlayer).withStyle(ChatFormatting.AQUA), true);
 
@@ -165,37 +166,31 @@ public class tpa {
 
     private static void tpaAccept(ServerPlayer FromPlayer, ServerPlayer ToPlayer) {
         if (FromPlayer == ToPlayer) {
-            FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.self", FromPlayer).withStyle(ChatFormatting.AQUA),true);
+            FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.self", FromPlayer).withStyle(ChatFormatting.AQUA), true);
             return;
         }
 
+        // Check if there is a request
         Optional<tpaArrayClass> tpaStorage = tpaList.stream()
                 .filter(tpa -> Objects.equals(ToPlayer.getStringUUID(), tpa.InitPlayer))
                 .filter(tpa -> Objects.equals(FromPlayer.getStringUUID(), tpa.RecPlayer))
                 .findFirst();
 
-        // Check if there is a request
         if (tpaStorage.isPresent()) {
-
+            // Request found
             ServerPlayer destinationPlayer = tpaStorage.get().here ? ToPlayer : FromPlayer;
             ServerPlayer toSentPlayer = tpaStorage.get().here ? FromPlayer : ToPlayer;
 
-            Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(destinationPlayer.blockPosition(), destinationPlayer.serverLevel(), toSentPlayer); // todo! make sure .blockPosition is correct
+            Optional<BlockPos> teleportData = getSafeBlockPos(destinationPlayer.blockPosition(), destinationPlayer.serverLevel());
 
-            switch (teleportData.getFirst()) {
-                case 1: // same (let it fall through)
-                case 0: // safe!
-                    if (teleportData.getSecond().isPresent() ) {
+            if (teleportData.isPresent()) {
+                BlockPos safeBlockPos = teleportData.get();
+                Vec3 teleportPos = new Vec3(safeBlockPos.getX() + 0.5, safeBlockPos.getY(), safeBlockPos.getZ() + 0.5);
 
-                        Teleporter(toSentPlayer, destinationPlayer.serverLevel(), teleportData.getSecond().get());
-                        break;
-                    } else {
-                        toSentPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", toSentPlayer).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return; // exit
-                    }
-                case 2:  // if no safe location then just teleport to the player
-                    Teleporter(toSentPlayer, destinationPlayer.serverLevel(), destinationPlayer.position());
-                    break;
+                Teleporter(toSentPlayer, destinationPlayer.serverLevel(), teleportPos);
+            } else {
+                // if no safe location then just teleport to the player
+                Teleporter(toSentPlayer, destinationPlayer.serverLevel(), destinationPlayer.position());
             }
 
             // if the player teleported then these messages get sent && the request gets removed
@@ -203,8 +198,8 @@ public class tpa {
             ToPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.accepted", ToPlayer).withStyle(ChatFormatting.GREEN),true);
             tpaList.remove(tpaStorage.get());
 
-        // No request found
         } else {
+            // No request found
             FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.notFound", FromPlayer).withStyle(ChatFormatting.RED),true);
         }
     }

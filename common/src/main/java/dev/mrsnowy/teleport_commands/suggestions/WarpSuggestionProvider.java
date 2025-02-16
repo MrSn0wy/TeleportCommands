@@ -7,7 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
-import dev.mrsnowy.teleport_commands.storage.classes.NamedLocation;
+import dev.mrsnowy.teleport_commands.common.NamedLocation;
 
 import net.minecraft.commands.CommandSourceStack;
 

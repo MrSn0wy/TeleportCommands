@@ -1,7 +1,6 @@
 package dev.mrsnowy.teleport_commands.utils;
 
 import com.google.gson.*;
-import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 
 import java.io.*;
@@ -39,7 +38,7 @@ public class tools {
         // teleport!
         player.teleportTo(world, coords.x, coords.y, coords.z, Set.of(), player.getYRot(), player.getXRot(), false);
 
-        // Restore flying when teleporting dimensions
+        // Restore flying when teleporting trough dimensions
         if (flying) {
             player.getAbilities().flying = true;
             player.onUpdateAbilities();
@@ -61,22 +60,23 @@ public class tools {
         );
     }
 
+
     // checks a 7x7x7 location around the player in order to find a safe place to teleport them to.
-    public static Pair<Integer, Optional<Vec3>> teleportSafetyChecker(BlockPos blockPos, ServerLevel world, ServerPlayer player) {
+    public static Optional<BlockPos> getSafeBlockPos(BlockPos blockPos, ServerLevel world) {
         int row = 1;
         int rows = 3;
 
-        BlockPos playerBlockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
-        int playerX = blockPos.getX();
-        int playerY = blockPos.getY();
-        int playerZ = blockPos.getZ();
+        int blockPosX = blockPos.getX();
+        int blockPosY = blockPos.getY();
+        int blockPosZ = blockPos.getZ();
 
-        // find a safe location in an x row radius
-        if (isBlockPosUnsafe(blockPos, world)) {
+        if (isBlockPosSafe(blockPos, world)) {
+            return Optional.of(blockPos); // safe location found!
 
+        } else {
+            // find a safe location in an x row radius
             while (row <= rows) {
     //            TeleportCommands.LOGGER.info("currently doing row " + row + " of " + rows); //debug
-
                 for (int z = -row; z <= row; z++) {
                     for (int x = -row; x <= row; x++) {
                         for (int y = -row; y <= row; y++) {
@@ -84,16 +84,12 @@ public class tools {
                             // checks if we are on the outer layer of the row, not on the inside
                             if ((x == -row || x == row) || (z == -row || z == row) || (y == -row || y == row)) {
 
-                                BlockPos newSafePos = new BlockPos(playerX + x, playerY + y, playerZ + z);
+                                // calculate a new blockPos based on the offset we generated
+                                BlockPos newPos = new BlockPos(blockPosX + x, blockPosY + y, blockPosZ + z);
 
-                                if (!isBlockPosUnsafe(newSafePos, world)) {
-
-                                    if (!playerBlockPos.equals(newSafePos) || player.level() != world) {
-                                        return new Pair<>(0, Optional.of(new Vec3(newSafePos.getX() + 0.5, newSafePos.getY(), newSafePos.getZ() + 0.5))); // safe location found!
-
-                                    } else {
-                                        return new Pair<>(1, Optional.of(new Vec3(newSafePos.getX() + 0.5, newSafePos.getY(), newSafePos.getZ() + 0.5))); // the location is already safe!
-                                    }
+                                if (isBlockPosSafe(newPos, world)) {
+//                                    return Optional.of(new Vec3(newPos.getX() + 0.5, newPos.getY(), newPos.getZ() + 0.5)); // safe location found!
+                                    return Optional.of(newPos);
                                 }
                             }
                         }
@@ -102,15 +98,9 @@ public class tools {
 
                 row++;
             }
+
             // no safe location
-            return new Pair<>(2, Optional.empty()); // no safe location found!
-
-        // check if the location is the same
-        } else if (!playerBlockPos.equals(blockPos) || player.level() != world) {
-            return new Pair<>(0, Optional.of(new Vec3(playerX + 0.5, playerY, playerZ + 0.5))); // safe location found!
-
-        } else {
-            return new Pair<>(1, Optional.of(new Vec3(playerX + 0.5, playerY, playerZ + 0.5))); // the location is already safe!
+            return Optional.empty(); // no safe location found!
         }
     }
 
@@ -186,8 +176,9 @@ public class tools {
         }
     }
 
+    // todo! test
     // checks if a bock position is unsafe, used by the teleportSafetyChecker.
-    private static boolean isBlockPosUnsafe(BlockPos bottomPlayer, ServerLevel world) {
+    private static boolean isBlockPosSafe(BlockPos bottomPlayer, ServerLevel world) {
 
         // get the block below the player
         BlockPos belowPlayer = new BlockPos(bottomPlayer.getX(), bottomPlayer.getY() -1, bottomPlayer.getZ()); // below the player
@@ -206,8 +197,8 @@ public class tools {
             && (world.getBlockState(bottomPlayer).getCollisionShape(world, bottomPlayer).isEmpty() && !unsafeCollisionFreeBlocks.contains(BottomPlayerId)) // check if it is a collision free block that isn't dangerous
             && (!unsafeCollisionFreeBlocks.contains(TopPlayerId))) // check if it is a dangerous collision free block, if it is solid then the player crawls
         {
-            return false; // it's safe
+            return true; // it's safe
         }
-        return true; // it's not safe!
+        return false; // it's not safe!
     }
 }

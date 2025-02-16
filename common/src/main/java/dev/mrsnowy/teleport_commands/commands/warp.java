@@ -3,8 +3,7 @@ package dev.mrsnowy.teleport_commands.commands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.storage.StorageManager;
-import dev.mrsnowy.teleport_commands.storage.classes.NamedLocation;
+import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.suggestions.WarpSuggestionProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
@@ -15,9 +14,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -206,7 +203,7 @@ public class warp {
         Optional<NamedLocation> optionalWarp = STORAGE.getWarp(warpName);
 
         if (optionalWarp.isPresent()) {
-            STORAGE.removeWarp(warpName); //todo! maybe improve double getting of warp?
+            STORAGE.rmWarp(optionalWarp.get());
 
         } else {
             // the warp is not found

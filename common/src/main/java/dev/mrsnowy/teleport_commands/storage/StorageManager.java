@@ -3,8 +3,8 @@ package dev.mrsnowy.teleport_commands.storage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.storage.classes.NamedLocation;
-import dev.mrsnowy.teleport_commands.storage.classes.Player;
+import dev.mrsnowy.teleport_commands.common.NamedLocation;
+import dev.mrsnowy.teleport_commands.common.Player;
 import net.minecraft.core.BlockPos;
 
 import java.io.File;
@@ -101,6 +101,7 @@ public class StorageManager {
         }
 
         // creates a new player, if there already is a player it will return the existing one. The player won't be saved unless they actually do something lol
+        // todo! check if this works fully
         public Player addPlayer(String uuid) {
             final Optional<Player> OptionalPlayer = getPlayer(uuid);
 
@@ -120,15 +121,9 @@ public class StorageManager {
 
         // -----
 
-        public void removeWarp(String name) throws Exception {
-            Optional<NamedLocation> OptionalWarp = getWarp(name);
-
-            if (OptionalWarp.isPresent()) {
-                Warps.remove(OptionalWarp.get());
-                StorageSaver();
-            } else {
-                //todo! ???
-            }
+        public void rmWarp(NamedLocation warp) throws Exception {
+            Warps.remove(warp);
+            StorageSaver();
         }
     }
 }

@@ -1,6 +1,6 @@
 package dev.mrsnowy.teleport_commands.storage;
 
-import dev.mrsnowy.teleport_commands.storage.classes.DeathLocation;
+import dev.mrsnowy.teleport_commands.common.DeathLocation;
 import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;

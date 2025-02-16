@@ -9,8 +9,8 @@ import dev.mrsnowy.teleport_commands.TeleportCommands;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import dev.mrsnowy.teleport_commands.storage.classes.NamedLocation;
-import dev.mrsnowy.teleport_commands.storage.classes.Player;
+import dev.mrsnowy.teleport_commands.common.NamedLocation;
+import dev.mrsnowy.teleport_commands.common.Player;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -24,9 +24,9 @@ public class HomeSuggestionProvider implements SuggestionProvider<CommandSourceS
             Optional<Player> optionalPlayerStorage = STORAGE.getPlayer(player.getStringUUID());
 
             if (optionalPlayerStorage.isPresent()) {
-                Player PlayerStorage = optionalPlayerStorage.get();
+                Player playerStorage = optionalPlayerStorage.get();
 
-                for (NamedLocation currentHome : PlayerStorage.getHomes()) {
+                for (NamedLocation currentHome : playerStorage.getHomes()) {
                     builder.suggest(currentHome.getName());
                 }
             }

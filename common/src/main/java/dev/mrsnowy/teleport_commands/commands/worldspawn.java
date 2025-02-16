@@ -1,7 +1,6 @@
 package dev.mrsnowy.teleport_commands.commands;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
@@ -31,7 +30,7 @@ public class worldspawn {
                         toWorldSpawn(player, false);
 
                     } catch (Exception error) {
-                        TeleportCommands.LOGGER.error("Error while going back! => ", error);
+                        TeleportCommands.LOGGER.error("Error while going to the worldspawn! => ", error);
                         player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
@@ -47,7 +46,7 @@ public class worldspawn {
                                 toWorldSpawn(player, safety);
 
                             } catch (Exception error) {
-                                TeleportCommands.LOGGER.error("Error while going back! => ", error);
+                                TeleportCommands.LOGGER.error("Error while going to the worldspawn! => ", error);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -60,42 +59,41 @@ public class worldspawn {
     private static void toWorldSpawn(ServerPlayer player, boolean safetyDisabled) throws NullPointerException {
         // todo! maybe make this more fool proof?
         ServerLevel world = TeleportCommands.SERVER.getLevel(OVERWORLD);
-        BlockPos worldSpawn = Objects.requireNonNull(world,"Overworld cannot be null").getSharedSpawnPos();
+        BlockPos worldSpawn = Objects.requireNonNull(world,"Overworld cannot be null!").getSharedSpawnPos();
 
         if (!safetyDisabled) {
-            Pair<Integer, Optional<Vec3>> teleportData = teleportSafetyChecker(worldSpawn, world, player);
+            Optional<BlockPos> teleportData = getSafeBlockPos(worldSpawn, world);
 
-            switch (teleportData.getFirst()) {
-                case 0: // safe location found!
-                    if (teleportData.getSecond().isPresent()) {
-                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.go", player), true);
-                        Teleporter(player, world, teleportData.getSecond().get());
-                    } else {
-                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                    }
+            if (teleportData.isPresent()) {
+                BlockPos safeBlockPos = teleportData.get();
 
-                    break;
-                case 1: // the location is already safe!
+                // check if the player is already at this location
+                if (player.blockPosition().equals(safeBlockPos) && player.level() == world) {
+
                     player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.same", player).withStyle(ChatFormatting.AQUA), true);
-                    break;
-                case 2: // no safe location found!
+                } else {
+                    Vec3 teleportPos = new Vec3(safeBlockPos.getX() + 0.5, safeBlockPos.getY(), safeBlockPos.getZ() + 0.5);
 
-                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), false);
-                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player).withStyle(ChatFormatting.AQUA), false);
-                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.forceTeleport", player).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
-                            .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/worldspawn true"))),false);
-                    break;
+                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.go", player), true);
+                    Teleporter(player, world, teleportPos);
+                }
+
+            } else {
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), false);
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player).withStyle(ChatFormatting.AQUA), false);
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.forceTeleport", player).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
+                        .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/worldspawn true"))),false);
             }
-        } else {
-            BlockPos playerBlockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
 
-            if (!playerBlockPos.equals(worldSpawn) || player.level() != world) {
+        } else {
+
+            if (player.blockPosition().equals(worldSpawn) && player.level() == world) {
+
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.same", player).withStyle(ChatFormatting.AQUA), true);
+            } else {
 
                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.go", player), true);
                 Teleporter(player, world, new Vec3(worldSpawn.getX() + 0.5, worldSpawn.getY(), worldSpawn.getZ() + 0.5));
-
-            } else {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.worldspawn.same", player).withStyle(ChatFormatting.AQUA), true);
             }
         }
     }
