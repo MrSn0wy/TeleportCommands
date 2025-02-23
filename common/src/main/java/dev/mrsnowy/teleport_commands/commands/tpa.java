@@ -31,8 +31,6 @@ public class tpa {
             this.here = here;
             tpaList.add(this);
         }
-
-
     }
 
     public static void register(Commands commandManager) {

@@ -1,15 +1,13 @@
 package dev.mrsnowy.teleport_commands.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.datafixers.util.Pair;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.common.Player;
 import dev.mrsnowy.teleport_commands.suggestions.HomeSuggestionProvider;
 
-import java.util.Locale;
-import java.util.Objects;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
@@ -162,7 +160,7 @@ public class home {
     private static void SetHome(ServerPlayer player, String homeName) throws Exception {
         homeName = homeName.toLowerCase();
         BlockPos blockPos = player.blockPosition();
-        ServerLevel world = player.serverLevel();
+        String worldString = player.serverLevel().dimension().location().toString();
 
         // Gets player storage and makes it if it doesn't exist
         Player playerStorage = StorageManager.STORAGE.addPlayer(player.getStringUUID());
@@ -174,7 +172,7 @@ public class home {
         }
 
         // Create a new NamedLocation
-        playerStorage.setHome(homeName, blockPos, world.dimension().location().toString());
+        playerStorage.setHome(homeName, blockPos, worldString);
 
         // Set it as the default if there are no other homes
         if (playerStorage.getHomes().size() == 1) {
@@ -189,7 +187,7 @@ public class home {
     private static void GoHome(ServerPlayer player, String homeName) throws Exception {
         homeName = homeName.toLowerCase();
 
-        // Gets player storage
+        // Get player storage
         Optional<Player> optionalPlayerStorage = STORAGE.getPlayer(player.getStringUUID());
         if (optionalPlayerStorage.isEmpty()) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.homeless", player).withStyle(ChatFormatting.AQUA), true);
@@ -198,20 +196,20 @@ public class home {
 
         Player playerStorage = optionalPlayerStorage.get();
 
-        // if homeName is empty, get the default home
+        // If homeName is empty, get the default home
         if (homeName.isEmpty()) {
-            // todo! if there is no default home set, maybe give an message saying: no default home set!
             String defaultHome = playerStorage.getDefaultHome();
 
             if (defaultHome.isEmpty()) {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.homeless", player).withStyle(ChatFormatting.AQUA), true);
+                // todo! test if this translation key works correctly!
+                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.defaultNone", player).withStyle(ChatFormatting.AQUA), true);
                 return;
             } else {
                 homeName = defaultHome;
             }
         }
 
-        // get the home (if it exists)
+        // Get the home (if it exists)
         Optional<NamedLocation> optionalHome = playerStorage.getHome(homeName);
         if (optionalHome.isEmpty()) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.AQUA), true);
@@ -220,24 +218,21 @@ public class home {
 
         NamedLocation home = optionalHome.get();
 
-        // get the world, otherwise throw an exception
-        Optional<ServerLevel> optionalHomeWorld = home.getWorld();
-        if (optionalHomeWorld.isEmpty()) {
+        // Get the world, otherwise throw an exception
+        ServerLevel homeWorld = home.getWorld().orElseThrow(() -> {
             // todo! test this exception
-
-            throw new Exception( String.format("Couldn't find a world with the id: %s \nAvailable worlds: %s",
+            return new Exception( String.format("Couldn't find a world with the id: %s \nAvailable worlds: %s",
                     home.getWorldString(), TeleportCommands.SERVER.getAllLevels()));
-        }
+        });
 
-        ServerLevel homeWorld = optionalHomeWorld.get();
         BlockPos teleportBlockPos = home.getBlockPos();
 
-        // check if the player is already at this location (in the same world)
+        // Check if the player is already at this location (in the same world)
         if (player.blockPosition().equals(teleportBlockPos) && player.level() == homeWorld) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.goSame", player).withStyle(ChatFormatting.AQUA), true);
 
         } else {
-            // teleport the player!
+            // Teleport the player!
             Vec3 teleportPos = new Vec3(teleportBlockPos.getX() + 0.5, teleportBlockPos.getY(), teleportBlockPos.getZ() + 0.5);
 
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.go", player), true);
@@ -264,15 +259,16 @@ public class home {
             return;
         }
 
-        NamedLocation home = optionalHome.get();
+        // delete the home
+        playerStorage.deleteHome(optionalHome.get());
 
         // check if it's the default home, if it is set it to the default value
         if (playerStorage.getDefaultHome().equals(homeName)) {
             playerStorage.setDefaultHome("");
+
+            // todo! maybe ask the player if they want to set a new default home? :3
         }
 
-        // delete the home
-        playerStorage.deleteHome(home);
         player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.delete", player), true);
     }
 
@@ -280,127 +276,183 @@ public class home {
         homeName = homeName.toLowerCase();
         newHomeName = newHomeName.toLowerCase();
 
-        Pair<StorageManager.StorageClass, StorageManager.StorageClass.Player> storages = GetPlayerStorage(player.getStringUUID());
-        StorageManager.StorageClass storage = storages.getFirst();
-        StorageManager.StorageClass.Player playerStorage = storages.getSecond();
-
-        boolean newNameNotFound = true;
-        boolean WarpRenamed = false;
-
-        // check for duplicates
-        for (StorageManager.StorageClass.NamedLocation currentHome : playerStorage.Homes) {
-            if (Objects.equals(currentHome.name, newHomeName)) {
-                newNameNotFound = false;
-                break;
-            }
+        // Gets player storage
+        Optional<Player> optionalPlayerStorage = STORAGE.getPlayer(player.getStringUUID());
+        if (optionalPlayerStorage.isEmpty()) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.homeless", player).withStyle(ChatFormatting.AQUA), true);
+            return;
         }
 
-        if (newNameNotFound) {
-            // get correct home
-            for (StorageManager.StorageClass.NamedLocation currentHome : playerStorage.Homes) {
-                if (Objects.equals(currentHome.name, homeName)) {
+        Player playerStorage = optionalPlayerStorage.get();
 
-                    // if the current home is the default home, then change to the new name in the config
-                    if (Objects.equals(playerStorage.DefaultHome, currentHome.name)) {
-                        playerStorage.DefaultHome = newHomeName;
-                    }
-
-                    currentHome.name = newHomeName;
-                    StorageSaver();
-
-                    WarpRenamed = true;
-                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.rename", player), true);
-                    break;
-                }
-            }
-
-            if (!WarpRenamed) {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
-            }
-        } else {
+        // Check if there already is a home with the new name
+        playerStorage.getHome("newHomeName").ifPresent(name -> {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.renameExists", player).withStyle(ChatFormatting.RED), true);
+            return;
+            // todo! does this exit correctly?
+        });
+
+        // Get the home that needs to be renamed
+        Optional<NamedLocation> optionalHome = playerStorage.getHome(homeName);
+        if (optionalHome.isEmpty()) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
+            return;
         }
 
+        // Rename home
+        optionalHome.get().setName(newHomeName);
+
+        // check if the current home is the default, then change it to the new name
+        if (playerStorage.getDefaultHome().equals(homeName)) {
+            playerStorage.setDefaultHome(newHomeName);
+        }
+
+        player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.rename", player), true);
     }
 
     private static void SetDefaultHome(ServerPlayer player, String homeName) throws Exception {
         homeName = homeName.toLowerCase();
 
-        Pair<StorageManager.StorageClass, StorageManager.StorageClass.Player> storages = GetPlayerStorage(player.getStringUUID());
-        StorageManager.StorageClass storage = storages.getFirst();
-        StorageManager.StorageClass.Player playerStorage = storages.getSecond();
-
-        boolean homeExists = false;
-
-        // check if home exists
-        for (StorageManager.StorageClass.NamedLocation currentHome : playerStorage.Homes) {
-            if (Objects.equals(currentHome.name, homeName)){
-                homeExists = true;
-                break;
-            }
+        // Gets player storage
+        Optional<Player> optionalPlayerStorage = STORAGE.getPlayer(player.getStringUUID());
+        if (optionalPlayerStorage.isEmpty()) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.homeless", player).withStyle(ChatFormatting.AQUA), true);
+            return;
         }
 
-        if (homeExists) {
-            if (!Objects.equals(playerStorage.DefaultHome, homeName)) {
+        Player playerStorage = optionalPlayerStorage.get();
 
-                playerStorage.DefaultHome = homeName;
-                StorageSaver();
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.default", player), true);
-
-            } else {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.defaultSame", player).withStyle(ChatFormatting.AQUA), true);
-            }
-
-        } else {
+        // Check if the new default home exists
+        if ( playerStorage.getHome(homeName).isEmpty() ) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
+            return;
         }
+
+        // Check if the home is already the default
+        if (playerStorage.getDefaultHome().equals(homeName)) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.defaultSame", player).withStyle(ChatFormatting.AQUA), true);
+            return;
+        }
+
+        // set the new default
+        playerStorage.setDefaultHome(homeName);
+        player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.default", player), true);
     }
 
     private static void PrintHomes(ServerPlayer player) throws Exception {
-        StorageManager.StorageClass.Player playerStorage = GetPlayerStorage(player.getStringUUID()).getSecond();
 
-        if (playerStorage.Homes.isEmpty()) {
+        // Gets player storage
+        Optional<Player> optionalPlayerStorage = STORAGE.getPlayer(player.getStringUUID());
+        if (optionalPlayerStorage.isEmpty()) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.homeless", player).withStyle(ChatFormatting.AQUA), true);
+            return;
+        }
 
-        } else {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.homes.homes", player).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
-                    .append("\n"), false);
+        Player playerStorage = optionalPlayerStorage.get();
 
-            for (StorageManager.StorageClass.NamedLocation currentHome : playerStorage.Homes) {
+        ArrayList<NamedLocation> homes = playerStorage.getHomes();
 
-                String name = String.format("  - %s", currentHome.name);
-                String coords = String.format("[X%d Y%d Z%d]", currentHome.x, currentHome.y, currentHome.z);
-                String dimension = String.format(" [%s]", currentHome.world);
+        // Check if there are any homes lol
+        if (homes.isEmpty()) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.homeless", player).withStyle(ChatFormatting.AQUA), true);
+            return;
+        }
 
-                if (Objects.equals(currentHome.name, playerStorage.DefaultHome)) {
-                    player.displayClientMessage(Component.literal(name).withStyle(ChatFormatting.AQUA)
-                                    .append(" ")
-                                    .append(getTranslatedText("commands.teleport_commands.common.default", player).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)),
-                            false
-                    );
-                } else {
-                    player.displayClientMessage(Component.literal(name).withStyle(ChatFormatting.AQUA), false);
-                }
+        // Print the stuffz
 
+        player.displayClientMessage(getTranslatedText("commands.teleport_commands.homes.homes", player).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
+                .append("\n"), false);
 
-                player.displayClientMessage(Component.literal("     | ").withStyle(ChatFormatting.AQUA)
-                                .append(Component.literal(coords).withStyle(ChatFormatting.LIGHT_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, String.format("X%d Y%d Z%d", currentHome.x, currentHome.y, currentHome.z)))))
-                                .append(Component.literal(dimension).withStyle(ChatFormatting.DARK_PURPLE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, currentHome.world)))),
+        // todo! Make it send it all at once?
+        for (NamedLocation currentHome : homes) {
+
+            String name = String.format("  - %s", currentHome.getName());
+            String coords = String.format("[X%d Y%d Z%d]", currentHome.getX(), currentHome.getY(), currentHome.getZ());
+            String dimension = String.format(" [%s]", currentHome.getWorldString());
+
+            // Check if the home is the default home, then add text showcasing that it is
+            if (playerStorage.getDefaultHome().equals(currentHome.getName())) {
+                player.displayClientMessage(Component.literal(name)
+                                .withStyle(ChatFormatting.AQUA)
+                                .append(" ")
+                                .append(getTranslatedText("commands.teleport_commands.common.default", player)
+                                        .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
+                                ),
                         false
                 );
-
-                player.displayClientMessage(Component.literal("     | ").withStyle(ChatFormatting.AQUA)
-                                .append(getTranslatedText("commands.teleport_commands.common.tp", player).withStyle(ChatFormatting.GREEN).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/home %s", currentHome.name)))))
-                                .append(" ")
-                                .append(getTranslatedText("commands.teleport_commands.common.rename", player).withStyle(ChatFormatting.BLUE).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/renamehome %s ", currentHome.name)))))
-                                .append(" ")
-                                .append(getTranslatedText("commands.teleport_commands.common.delete", player).withStyle(ChatFormatting.RED).withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/delhome %s", currentHome.name)))))
-                                .append("\n"),
-                        false
-                );
+            } else {
+                player.displayClientMessage(Component.literal(name).withStyle(ChatFormatting.AQUA), false);
             }
 
-        }
-    }
+            // Cords and dimension
+            player.displayClientMessage(Component.literal("     | ")
+                            .withStyle(ChatFormatting.AQUA)
+                            .append(Component.literal(coords)
+                                    .withStyle(ChatFormatting.LIGHT_PURPLE)
+                                    .withStyle(style ->
+                                            style.withClickEvent(
+                                                    new ClickEvent(
+                                                            ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                            String.format("X%d Y%d Z%d", currentHome.getX(), currentHome.getY(), currentHome.getZ())
+                                                    )
+                                            )
+                                    )
+                            )
+                            .append(Component.literal(dimension)
+                                    .withStyle(ChatFormatting.DARK_PURPLE)
+                                    .withStyle(style ->
+                                            style.withClickEvent(
+                                                    new ClickEvent(
+                                                            ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                            currentHome.getWorldString()
+                                                    )
+                                            )
+                                    )
+                            ),
+                    false
+            );
 
+            // Teleport, rename and delete buttons
+            player.displayClientMessage(Component.literal("     | ").withStyle(ChatFormatting.AQUA)
+                            .append(getTranslatedText("commands.teleport_commands.common.tp", player)
+                                    .withStyle(ChatFormatting.GREEN)
+                                    .withStyle(style ->
+                                            style.withClickEvent(
+                                                    new ClickEvent(
+                                                            ClickEvent.Action.RUN_COMMAND,
+                                                            String.format("/home %s", currentHome.getName())
+                                                    )
+                                            )
+                                    )
+                            )
+                            .append(" ")
+                            .append(getTranslatedText("commands.teleport_commands.common.rename", player)
+                                    .withStyle(ChatFormatting.BLUE)
+                                    .withStyle(style ->
+                                            style.withClickEvent(
+                                                    new ClickEvent(
+                                                            ClickEvent.Action.SUGGEST_COMMAND,
+                                                            String.format("/renamehome %s ", currentHome.getName())
+                                                    )
+                                            )
+                                    )
+                            )
+                            .append(" ")
+                            .append(getTranslatedText("commands.teleport_commands.common.delete", player)
+                                    .withStyle(ChatFormatting.RED)
+                                    .withStyle(style ->
+                                            style.withClickEvent(
+                                                    new ClickEvent(
+                                                            ClickEvent.Action.SUGGEST_COMMAND,
+                                                            String.format("/delhome %s", currentHome.getName())
+                                                    )
+                                            )
+                                    )
+                            )
+                            .append("\n"),
+                    false
+            );
+        }
+
+    }
 }

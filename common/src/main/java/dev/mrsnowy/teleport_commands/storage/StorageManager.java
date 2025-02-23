@@ -83,6 +83,7 @@ public class StorageManager {
 
         // -----
 
+        // todo! modify this so it uses a NamedLocation as an input
         // creates a new warp, if there already is a warp it will update the existing one
         public void setWarp(String name, BlockPos pos, String world) throws Exception {
             Optional<NamedLocation> OptionalWarp = getWarp(name);

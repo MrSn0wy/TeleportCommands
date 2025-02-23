@@ -15,6 +15,7 @@
   "commands.teleport_commands.home.rename": "家已重命名",
   "commands.teleport_commands.home.renameError": "重命名家時發生錯誤!",
   "commands.teleport_commands.home.default": "默認的家設置",
+  "commands.teleport_commands.home.defaultNone": "No default home set!",
   "commands.teleport_commands.home.defaultError": "變更默認家時發生錯誤!",
   "commands.teleport_commands.home.defaultSame": "家已經設定為默認了!",
   "commands.teleport_commands.home.notFound": "沒有找到家!",

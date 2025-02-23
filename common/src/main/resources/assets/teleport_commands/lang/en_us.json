@@ -15,6 +15,7 @@
   "commands.teleport_commands.home.rename": "Home Renamed",
   "commands.teleport_commands.home.renameError": "Error Renaming Home!",
   "commands.teleport_commands.home.default": "Default Home Set",
+  "commands.teleport_commands.home.defaultNone": "No default home set!",
   "commands.teleport_commands.home.defaultError": "Error Changing Default Home!",
   "commands.teleport_commands.home.defaultSame": "Home is already set as default!",
   "commands.teleport_commands.home.notFound": "Home Not Found!",

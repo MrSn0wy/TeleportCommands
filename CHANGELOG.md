@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved the Storage classes and functions (I'm doing proper java, yipie)
 - Better error handling for command suggestions
 - Added hover effects for warp and homes text (W.I.P)
-- Throw an exception when the world isn't found (when doing back or home), instead of giving an incorrect notFound error.
+- Throw an exception when the world isn't found (when going back or home), instead of giving an incorrect notFound error.
+- Added a new `home.defaultNone` translation key for when there is no default house set. (before this would give `home.homeless` for some reason)
 
 ### [v1.2.2]
 - Handled a case where the client (geyser) will return the language as uppercase instead of lowercase.

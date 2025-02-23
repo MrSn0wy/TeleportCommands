@@ -15,6 +15,7 @@
   "commands.teleport_commands.home.rename": "Casa Rinominata",
   "commands.teleport_commands.home.renameError": "Errore Durante La Rinomina Della Casa!",
   "commands.teleport_commands.home.default": "Casa Predefinita Impostata",
+  "commands.teleport_commands.home.defaultNone": "No default home set!",
   "commands.teleport_commands.home.defaultError": "Errore Durante Il Cambio Della Casa Predefinita!",
   "commands.teleport_commands.home.defaultSame": "La Casa È Già Impostata Come Predefinita!",
   "commands.teleport_commands.home.notFound": "Casa Non Trovata!",

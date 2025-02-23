@@ -15,6 +15,7 @@
   "commands.teleport_commands.home.rename": "Otthon átnevezve",
   "commands.teleport_commands.home.renameError": "Hiba történt az otthon átnevezésével!",
   "commands.teleport_commands.home.default": "Alap otthon beállítva",
+  "commands.teleport_commands.home.defaultNone": "No default home set!",
   "commands.teleport_commands.home.defaultError": "Hiba történt az alap otthon beállításával!",
   "commands.teleport_commands.home.defaultSame": "Már alap ez az otthon!",
   "commands.teleport_commands.home.notFound": "Otthon nem találva!",

@@ -47,7 +47,7 @@ public class Player {
         StorageManager.StorageSaver();
     }
 
-    // todo! modify this so it uses a NamedLocation as an input
+    // todo! modify this so it uses a NamedLocation
     // creates a new home, if there already is a home it will update the existing one
     public void setHome(String name, BlockPos pos, String world) throws Exception {
         Optional<NamedLocation> optionalHome = getHome(name);

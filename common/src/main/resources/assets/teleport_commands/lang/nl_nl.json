@@ -15,6 +15,7 @@
   "commands.teleport_commands.home.rename": "Huis Hernoemd",
   "commands.teleport_commands.home.renameError": "Probleem tijdens het wijzigen van de huis naam!",
   "commands.teleport_commands.home.default": "Standaard Huis Ingesteld",
+  "commands.teleport_commands.home.defaultNone": "Geen standaard huis ingesteld!",
   "commands.teleport_commands.home.defaultError": "Probleem Tijdens Het Wijzigen Van Het Standaard Huis!",
   "commands.teleport_commands.home.defaultSame": "Huis is al als standaard ingesteld!",
   "commands.teleport_commands.home.notFound": "Huis Niet Gevonden!",

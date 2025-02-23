@@ -15,6 +15,7 @@
   "commands.teleport_commands.home.rename": "Дом переименован",
   "commands.teleport_commands.home.renameError": "Ошибка переименования дома!",
   "commands.teleport_commands.home.default": "Дом по умолчанию установлен",
+  "commands.teleport_commands.home.defaultNone": "No default home set!",
   "commands.teleport_commands.home.defaultError": "Ошибка изменения дома по умолчанию!",
   "commands.teleport_commands.home.defaultSame": "Дом уже установлен по умолчанию!",
   "commands.teleport_commands.home.notFound": "Дом не найден!",
