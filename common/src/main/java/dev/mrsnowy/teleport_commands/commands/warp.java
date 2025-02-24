@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.*;
@@ -225,7 +225,7 @@ public class warp {
 
     private static void PrintWarps(ServerPlayer player) throws Exception {
         // Get warps
-        ArrayList<NamedLocation> warps = STORAGE.getWarps();
+        List<NamedLocation> warps = STORAGE.getWarps();
 
         // Check if there are any warps lol
         if (warps.isEmpty()) {

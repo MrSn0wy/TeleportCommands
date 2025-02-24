@@ -177,7 +177,7 @@ public class tools {
     }
 
     // todo! test
-    // checks if a bock position is unsafe, used by the teleportSafetyChecker.
+    // checks if a BlockPos is safe, used by the teleportSafetyChecker.
     private static boolean isBlockPosSafe(BlockPos bottomPlayer, ServerLevel world) {
 
         // get the block below the player

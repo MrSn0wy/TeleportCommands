@@ -7,7 +7,7 @@ import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.common.Player;
 import dev.mrsnowy.teleport_commands.suggestions.HomeSuggestionProvider;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
@@ -341,6 +341,8 @@ public class home {
 
     private static void PrintHomes(ServerPlayer player) throws Exception {
 
+        // todo! fix the values
+
         // Gets player storage
         Optional<Player> optionalPlayerStorage = STORAGE.getPlayer(player.getStringUUID());
         if (optionalPlayerStorage.isEmpty()) {
@@ -350,7 +352,7 @@ public class home {
 
         Player playerStorage = optionalPlayerStorage.get();
 
-        ArrayList<NamedLocation> homes = playerStorage.getHomes();
+        List<NamedLocation> homes = playerStorage.getHomes();
 
         // Check if there are any homes lol
         if (homes.isEmpty()) {
@@ -433,6 +435,18 @@ public class home {
                                                     new ClickEvent(
                                                             ClickEvent.Action.SUGGEST_COMMAND,
                                                             String.format("/renamehome %s ", currentHome.getName())
+                                                    )
+                                            )
+                                    )
+                            )
+                            .append(" ")
+                            .append(getTranslatedText("commands.teleport_commands.common.default", player)
+                                    .withStyle(ChatFormatting.DARK_BLUE)
+                                    .withStyle(style ->
+                                            style.withClickEvent(
+                                                    new ClickEvent(
+                                                            ClickEvent.Action.RUN_COMMAND,
+                                                            String.format("/defaulthome %s", currentHome.getName())
                                                     )
                                             )
                                     )

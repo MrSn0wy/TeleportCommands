@@ -217,7 +217,15 @@ public class TeleportCommands {
 				byte[] json = gson.toJson(mainJsonObject).getBytes();
 				Files.write(StorageManager.STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
-				LOGGER.info("Success! Cleaned: {}B", Math.round(( startFileSize - Files.size(StorageManager.STORAGE_FILE) )));
+				// Only show amount cleaned when it isn't 0B lool
+				int diff = Math.round(( startFileSize - Files.size(StorageManager.STORAGE_FILE) ));
+
+				if (diff > 0) {
+					LOGGER.info("Success! Cleaned: {}B", diff);
+				} else {
+					LOGGER.info("Success!");
+				}
+
 				return gson.fromJson(mainJsonObject, StorageManager.StorageClass.class);
 			}
 

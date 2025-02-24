@@ -12,8 +12,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Collections.unmodifiableList;
 
 public class StorageManager {
     public static Path STORAGE_FOLDER;
@@ -37,7 +40,7 @@ public class StorageManager {
 
             // create the basic storage if it is empty
             if (new File(String.valueOf(STORAGE_FILE)).length() == 0) {
-                STORAGE = new StorageClass();
+                StorageManager.STORAGE = new StorageClass();
                 StorageSaver(); // todo! verify that it creates em correctly
             }
 
@@ -49,22 +52,23 @@ public class StorageManager {
     }
 
     public static void StorageSaver() throws Exception {
+        // todo! maybe throttle saves?
         Gson gson = new GsonBuilder().create();
-        byte[] json = gson.toJson( STORAGE ).getBytes();
+        byte[] json = gson.toJson( StorageManager.STORAGE ).getBytes();
 
         Files.write(STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
 
     public static class StorageClass {
-        private static final ArrayList<NamedLocation> Warps = new ArrayList<>();
-        private static final ArrayList<Player> Players = new ArrayList<>();
+        private final ArrayList<NamedLocation> Warps = new ArrayList<>();
+        private final ArrayList<Player> Players = new ArrayList<>();
 
         // -----
 
         // returns all warps
-        public ArrayList<NamedLocation> getWarps() {
-            return Warps;
+        public List<NamedLocation> getWarps() {
+            return unmodifiableList(Warps);
         }
 
         // filters the warpList and finds the one with the name (if there is one)

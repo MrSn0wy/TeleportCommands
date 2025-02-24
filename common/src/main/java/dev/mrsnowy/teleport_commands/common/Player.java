@@ -4,6 +4,7 @@ import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,8 +30,8 @@ public class Player {
     }
 
     // returns all homes
-    public ArrayList<NamedLocation> getHomes() {
-        return (ArrayList<NamedLocation>) unmodifiableList(Homes);
+    public List<NamedLocation> getHomes() {
+        return unmodifiableList(Homes);
     }
 
     // returns a specific home based on the name (if there is one)
