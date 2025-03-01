@@ -46,7 +46,7 @@
   "commands.teleport_commands.tpa.received": "Tpa%0% 请求来自 %1%",
   "commands.teleport_commands.tpa.sent": "Tpa%0% 请求已发送到 %1%",
   "commands.teleport_commands.tpa.accept": "[接受]",
-  "commands.teleport_commands.tpa.deny": " [拒绝]",
+  "commands.teleport_commands.tpa.deny": "[拒绝]",
   "commands.teleport_commands.tpa.expired": "Tpa%0% 请求已过期",
   "commands.teleport_commands.tpa.notFound": "没找到请求!",
   "commands.teleport_commands.tpa.accepted": "请求已同意",
@@ -61,7 +61,8 @@
   "commands.teleport_commands.common.rename": "[重命名]",
   "commands.teleport_commands.common.delete": "[删除]",
   "commands.teleport_commands.common.default": "(默认)",
-  "commands.teleport_commands.common.renameExists": "这个名称已经存在了!",
+  "commands.teleport_commands.common.defaultPrompt": "[Set Default]",
   "commands.teleport_commands.common.noLocation": "找不到位置!",
-  "commands.teleport_commands.common.hoverCopy": "点击以复制!"
+  "commands.teleport_commands.common.hoverCopy": "点击以复制!",
+  "commands.teleport_commands.common.worldNotFound": "World not found!"
 }

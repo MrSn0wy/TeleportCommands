@@ -61,7 +61,8 @@
   "commands.teleport_commands.common.rename": "[Переименовать]",
   "commands.teleport_commands.common.delete": "[Удалить]",
   "commands.teleport_commands.common.default": "(По умолчанию)",
-  "commands.teleport_commands.common.renameExists": "Это имя уже занято!",
+  "commands.teleport_commands.common.defaultPrompt": "[Set Default]",
   "commands.teleport_commands.common.noLocation": "Местоположение не найдено!",
-  "commands.teleport_commands.common.hoverCopy": "Нажмите, чтобы скопировать!"
+  "commands.teleport_commands.common.hoverCopy": "Нажмите, чтобы скопировать!",
+  "commands.teleport_commands.common.worldNotFound": "World not found!"
 }

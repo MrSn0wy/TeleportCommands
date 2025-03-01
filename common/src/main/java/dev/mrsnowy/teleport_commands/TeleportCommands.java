@@ -11,12 +11,13 @@ import net.minecraft.world.level.storage.LevelResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 
@@ -25,6 +26,7 @@ import static dev.mrsnowy.teleport_commands.storage.StorageManager.*;
 public class TeleportCommands {
 	public static final String MOD_ID = "teleport_commands";
 	public static final String MOD_NAME = "Teleport Commands";
+	public static String VERSION = "unknown";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 	public static String MOD_LOADER;
 	public static Path SAVE_DIR;
@@ -34,8 +36,18 @@ public class TeleportCommands {
 
 	// Gets ran when the server starts
 	public static void initializeMod(MinecraftServer server) {
+
+		InputStream stream = TeleportCommands.class.getResourceAsStream("/version");
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(stream, "Couldn't find the version file!"), StandardCharsets.UTF_8));
+			VERSION = reader.readLine();
+
+		} catch (Exception e) {
+			LOGGER.error("Couldn't find the version file!");
+		}
+
 		// initialize da variables
-		LOGGER.info("Initializing Teleport Commands! Hello {}!", MOD_LOADER);
+		LOGGER.info("Initializing Teleport Commands (V{})! Hello {}!", VERSION, MOD_LOADER);
 
 		SAVE_DIR = Path.of(String.valueOf(server.getWorldPath(LevelResource.ROOT)));
 

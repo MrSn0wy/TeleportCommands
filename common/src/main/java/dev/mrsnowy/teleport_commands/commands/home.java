@@ -7,22 +7,26 @@ import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.common.Player;
 import dev.mrsnowy.teleport_commands.suggestions.HomeSuggestionProvider;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
+import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.STORAGE;
 import static dev.mrsnowy.teleport_commands.utils.tools.getTranslatedText;
 import static net.minecraft.commands.Commands.argument;
-import static dev.mrsnowy.teleport_commands.storage.StorageManager.StorageSaver;
 import static dev.mrsnowy.teleport_commands.utils.tools.Teleporter;
 
 public class home {
@@ -201,8 +205,9 @@ public class home {
             String defaultHome = playerStorage.getDefaultHome();
 
             if (defaultHome.isEmpty()) {
-                // todo! test if this translation key works correctly!
+                // No default home set!
                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.defaultNone", player).withStyle(ChatFormatting.AQUA), true);
+
                 return;
             } else {
                 homeName = defaultHome;
@@ -218,12 +223,23 @@ public class home {
 
         NamedLocation home = optionalHome.get();
 
-        // Get the world, otherwise throw an exception
-        ServerLevel homeWorld = home.getWorld().orElseThrow(() -> {
-            // todo! test this exception
-            return new Exception( String.format("Couldn't find a world with the id: %s \nAvailable worlds: %s",
-                    home.getWorldString(), TeleportCommands.SERVER.getAllLevels()));
-        });
+        // Get the world, otherwise give a warning and error message
+        Optional<ServerLevel> optionalWorld = home.getWorld();
+
+        if (optionalWorld.isEmpty()) {
+            TeleportCommands.LOGGER.warn("({}) Error while going to the home \"{}\"! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
+                    player.getName().getString(),
+                    home.getName(),
+                    home.getWorldString(),
+                    tools.getWorldIds());
+
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.worldNotFound", player)
+                    .withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+
+            return;
+        }
+
+        ServerLevel homeWorld = optionalWorld.get();
 
         BlockPos teleportBlockPos = home.getBlockPos();
 
@@ -340,10 +356,7 @@ public class home {
     }
 
     private static void PrintHomes(ServerPlayer player) throws Exception {
-
-        // todo! fix the values
-
-        // Gets player storage
+        // Gets player storage, if no storage then the player is homeless!
         Optional<Player> optionalPlayerStorage = STORAGE.getPlayer(player.getStringUUID());
         if (optionalPlayerStorage.isEmpty()) {
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.homeless", player).withStyle(ChatFormatting.AQUA), true);
@@ -360,113 +373,143 @@ public class home {
             return;
         }
 
-        // Print the stuffz
+        MutableComponent message = Component.empty();
 
-        player.displayClientMessage(getTranslatedText("commands.teleport_commands.homes.homes", player).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
-                .append("\n"), false);
+        // make da message
+        message.append(getTranslatedText("commands.teleport_commands.homes.homes", player)
+                        .withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
+                );
 
-        // todo! Make it send it all at once?
+
         for (NamedLocation currentHome : homes) {
-
             String name = String.format("  - %s", currentHome.getName());
             String coords = String.format("[X%d Y%d Z%d]", currentHome.getX(), currentHome.getY(), currentHome.getZ());
             String dimension = String.format(" [%s]", currentHome.getWorldString());
 
-            // Check if the home is the default home, then add text showcasing that it is
+            // linebreak
+            message.append("\n");
+
+            // Name of the home
+            message.append(Component.literal(name)
+                    .withStyle(ChatFormatting.AQUA)
+            );
+
+            // If it is the default home, show that it is
             if (playerStorage.getDefaultHome().equals(currentHome.getName())) {
-                player.displayClientMessage(Component.literal(name)
-                                .withStyle(ChatFormatting.AQUA)
-                                .append(" ")
-                                .append(getTranslatedText("commands.teleport_commands.common.default", player)
-                                        .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
-                                ),
-                        false
-                );
-            } else {
-                player.displayClientMessage(Component.literal(name).withStyle(ChatFormatting.AQUA), false);
+
+                message.append(" ")
+                        .append(getTranslatedText("commands.teleport_commands.common.default", player)
+                                .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
+                        );
             }
 
-            // Cords and dimension
-            player.displayClientMessage(Component.literal("     | ")
-                            .withStyle(ChatFormatting.AQUA)
-                            .append(Component.literal(coords)
-                                    .withStyle(ChatFormatting.LIGHT_PURPLE)
-                                    .withStyle(style ->
-                                            style.withClickEvent(
-                                                    new ClickEvent(
-                                                            ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                                            String.format("X%d Y%d Z%d", currentHome.getX(), currentHome.getY(), currentHome.getZ())
-                                                    )
-                                            )
-                                    )
-                            )
-                            .append(Component.literal(dimension)
-                                    .withStyle(ChatFormatting.DARK_PURPLE)
-                                    .withStyle(style ->
-                                            style.withClickEvent(
-                                                    new ClickEvent(
-                                                            ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                                            currentHome.getWorldString()
-                                                    )
-                                            )
-                                    )
-                            ),
-                    false
-            );
+            // linebreak
+            message.append("\n");
 
-            // Teleport, rename and delete buttons
-            player.displayClientMessage(Component.literal("     | ").withStyle(ChatFormatting.AQUA)
-                            .append(getTranslatedText("commands.teleport_commands.common.tp", player)
-                                    .withStyle(ChatFormatting.GREEN)
-                                    .withStyle(style ->
-                                            style.withClickEvent(
-                                                    new ClickEvent(
-                                                            ClickEvent.Action.RUN_COMMAND,
-                                                            String.format("/home %s", currentHome.getName())
-                                                    )
+            // Cords and dimension
+            message.append(Component.literal("     | ")
+                            .withStyle(ChatFormatting.AQUA)
+                    )
+                    .append(Component.literal(coords)
+                            .withStyle(ChatFormatting.LIGHT_PURPLE)
+                            .withStyle(style ->
+                                    style.withClickEvent(
+                                            new ClickEvent(
+                                                    ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                    String.format("X%d Y%d Z%d", currentHome.getX(), currentHome.getY(), currentHome.getZ())
                                             )
                                     )
                             )
-                            .append(" ")
-                            .append(getTranslatedText("commands.teleport_commands.common.rename", player)
-                                    .withStyle(ChatFormatting.BLUE)
-                                    .withStyle(style ->
-                                            style.withClickEvent(
-                                                    new ClickEvent(
-                                                            ClickEvent.Action.SUGGEST_COMMAND,
-                                                            String.format("/renamehome %s ", currentHome.getName())
-                                                    )
+                            .withStyle(style ->
+                                    style.withHoverEvent(new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                    ))
+                            )
+                    )
+                    .append(Component.literal(dimension)
+                            .withStyle(ChatFormatting.DARK_PURPLE)
+                            .withStyle(style ->
+                                    style.withClickEvent(
+                                            new ClickEvent(
+                                                    ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                    currentHome.getWorldString()
                                             )
                                     )
                             )
-                            .append(" ")
-                            .append(getTranslatedText("commands.teleport_commands.common.default", player)
-                                    .withStyle(ChatFormatting.DARK_BLUE)
-                                    .withStyle(style ->
-                                            style.withClickEvent(
-                                                    new ClickEvent(
-                                                            ClickEvent.Action.RUN_COMMAND,
-                                                            String.format("/defaulthome %s", currentHome.getName())
-                                                    )
+                            .withStyle(style ->
+                                    style.withHoverEvent(new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                    ))
+                            )
+                    );
+
+            // linebreak
+            message.append("\n");
+
+            // Teleport, rename, set default and delete buttons
+            message.append(Component.literal("     | ")
+                            .withStyle(ChatFormatting.AQUA)
+                    )
+                    .append(getTranslatedText("commands.teleport_commands.common.tp", player)
+                            .withStyle(ChatFormatting.GREEN)
+                            .withStyle(style ->
+                                    style.withClickEvent(
+                                            new ClickEvent(
+                                                    ClickEvent.Action.RUN_COMMAND,
+                                                    String.format("/home %s", currentHome.getName())
                                             )
                                     )
                             )
-                            .append(" ")
-                            .append(getTranslatedText("commands.teleport_commands.common.delete", player)
-                                    .withStyle(ChatFormatting.RED)
-                                    .withStyle(style ->
-                                            style.withClickEvent(
-                                                    new ClickEvent(
-                                                            ClickEvent.Action.SUGGEST_COMMAND,
-                                                            String.format("/delhome %s", currentHome.getName())
-                                                    )
+                    )
+                    .append(" ")
+                    .append(getTranslatedText("commands.teleport_commands.common.rename", player)
+                            .withStyle(ChatFormatting.BLUE)
+                            .withStyle(style ->
+                                    style.withClickEvent(
+                                            new ClickEvent(
+                                                    ClickEvent.Action.SUGGEST_COMMAND,
+                                                    String.format("/renamehome %s ", currentHome.getName())
                                             )
                                     )
                             )
-                            .append("\n"),
-                    false
-            );
+                    )
+                    .append(" ");
+
+            // add set default button if it isn't the default home
+            if (!playerStorage.getDefaultHome().equals(currentHome.getName())) {
+                message.append(getTranslatedText("commands.teleport_commands.common.defaultPrompt", player)
+                        .withStyle(ChatFormatting.DARK_AQUA)
+                        .withStyle(style ->
+                                style.withClickEvent(
+                                        new ClickEvent(
+                                                ClickEvent.Action.RUN_COMMAND,
+                                                String.format("/defaulthome %s", currentHome.getName())
+                                        )
+                                )
+                        )
+                )
+                .append(" ");
+            }
+
+            message.append(getTranslatedText("commands.teleport_commands.common.delete", player)
+                            .withStyle(ChatFormatting.RED)
+                            .withStyle(style ->
+                                    style.withClickEvent(
+                                            new ClickEvent(
+                                                    ClickEvent.Action.SUGGEST_COMMAND,
+                                                    String.format("/delhome %s", currentHome.getName())
+                                            )
+                                    )
+                            )
+                    );
+
+            // linebreak
+            message.append("\n");
         }
 
+        // send the message
+        player.displayClientMessage(message, false);
     }
 }

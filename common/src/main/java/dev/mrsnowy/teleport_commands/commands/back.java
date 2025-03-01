@@ -7,6 +7,7 @@ import java.util.*;
 
 import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
 import dev.mrsnowy.teleport_commands.common.DeathLocation;
+import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -73,13 +74,19 @@ public class back {
 
         DeathLocation deathLocation = optionalDeathLocation.get();
 
-        // get the world, otherwise throw an exception
+        // Get the world, otherwise give a warning and error message
         Optional<ServerLevel> optionalWorld = deathLocation.getWorld();
-        if (optionalWorld.isEmpty()) {
-            // todo! test this exception
 
-            throw new Exception( String.format("Couldn't find a world with the id: %s \nAvailable worlds: %s",
-                    deathLocation.getWorldString(), TeleportCommands.SERVER.getAllLevels()));
+        if (optionalWorld.isEmpty()) {
+            TeleportCommands.LOGGER.warn("({}) Error while going back! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
+                    player.getName().getString(),
+                    deathLocation.getWorldString(),
+                    tools.getWorldIds());
+
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.worldNotFound", player)
+                    .withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+
+            return;
         }
 
         ServerLevel deathLocationWorld = optionalWorld.get();

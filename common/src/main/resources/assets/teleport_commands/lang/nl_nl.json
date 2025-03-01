@@ -19,7 +19,7 @@
   "commands.teleport_commands.home.defaultError": "Probleem Tijdens Het Wijzigen Van Het Standaard Huis!",
   "commands.teleport_commands.home.defaultSame": "Huis is al als standaard ingesteld!",
   "commands.teleport_commands.home.notFound": "Huis Niet Gevonden!",
-  "commands.teleport_commands.home.exists": "Dat huis bestaad Al!",
+  "commands.teleport_commands.home.exists": "Dat huis bestaad al!",
   "commands.teleport_commands.home.homeless": "Je Hebt Geen Huizen!",
 
   "commands.teleport_commands.homes.error": "Probleem Bij Het Ophalen Van De Huizen!",
@@ -46,7 +46,7 @@
   "commands.teleport_commands.tpa.received": "Tpa%0% Verzoek Ontvangen Van %1%",
   "commands.teleport_commands.tpa.sent": "Tpa%0% Verzoek Verzonden Naar %1%",
   "commands.teleport_commands.tpa.accept": "[Accepteren]",
-  "commands.teleport_commands.tpa.deny": " [Weigeren]",
+  "commands.teleport_commands.tpa.deny": "[Weigeren]",
   "commands.teleport_commands.tpa.expired": "Tpa%0% Verzoek Verlopen",
   "commands.teleport_commands.tpa.notFound": "Geen Verzoeken Gevonden!",
   "commands.teleport_commands.tpa.accepted": "Verzoek Geaccepteerd",
@@ -61,7 +61,8 @@
   "commands.teleport_commands.common.rename ": "[Naam Wijzigen]",
   "commands.teleport_commands.common.delete": "[Verwijderen]",
   "commands.teleport_commands.common.default": "(Standaard)",
-  "commands.teleport_commands.common.renameExists": "Die Naam Bestaat Al!",
+  "commands.teleport_commands.common.defaultPrompt": "[Standaard instellen]",
   "commands.teleport_commands.common.noLocation": "Geen Locatie Gevonden!",
-  "commands.teleport_commands.common.hoverCopy": "Klik om te kopiëren!"
+  "commands.teleport_commands.common.hoverCopy": "Klik om te kopiëren!",
+  "commands.teleport_commands.common.worldNotFound": "Wereld niet gevonden!"
 }

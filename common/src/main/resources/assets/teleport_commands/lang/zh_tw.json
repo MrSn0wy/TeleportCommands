@@ -46,7 +46,7 @@
   "commands.teleport_commands.tpa.received": "Tpa%0% 請求來自 %1%",
   "commands.teleport_commands.tpa.sent": "Tpa%0% 請求已發送到 %1%",
   "commands.teleport_commands.tpa.accept": "[接受]",
-  "commands.teleport_commands.tpa.deny": " [拒絕]",
+  "commands.teleport_commands.tpa.deny": "[拒絕]",
   "commands.teleport_commands.tpa.expired": "Tpa%0% 請求已過期",
   "commands.teleport_commands.tpa.notFound": "沒找到請求!",
   "commands.teleport_commands.tpa.accepted": "請求已同意",
@@ -61,7 +61,8 @@
   "commands.teleport_commands.common.rename": "[重命名]",
   "commands.teleport_commands.common.delete": "[刪除]",
   "commands.teleport_commands.common.default": "(默認)",
-  "commands.teleport_commands.common.renameExists": "這個名稱已經存在了!",
+  "commands.teleport_commands.common.defaultPrompt": "[Set Default]",
   "commands.teleport_commands.common.noLocation": "找不到位置!",
-  "commands.teleport_commands.common.hoverCopy": "點擊以複製!"
+  "commands.teleport_commands.common.hoverCopy": "點擊以複製!",
+  "commands.teleport_commands.common.worldNotFound": "World not found!"
 }

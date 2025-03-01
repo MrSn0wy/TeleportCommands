@@ -6,14 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### [W.I.P]
-- Storage is loaded in memory instead of reading it again and again, Improves speed and IO usage. (W.I.P)
-- Adding comments to alot of code (W.I.P)
-- Made it so the DeathLocation is only kept in memory
+- Storage is loaded in memory instead of reading it again and again, Improves speed and IO usage, however there might be slightly higher memory usage.
+- Adding comments to a lot of code (W.I.P)
+- Made it so the DeathLocation (for `/back`) is only kept in memory
 - Improved the Storage classes and functions (I'm doing proper java, yipie)
-- Better error handling for command suggestions
+- Better error handling for command suggestions.
 - Added hover effects for warp and homes text (W.I.P)
-- Throw an exception when the world isn't found (when going back or home), instead of giving an incorrect notFound error.
+- Throw a warning and an error message when the world isn't found (when going back, going home or warping), instead of giving an incorrect notFound error.
 - Added a new `home.defaultNone` translation key for when there is no default house set. (before this would give `home.homeless` for some reason)
+- Added a new `common.worldNotFound` translation key for when a world cannot be found
+- Added a new `common.defaultPrompt` translation key for a new "Set Default" button for `/homes`
+- Made it so that when printing the homes or warps, they get sent in one go.
 
 ### [v1.2.2]
 - Handled a case where the client (geyser) will return the language as uppercase instead of lowercase.

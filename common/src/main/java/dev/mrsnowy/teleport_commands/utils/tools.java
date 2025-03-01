@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -107,6 +108,7 @@ public class tools {
 
     // Gets the translated text for each player based on their language, this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear!)
     public static MutableComponent getTranslatedText(String key, ServerPlayer player, MutableComponent... args) {
+        //todo! maybe make this also loaded in memory?
         String language = player.clientInformation().language().toLowerCase();
         String regex = "%(\\d+)%";
         Pattern pattern = Pattern.compile(regex);
@@ -175,6 +177,15 @@ public class tools {
             return Component.literal(key);
         }
     }
+
+
+    // Gets the ids of all the worlds
+    public static List<String> getWorldIds() {
+        return StreamSupport.stream(TeleportCommands.SERVER.getAllLevels().spliterator(), false)
+                .map(level -> level.dimension().location().toString())
+                .toList();
+    }
+
 
     // todo! test
     // checks if a BlockPos is safe, used by the teleportSafetyChecker.

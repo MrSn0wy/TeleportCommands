@@ -22,6 +22,17 @@ dependencies {
 }
 
 tasks.named('compileJava', JavaCompile) {
+    doFirst {
+        fileTree('src/main/java').matching {
+            include 'path/to/TeleportCommands.java'
+        }.each { File file ->
+            def text = file.text
+            text = text.replace('${version}', project.version.toString())
+                    .replace('${mod_id}', mod_id.toString())
+                    .replace('${mod_name}', mod_name.toString())
+            file.text = text
+        }
+    }
     dependsOn(configurations.commonJava)
     source(configurations.commonJava)
 }

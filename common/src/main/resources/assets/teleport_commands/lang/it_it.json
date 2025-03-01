@@ -61,7 +61,8 @@
   "commands.teleport_commands.common.rename": "[Rinomina]",
   "commands.teleport_commands.common.delete": "[Elimina]",
   "commands.teleport_commands.common.default": "(Predefinita)",
-  "commands.teleport_commands.common.renameExists": "Quel Nome Esiste Già!",
+  "commands.teleport_commands.common.defaultPrompt": "[Set Default]",
   "commands.teleport_commands.common.noLocation": "Nessuna Posizione Trovata!",
-  "commands.teleport_commands.common.hoverCopy": "Click to copy!"
+  "commands.teleport_commands.common.hoverCopy": "Click to copy!",
+  "commands.teleport_commands.common.worldNotFound": "World not found!"
 }

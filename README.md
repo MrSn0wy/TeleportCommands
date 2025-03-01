@@ -38,6 +38,7 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 - [ ] `/wild` - Teleports you to a random location in the Overworld
 - [x] `/worldspawn` - Teleports you to the worldspawn
 - [ ] `/spawn <dimension>` - Teleports you to your spawnpoint in a dimension, defaults to your current dimension
+- [ ] `/previous` - Go to the last teleported location
 
 #### Improvements:
 - [ ] Look into changing the mod into the more safe and sane kotlin (I love java)

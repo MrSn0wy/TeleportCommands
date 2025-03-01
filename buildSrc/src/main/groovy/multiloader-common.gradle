@@ -83,4 +83,9 @@ processResources {
         expand expandProps
     }
     inputs.properties(expandProps)
+
+
+    filesMatching("version") {
+        expand(version: project.version)
+    }
 }
