@@ -42,10 +42,11 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 
 #### Improvements:
 - [ ] Look into changing the mod into the more safe and sane kotlin (I love java)
-- [ ] Find a way to combine the mod loader specific jars into one
+- [ ] Add game tests
 - [ ] Find the easiest way to backport the mod to older version (help)
 - [ ] Create a config to add any delays and disable commands, with commands for operators in game
 - [ ] Add a perm system
+- [x] Find a way to combine the mod loader specific jars into one
 - [x] Json Storage automatic updater & cleaner
 - [x] Modify /back to check if the location is safe and automatically choose a nearby location that is safe
 - [x] Limit tpa requests for a player

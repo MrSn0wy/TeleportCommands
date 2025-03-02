@@ -10,13 +10,13 @@ out
 *.ipr
 *.iws
 *.iml
-.idea/*
+.idea
 !.idea/scopes
 
 # other
 run
 runs
-Merged
+merged
 
 # java
 hs_err_*.log

@@ -6,7 +6,8 @@ plugins {
 
 forgix {
     group = "dev.mrsnowy.teleport_commands"
-    mergedJarName = "${mod_id}-${minecraft_version}-${version}.jar"
+    mergedJarName = "${mod_id}-${minecraft_version}-v${version}.jar"
+    outputDir = "merged/build/libs"
 
     // NeoForge Project Configuration
     neoforge {
@@ -15,13 +16,13 @@ forgix {
 //        // Mixin configuration files (if applicable)
 //        mixin "${mod_id}.mixins.json"
 //        mixin "${mod_id}-forge.mixins.json"
-        jarLocation = "build/libs/${mod_id}-neoforge-${minecraft_version}-${version}.jar"
+        jarLocation = "build/libs/${mod_id}-neoforge-${minecraft_version}-v${version}.jar"
     }
 
     // Fabric Project Configuration
     fabric {
         projectName = "fabric" // Name of the Fabric subproject
 
-        jarLocation = "build/libs/${mod_id}-fabric-${minecraft_version}-${version}.jar"
+        jarLocation = "build/libs/${mod_id}-fabric-${minecraft_version}-v${version}.jar"
     }
 }

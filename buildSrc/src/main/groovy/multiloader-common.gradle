@@ -2,9 +2,9 @@ plugins {
     id 'java-library'
 }
 
-base {
-    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
-}
+//base {
+//    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
+//}
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(java_version)
@@ -38,8 +38,15 @@ dependencies {
 
 
 jar {
+    // Makes it so it uses the archive name I specify
+    archiveFileName.set("${mod_id}-${project.name}-${minecraft_version}-v${version}.jar")
+
+    // Exclude some silly stuff to reduce size :3
+    exclude "**/*.md"  // Exclude all markdown files
+
+
     from(rootProject.file("LICENSE")) {
-        rename { "${it}_${mod_name}" }
+        rename { "${it}-${mod_id}" }
     }
 
     manifest {

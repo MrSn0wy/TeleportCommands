@@ -10,4 +10,5 @@ public class configManager {
     // Make config for setting max homes
     // Make config that adds a delay between teleports and when fighting. (in teleport function?)
     // Make config that automatically deletes namedLocations (warps/homes) with invalid world id's
+    // Make config for setting the world_id for /worldspawn ?
 }

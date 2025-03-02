@@ -35,3 +35,8 @@ loom {
         }
     }
 }
+
+// Fix for fabric - makes it so it uses the archive name I specify
+tasks.named("remapJar") {
+    archiveFileName.set("${mod_id}-${project.name}-${minecraft_version}-v${version}.jar")
+}
