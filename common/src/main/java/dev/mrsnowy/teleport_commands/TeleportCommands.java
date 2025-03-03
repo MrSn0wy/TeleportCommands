@@ -46,10 +46,10 @@ public class TeleportCommands {
 
 		// initialize commands, also allows me to easily disable any when there is a config
 		Commands commandManager = server.getCommands();
-		back.register(commandManager);
+//		back.register(commandManager);
 		home.register(commandManager);
 		tpa.register(commandManager);
-		warp.register(commandManager);
+//		warp.register(commandManager);
 		worldspawn.register(commandManager);
 	}
 
