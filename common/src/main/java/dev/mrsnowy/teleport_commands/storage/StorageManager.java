@@ -2,10 +2,10 @@ package dev.mrsnowy.teleport_commands.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.common.Player;
-import net.minecraft.core.BlockPos;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -45,7 +45,7 @@ public class StorageManager {
             }
 
         } catch (Exception e) {
-            TeleportCommands.LOGGER.error("Error while creating the storage file! Exiting! => ", e);
+            Constants.LOGGER.error("Error while creating the storage file! Exiting! => ", e);
             // crashing is probably better here, otherwise the whole mod will be broken
             System.exit(1);
         }
@@ -87,46 +87,40 @@ public class StorageManager {
 
         // -----
 
-        // todo! modify this so it uses a NamedLocation as an input
-        // creates a new warp, if there already is a warp it will update the existing one
-        public void setWarp(String name, BlockPos pos, String world) throws Exception {
-            Optional<NamedLocation> OptionalWarp = getWarp(name);
+        // Adds a NamedLocation to the warp list, returns true if a warp with the same name already exists
+        public boolean addWarp(NamedLocation warp) throws Exception {
+            if (getWarp(warp.getName()).isPresent()) {
+                // Warp with same name found!
+                return true;
 
-            if (OptionalWarp.isEmpty()) {
-                // create a new warp
-                NamedLocation warp = new NamedLocation(name, pos, world);
-                Warps.add(warp);
             } else {
-                // modify existing warp
-                NamedLocation warp = OptionalWarp.get();
-                warp.setName(name);
+                Warps.add(warp);
+                StorageSaver();
+                return false;
             }
-
-            StorageSaver();
         }
 
-        // creates a new player, if there already is a player it will return the existing one. The player won't be saved unless they actually do something lol
-        // todo! check if this works fully
+        // Creates a new player, if there already is a player it will return the existing one. The player won't be saved unless they actually do something lol
+        // The name of this function is wack but whatever kewk
         public Player addPlayer(String uuid) {
             final Optional<Player> OptionalPlayer = getPlayer(uuid);
 
             if (OptionalPlayer.isEmpty()) {
-                // create new player
+                // create and return new player
                 Player player = new Player(uuid);
                 Players.add(player);
-//                TeleportCommands.LOGGER.info("Player '{}' added successfully in storage!", uuid); // todo! prob remove these loggers
 
                 return player;
             } else {
                 // return existing player
-//                TeleportCommands.LOGGER.info("Player '{}' already exists!", uuid);
                 return OptionalPlayer.get();
             }
         }
 
         // -----
 
-        public void rmWarp(NamedLocation warp) throws Exception {
+        // Remove a warp, if the warp isn't found then nothing will happen
+        public void removeWarp(NamedLocation warp) throws Exception {
             Warps.remove(warp);
             StorageSaver();
         }

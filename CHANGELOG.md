@@ -6,21 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### [W.I.P]
+#### Changed
 - Storage is loaded in memory instead of reading it again and again, Improves speed and IO usage, however there might be slightly higher passive memory usage.
 - Added a new merged jar file that combines the jars of the mod-loaders into one. (Thanks to [forgix](https://github.com/PacifistMC/Forgix)!) (This will also from now on be published on Modrinth)
 - Made it so the DeathLocations (for `/back`) are only kept in memory. (before they would get saved and deleted on startup lol)
 - Improved the Storage classes and it's functions (I'm doing proper java, yipie)
 - Improved the error messages for command suggestions.
-- Improved the error handling for when a world isn't found (when going back, going home or warping).
-  - It now throws a warning and gives the player a new error message (before it would give an incorrect `notFound` error)
-- Improved the sending of the homes/warps when doing `/home` or `/warps` (They now get sent in one message instead of multiple)
+- Improved the messages styling for when no safe location is found while running `/back` or `/worldspawn`  
+- Improved the sending of the homes/warps when doing `/homes` or `/warps` (They now get sent in one message instead of multiple)
 - Reduced the size of the mod icon by 60% (a 40kb reduction) using some `zopflipng` black magic. (sadly this only made the mod jar 5kb smaller :<)
-- Removed the markdown for the translations from being bundled with the mod jar.
+
+#### Fixed
+- Fixed the markdown for the translations from being bundled with the mod jar.
+- Fixed the usage of an invalid translation string when renaming a Home or Warp to a name that already exists.
+- Fixed the error handling for when a world isn't found (when going back, going home or warping).
+  - It now throws a warning and gives the player a new error message (before it would give an incorrect `notFound` error)
+
+#### Added
+- added version
 - Added hover effects for warp and homes text (W.I.P)
 - Added comments to a lot of code (W.I.P)
 - Added a new `home.defaultNone` translation key for when there is no default house set. (before this would give `home.homeless` for some reason)
 - Added a new `common.worldNotFound` translation key for when a world cannot be found
 - Added a new `common.defaultPrompt` translation key for a new "Set Default" button for `/homes`
+- Added a new `common.nameExists` translation key for when that name already exists
 
 ### [v1.2.2]
 - Handled a case where the client (geyser) will return the language as uppercase instead of lowercase.

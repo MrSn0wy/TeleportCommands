@@ -1,6 +1,7 @@
 package dev.mrsnowy.teleport_commands.utils;
 
 import com.google.gson.*;
+import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 
 import java.io.*;
@@ -20,7 +21,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 
-import static dev.mrsnowy.teleport_commands.TeleportCommands.MOD_ID;
+import static dev.mrsnowy.teleport_commands.Constants.MOD_ID;
 import static net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT;
 
 public class tools {
@@ -113,6 +114,18 @@ public class tools {
         String regex = "%(\\d+)%";
         Pattern pattern = Pattern.compile(regex);
 
+//        MinecraftServer server = player.getServer();
+
+//         MinecraftServer.ServerResourcePackInfo silly2 = server.getResourceManager().listResources()
+
+//        java.util.stream.Stream<net.minecraft.server.packs.PackResources> SILLY = server.getResourceManager().listPacks();
+//
+//        SILLY.forEach(pack -> {
+//            Constants.LOGGER.info("{} : {} : {}", pack.packId(), pack.location(), pack.getClass());
+//        });
+
+//        player.displayClientMessage(Component.literal(.toString()), false);
+
         // the try catch stuff is so wacky, but it works fine and I don't need to check everything
         try {
             String filePath = String.format("/assets/%s/lang/%s.json", MOD_ID, language);
@@ -173,7 +186,7 @@ public class tools {
                     return component;
                 }
             } catch (Exception ignored1) {}
-            TeleportCommands.LOGGER.error("Key \"{}\" not found in the default language (en_us), sending raw key as fallback.", key);
+            Constants.LOGGER.error("Key \"{}\" not found in the default language (en_us), sending raw key as fallback.", key);
             return Component.literal(key);
         }
     }
@@ -187,7 +200,6 @@ public class tools {
     }
 
 
-    // todo! test
     // checks if a BlockPos is safe, used by the teleportSafetyChecker.
     private static boolean isBlockPosSafe(BlockPos bottomPlayer, ServerLevel world) {
 

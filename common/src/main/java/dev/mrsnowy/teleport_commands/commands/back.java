@@ -1,7 +1,7 @@
 package dev.mrsnowy.teleport_commands.commands;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import dev.mrsnowy.teleport_commands.TeleportCommands;
+import dev.mrsnowy.teleport_commands.Constants;
 
 import java.util.*;
 
@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -32,7 +33,7 @@ public class back {
                     ToDeathLocation(player, false);
 
                 } catch (Exception e) {
-                    TeleportCommands.LOGGER.error("Error while going back! => ", e);
+                    Constants.LOGGER.error("Error while going back! => ", e);
                     player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                     return 1;
                 }
@@ -48,7 +49,7 @@ public class back {
                         ToDeathLocation(player, safety);
 
                     } catch (Exception e) {
-                        TeleportCommands.LOGGER.error("Error while going back! => ", e);
+                        Constants.LOGGER.error("Error while going back! => ", e);
                         player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
@@ -78,7 +79,7 @@ public class back {
         Optional<ServerLevel> optionalWorld = deathLocation.getWorld();
 
         if (optionalWorld.isEmpty()) {
-            TeleportCommands.LOGGER.warn("({}) Error while going back! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
+            Constants.LOGGER.warn("({}) Error while going back! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
                     player.getName().getString(),
                     deathLocation.getWorldString(),
                     tools.getWorldIds());
@@ -102,10 +103,21 @@ public class back {
 
             } else {
                 // asks the player if they want to teleport anyway
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), false);
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player).withStyle(ChatFormatting.AQUA), false);
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.forceTeleport", player).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
-                        .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/back true"))),false);
+                player.displayClientMessage(
+                        Component.empty()
+                        .append(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player)
+                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
+                        )
+                        .append("\n")
+                        .append(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player)
+                                .withStyle(ChatFormatting.WHITE)
+                        )
+                        .append("\n")
+                        .append(getTranslatedText("commands.teleport_commands.common.forceTeleport", player)
+                                .withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD)
+                                .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/back true")))
+                        )
+                        .append("\n"), false);
                 return;
             }
 

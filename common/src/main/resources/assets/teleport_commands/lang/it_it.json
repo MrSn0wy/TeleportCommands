@@ -64,5 +64,6 @@
   "commands.teleport_commands.common.defaultPrompt": "[Set Default]",
   "commands.teleport_commands.common.noLocation": "Nessuna Posizione Trovata!",
   "commands.teleport_commands.common.hoverCopy": "Click to copy!",
-  "commands.teleport_commands.common.worldNotFound": "World not found!"
+  "commands.teleport_commands.common.worldNotFound": "World not found!",
+  "commands.teleport_commands.common.nameExists": "That name already exists!"
 }

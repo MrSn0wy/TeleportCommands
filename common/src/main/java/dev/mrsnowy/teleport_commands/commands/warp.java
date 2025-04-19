@@ -1,7 +1,7 @@
 package dev.mrsnowy.teleport_commands.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import dev.mrsnowy.teleport_commands.TeleportCommands;
+import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.suggestions.WarpSuggestionProvider;
 import dev.mrsnowy.teleport_commands.utils.tools;
@@ -41,7 +41,7 @@ public class warp {
                                 SetWarp(player, name);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while setting the warp!", e);
+                                Constants.LOGGER.error("Error while setting the warp!", e);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.setError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -59,7 +59,7 @@ public class warp {
                                 GoToWarp(player, name);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while going to the warp!",e);
+                                Constants.LOGGER.error("Error while going to the warp!",e);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -80,7 +80,7 @@ public class warp {
                                 DeleteWarp(player, name);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while deleting to the warp!", e);
+                                Constants.LOGGER.error("Error while deleting to the warp!", e);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.deleteError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -103,7 +103,7 @@ public class warp {
                                 RenameWarp(player, name, newName);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while renaming the warp!", e);
+                                Constants.LOGGER.error("Error while renaming the warp!", e);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.renameError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -119,7 +119,7 @@ public class warp {
                         PrintWarps(player);
 
                     } catch (Exception e) {
-                        TeleportCommands.LOGGER.error("Error while printing warps!", e);
+                        Constants.LOGGER.error("Error while printing warps!", e);
                         player.displayClientMessage(getTranslatedText("commands.teleport_commands.warps.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
@@ -134,17 +134,20 @@ public class warp {
         BlockPos blockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
         String worldString = player.serverLevel().dimension().location().toString();
 
-        // Check if warp already exists
-        if ( STORAGE.getWarp(warpName).isPresent() ) {
+        // Create the NamedLocation
+        NamedLocation warp = new NamedLocation(warpName, blockPos, worldString);
+
+        // Adds the warp, returns true if the warp already exists
+        boolean warpExists = STORAGE.addWarp(warp);
+
+        if (warpExists) {
+            // Display error message that the warp already exists
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.exists", player).withStyle(ChatFormatting.RED), true);
-            return;
+
+        } else {
+            // Display message that the home as been set
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.set", player), true);
         }
-
-        // Create the warp
-        STORAGE.setWarp(warpName, blockPos, worldString);
-
-        // Display message that the home as been set
-        player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.set", player), true);
     }
 
     private static void GoToWarp(ServerPlayer player, String warpName) throws Exception {
@@ -163,7 +166,7 @@ public class warp {
         Optional<ServerLevel> optionalWorld = warp.getWorld();
 
         if (optionalWorld.isEmpty()) {
-            TeleportCommands.LOGGER.warn("({}) Error while going to the warp \"{}\"! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
+            Constants.LOGGER.warn("({}) Error while going to the warp \"{}\"! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
                     player.getName().getString(),
                     warp.getName(),
                     warp.getWorldString(),
@@ -200,7 +203,7 @@ public class warp {
 
         if (optionalWarp.isPresent()) {
             // Delete the warp
-            STORAGE.rmWarp(optionalWarp.get());
+            STORAGE.removeWarp(optionalWarp.get());
 
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.delete", player), true);
 
@@ -216,7 +219,7 @@ public class warp {
 
         // check if there is no existing warp with the new name
         if (STORAGE.getWarp(newWarpName).isPresent()) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.renameExists", player).withStyle(ChatFormatting.RED), true);
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.nameExists", player).withStyle(ChatFormatting.RED), true);
             return;
         }
 

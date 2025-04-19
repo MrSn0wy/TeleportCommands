@@ -4,7 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import dev.mrsnowy.teleport_commands.TeleportCommands;
+import dev.mrsnowy.teleport_commands.Constants;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -34,7 +34,7 @@ public class HomeSuggestionProvider implements SuggestionProvider<CommandSourceS
             // Build and return the suggestions
             return builder.buildFuture();
         } catch (Exception e) {
-            TeleportCommands.LOGGER.error("Error getting home suggestions! ", e);
+            Constants.LOGGER.error("Error getting home suggestions! ", e);
             return null;
         }
     }

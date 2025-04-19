@@ -46,6 +46,7 @@ public class NamedLocation {
         return this.z;
     }
 
+    // Return the world id as a string
     public String getWorldString() {
         return this.world;
     }

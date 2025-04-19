@@ -2,7 +2,7 @@ package dev.mrsnowy.teleport_commands.commands;
 
 import java.util.*;
 
-import dev.mrsnowy.teleport_commands.TeleportCommands;
+import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.suggestions.tpaSuggestionProvider;
 
 import net.minecraft.ChatFormatting;
@@ -48,7 +48,7 @@ public class tpa {
                             } catch (Exception e) {
                                 // this shouldn't happen with any of these commands, but if it does happen I am at least printing it to the logs and catching it.
                                 // if it appears that this can happen then I'll add error messages for the client, for now the default minecraft ones will do
-                                TeleportCommands.LOGGER.error("Error while sending a tpa request! => ", e);
+                                Constants.LOGGER.error("Error while sending a tpa request! => ", e);
                                 return 1;
                             }
                             return 0;
@@ -65,7 +65,7 @@ public class tpa {
                                 tpaCommandHandler(player, TargetPlayer, true);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while sending a tpahere request! => ", e);
+                                Constants.LOGGER.error("Error while sending a tpahere request! => ", e);
                                 return 1;
                             }
                             return 0;
@@ -82,7 +82,7 @@ public class tpa {
                                 tpaAccept(player, TargetPlayer);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while accepting a tpa(here) request! => ", e);
+                                Constants.LOGGER.error("Error while accepting a tpa(here) request! => ", e);
                                 return 1;
                             }
 
@@ -100,7 +100,7 @@ public class tpa {
                                 tpaDeny(player, TargetPlayer);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while denying a tpa(here) request! => ", e);
+                                Constants.LOGGER.error("Error while denying a tpa(here) request! => ", e);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.setError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }

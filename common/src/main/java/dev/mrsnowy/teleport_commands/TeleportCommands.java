@@ -8,26 +8,18 @@ import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.LevelResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.*;
 
 public class TeleportCommands {
-	public static final String MOD_ID = "teleport_commands";
-	public static final String MOD_NAME = "Teleport Commands";
-	public static String VERSION = "unknown";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 	public static String MOD_LOADER;
 	public static Path SAVE_DIR;
 	public static Path CONFIG_DIR;
@@ -37,17 +29,17 @@ public class TeleportCommands {
 	// Gets ran when the server starts
 	public static void initializeMod(MinecraftServer server) {
 
-		InputStream stream = TeleportCommands.class.getResourceAsStream("/version");
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(stream, "Couldn't find the version file!"), StandardCharsets.UTF_8));
-			VERSION = reader.readLine();
-
-		} catch (Exception e) {
-			LOGGER.error("Couldn't find the version file!");
-		}
+//		InputStream stream = TeleportCommands.class.getResourceAsStream("/version");
+//		try {
+//			BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(stream, "Couldn't find the version file!"), StandardCharsets.UTF_8));
+//			Constants.VERSION = reader.readLine();
+//
+//		} catch (Exception e) {
+//			Constants.LOGGER.error("Couldn't find the version file!");
+//		}
 
 		// initialize da variables
-		LOGGER.info("Initializing Teleport Commands (V{})! Hello {}!", VERSION, MOD_LOADER);
+		Constants.LOGGER.info("Initializing Teleport Commands (V{})! Hello {}!", Constants.VERSION, MOD_LOADER);
 
 		SAVE_DIR = Path.of(String.valueOf(server.getWorldPath(LevelResource.ROOT)));
 
@@ -79,7 +71,7 @@ public class TeleportCommands {
 
 	// cleans and updates Storage to the newest "version". This is painful
 	private static StorageClass storageValidator() {
-		LOGGER.info("Cleaning and updating Storage!");
+		Constants.LOGGER.info("Cleaning and updating Storage!");
 
 		try {
 			StorageInit();
@@ -233,16 +225,16 @@ public class TeleportCommands {
 				int diff = Math.round(( startFileSize - Files.size(StorageManager.STORAGE_FILE) ));
 
 				if (diff > 0) {
-					LOGGER.info("Success! Cleaned: {}B", diff);
+					Constants.LOGGER.info("Success! Cleaned: {}B", diff);
 				} else {
-					LOGGER.info("Success!");
+					Constants.LOGGER.info("Success!");
 				}
 
 				return gson.fromJson(mainJsonObject, StorageManager.StorageClass.class);
 			}
 
 		} catch (IOException e) {
-			LOGGER.error("Error while cleaning the database!", e);
+			Constants.LOGGER.error("Error while cleaning the database!", e);
 		}
 
         return null;

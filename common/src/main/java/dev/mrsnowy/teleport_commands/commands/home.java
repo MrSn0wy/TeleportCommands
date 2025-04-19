@@ -1,13 +1,12 @@
 package dev.mrsnowy.teleport_commands.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import dev.mrsnowy.teleport_commands.TeleportCommands;
+import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.common.Player;
 import dev.mrsnowy.teleport_commands.suggestions.HomeSuggestionProvider;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +21,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 
 import static dev.mrsnowy.teleport_commands.storage.StorageManager.STORAGE;
 import static dev.mrsnowy.teleport_commands.utils.tools.getTranslatedText;
@@ -43,7 +41,7 @@ public class home {
                                 SetHome(player, name);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while setting a home! => ", e);
+                                Constants.LOGGER.error("Error while setting a home! => ", e);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.setError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -60,7 +58,7 @@ public class home {
                         GoHome(player, "");
 
                     } catch (Exception e) {
-                        TeleportCommands.LOGGER.error("Error while going home! => ", e);
+                        Constants.LOGGER.error("Error while going home! => ", e);
                         player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
@@ -76,7 +74,7 @@ public class home {
                                 GoHome(player, name);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while going to a specific home! => ", e);
+                                Constants.LOGGER.error("Error while going to a specific home! => ", e);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -94,7 +92,7 @@ public class home {
                                 DeleteHome(player, name);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while deleting a home! => ", e);
+                                Constants.LOGGER.error("Error while deleting a home! => ", e);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.deleteError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -114,7 +112,7 @@ public class home {
                                         RenameHome(player, name, newName);
 
                                     } catch (Exception e) {
-                                        TeleportCommands.LOGGER.error("Error while renaming a home! => ", e);
+                                        Constants.LOGGER.error("Error while renaming a home! => ", e);
                                         player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.renameError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                         return 1;
                                     }
@@ -133,7 +131,7 @@ public class home {
                                 SetDefaultHome(player, name);
 
                             } catch (Exception e) {
-                                TeleportCommands.LOGGER.error("Error while setting the default home! => ", e);
+                                Constants.LOGGER.error("Error while setting the default home! => ", e);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.defaultError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -149,7 +147,7 @@ public class home {
                         PrintHomes(player);
 
                     } catch (Exception e) {
-                        TeleportCommands.LOGGER.error("Error while printing the homes! => ", e);
+                        Constants.LOGGER.error("Error while printing the homes! => ", e);
                         player.displayClientMessage(getTranslatedText("commands.teleport_commands.homes.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
@@ -166,25 +164,28 @@ public class home {
         BlockPos blockPos = player.blockPosition();
         String worldString = player.serverLevel().dimension().location().toString();
 
-        // Gets player storage and makes it if it doesn't exist
+        // Gets the player's storage and creates it if it doesn't exist
         Player playerStorage = StorageManager.STORAGE.addPlayer(player.getStringUUID());
 
-        // check for duplicates
-        if (playerStorage.getHome(homeName).isPresent()) {
+        // Create the NamedLocation
+        NamedLocation warp = new NamedLocation(homeName, blockPos, worldString);
+
+        // Adds the home, returns true if the home already exists
+        boolean homeExists = playerStorage.addHome(warp);
+
+        if (homeExists) {
+            // Display error message that the home already exists
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.exists", player).withStyle(ChatFormatting.RED), true);
-            return;
+
+        } else {
+            // Set it as the default if there are no other homes
+            if (playerStorage.getHomes().size() == 1) {
+                playerStorage.setDefaultHome(homeName);
+            }
+
+            // Display message that the home has been set
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.set", player), true);
         }
-
-        // Create a new NamedLocation
-        playerStorage.setHome(homeName, blockPos, worldString);
-
-        // Set it as the default if there are no other homes
-        if (playerStorage.getHomes().size() == 1) {
-            playerStorage.setDefaultHome(homeName);
-        }
-
-        // Display message that the home as been set
-        player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.set", player), true);
     }
 
     // Teleports the player to the home. It will go to the defaultHome if homeName is empty
@@ -227,7 +228,7 @@ public class home {
         Optional<ServerLevel> optionalWorld = home.getWorld();
 
         if (optionalWorld.isEmpty()) {
-            TeleportCommands.LOGGER.warn("({}) Error while going to the home \"{}\"! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
+            Constants.LOGGER.warn("({}) Error while going to the home \"{}\"! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
                     player.getName().getString(),
                     home.getName(),
                     home.getWorldString(),
@@ -302,11 +303,10 @@ public class home {
         Player playerStorage = optionalPlayerStorage.get();
 
         // Check if there already is a home with the new name
-        playerStorage.getHome("newHomeName").ifPresent(name -> {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.renameExists", player).withStyle(ChatFormatting.RED), true);
+        if (playerStorage.getHome(newHomeName).isPresent()) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.nameExists", player).withStyle(ChatFormatting.RED), true);
             return;
-            // todo! does this exit correctly?
-        });
+        }
 
         // Get the home that needs to be renamed
         Optional<NamedLocation> optionalHome = playerStorage.getHome(homeName);

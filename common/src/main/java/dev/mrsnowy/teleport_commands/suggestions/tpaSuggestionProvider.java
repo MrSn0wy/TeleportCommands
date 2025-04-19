@@ -4,7 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import dev.mrsnowy.teleport_commands.TeleportCommands;
+import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.commands.tpa;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -36,7 +36,7 @@ public class tpaSuggestionProvider implements SuggestionProvider<CommandSourceSt
             // Build and return the suggestions
             return builder.buildFuture();
         } catch (Exception e) {
-            TeleportCommands.LOGGER.error("Error getting tpa suggestions! ", e);
+            Constants.LOGGER.error("Error getting tpa suggestions! ", e);
             return null;
         }
     }

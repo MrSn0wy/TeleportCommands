@@ -5,7 +5,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import dev.mrsnowy.teleport_commands.TeleportCommands;
+import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 
@@ -28,7 +28,7 @@ public class WarpSuggestionProvider implements SuggestionProvider<CommandSourceS
             // Build and return the suggestions
             return builder.buildFuture();
         } catch (Exception e) {
-            TeleportCommands.LOGGER.error("Error getting warp suggestions! ", e);
+            Constants.LOGGER.error("Error getting warp suggestions! ", e);
             return null;
         }
     }

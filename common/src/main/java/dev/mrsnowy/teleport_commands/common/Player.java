@@ -48,23 +48,17 @@ public class Player {
         StorageManager.StorageSaver();
     }
 
-    // todo! modify this so it uses a NamedLocation
-    // creates a new home, if there already is a home it will update the existing one
-    public void setHome(String name, BlockPos pos, String world) throws Exception {
-        Optional<NamedLocation> optionalHome = getHome(name);
-        NamedLocation home;
+    // Adds a NamedLocation to the home list, returns true if it already exists
+    public boolean addHome(NamedLocation home) throws Exception {
+        if (getHome(home.getName()).isPresent()) {
+            // Home with same name found!
+            return true;
 
-        if (optionalHome.isEmpty()) {
-            home = new NamedLocation(name, pos, world);
-
-            Homes.add(home);
         } else {
-            home = optionalHome.get();
-
-            home.setName(name);
+            Homes.add(home);
+            StorageManager.StorageSaver();
+            return false;
         }
-
-        StorageManager.StorageSaver();
     }
 
     // -----

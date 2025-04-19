@@ -64,5 +64,6 @@
   "commands.teleport_commands.common.defaultPrompt": "[Standaard instellen]",
   "commands.teleport_commands.common.noLocation": "Geen Locatie Gevonden!",
   "commands.teleport_commands.common.hoverCopy": "Klik om te kopiëren!",
-  "commands.teleport_commands.common.worldNotFound": "Wereld niet gevonden!"
+  "commands.teleport_commands.common.worldNotFound": "Wereld niet gevonden!",
+  "commands.teleport_commands.common.nameExists": "Die naam bestaad al!"
 }

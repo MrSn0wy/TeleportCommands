@@ -1,11 +1,13 @@
 package dev.mrsnowy.teleport_commands.commands;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -30,7 +32,7 @@ public class worldspawn {
                         toWorldSpawn(player, false);
 
                     } catch (Exception error) {
-                        TeleportCommands.LOGGER.error("Error while going to the worldspawn! => ", error);
+                        Constants.LOGGER.error("Error while going to the worldspawn! => ", error);
                         player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
@@ -46,7 +48,7 @@ public class worldspawn {
                                 toWorldSpawn(player, safety);
 
                             } catch (Exception error) {
-                                TeleportCommands.LOGGER.error("Error while going to the worldspawn! => ", error);
+                                Constants.LOGGER.error("Error while going to the worldspawn! => ", error);
                                 player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
@@ -57,7 +59,7 @@ public class worldspawn {
     }
 
     private static void toWorldSpawn(ServerPlayer player, boolean safetyDisabled) throws NullPointerException {
-        // todo! maybe make this more fool proof?
+        // todo! make the dimension customizable
         ServerLevel world = TeleportCommands.SERVER.getLevel(OVERWORLD);
         BlockPos worldSpawn = Objects.requireNonNull(world,"Overworld cannot be null!").getSharedSpawnPos();
 
@@ -79,10 +81,22 @@ public class worldspawn {
                 }
 
             } else {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), false);
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player).withStyle(ChatFormatting.AQUA), false);
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.forceTeleport", player).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
-                        .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/worldspawn true"))),false);
+
+                player.displayClientMessage(
+                        Component.empty()
+                        .append(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player)
+                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
+                        )
+                        .append("\n")
+                        .append(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player)
+                                .withStyle(ChatFormatting.WHITE)
+                        )
+                        .append("\n")
+                        .append(getTranslatedText("commands.teleport_commands.common.forceTeleport", player)
+                                .withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD)
+                                .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/worldspawn true")))
+                        )
+                        .append("\n"), false);
             }
 
         } else {
