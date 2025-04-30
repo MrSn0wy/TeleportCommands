@@ -64,7 +64,8 @@ public class home {
                     }
                     return 0;
                 })
-                .then(argument("name", StringArgumentType.string()).suggests(new HomeSuggestionProvider())
+                .then(argument("name", StringArgumentType.string())
+                        .suggests(new HomeSuggestionProvider())
                         .requires(source -> source.getPlayer() != null)
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
@@ -83,7 +84,8 @@ public class home {
 
         commandManager.getDispatcher().register(Commands.literal("delhome")
                 .requires(source -> source.getPlayer() != null)
-                .then(argument("name", StringArgumentType.string()).suggests(new HomeSuggestionProvider())
+                .then(argument("name", StringArgumentType.string())
+                        .suggests(new HomeSuggestionProvider())
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
                             final ServerPlayer player = context.getSource().getPlayerOrException();
@@ -101,7 +103,8 @@ public class home {
 
         commandManager.getDispatcher().register(Commands.literal("renamehome")
                 .requires(source -> source.getPlayer() != null)
-                .then(argument("name", StringArgumentType.string()).suggests(new HomeSuggestionProvider())
+                .then(argument("name", StringArgumentType.string())
+                        .suggests(new HomeSuggestionProvider())
                         .then(argument("newName", StringArgumentType.string())
                                 .executes(context -> {
                                     final String name = StringArgumentType.getString(context, "name");
@@ -377,8 +380,8 @@ public class home {
 
         // make da message
         message.append(getTranslatedText("commands.teleport_commands.homes.homes", player)
-                        .withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
-                );
+                .withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
+        );
 
 
         for (NamedLocation currentHome : homes) {
@@ -458,7 +461,7 @@ public class home {
                                     style.withClickEvent(
                                             new ClickEvent(
                                                     ClickEvent.Action.RUN_COMMAND,
-                                                    String.format("/home %s", currentHome.getName())
+                                                    String.format("/home \"%s\"", currentHome.getName())
                                             )
                                     )
                             )
@@ -470,7 +473,7 @@ public class home {
                                     style.withClickEvent(
                                             new ClickEvent(
                                                     ClickEvent.Action.SUGGEST_COMMAND,
-                                                    String.format("/renamehome %s ", currentHome.getName())
+                                                    String.format("/renamehome \"%s\" ", currentHome.getName())
                                             )
                                     )
                             )
@@ -485,7 +488,7 @@ public class home {
                                 style.withClickEvent(
                                         new ClickEvent(
                                                 ClickEvent.Action.RUN_COMMAND,
-                                                String.format("/defaulthome %s", currentHome.getName())
+                                                String.format("/defaulthome \"%s\"", currentHome.getName())
                                         )
                                 )
                         )
@@ -494,16 +497,16 @@ public class home {
             }
 
             message.append(getTranslatedText("commands.teleport_commands.common.delete", player)
-                            .withStyle(ChatFormatting.RED)
-                            .withStyle(style ->
-                                    style.withClickEvent(
-                                            new ClickEvent(
-                                                    ClickEvent.Action.SUGGEST_COMMAND,
-                                                    String.format("/delhome %s", currentHome.getName())
-                                            )
+                    .withStyle(ChatFormatting.RED)
+                    .withStyle(style ->
+                            style.withClickEvent(
+                                    new ClickEvent(
+                                            ClickEvent.Action.SUGGEST_COMMAND,
+                                            String.format("/delhome \"%s\"", currentHome.getName())
                                     )
                             )
-                    );
+                    )
+            );
 
             // linebreak
             message.append("\n");

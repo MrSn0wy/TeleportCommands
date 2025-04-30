@@ -26,26 +26,12 @@ public class TeleportCommands {
 	public static MinecraftServer SERVER;
 
 
-	// Gets ran when the server starts
+	// Gets ran when the server starts, initializes the mod :3
 	public static void initializeMod(MinecraftServer server) {
-
-//		InputStream stream = TeleportCommands.class.getResourceAsStream("/version");
-//		try {
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(stream, "Couldn't find the version file!"), StandardCharsets.UTF_8));
-//			Constants.VERSION = reader.readLine();
-//
-//		} catch (Exception e) {
-//			Constants.LOGGER.error("Couldn't find the version file!");
-//		}
-
-		// initialize da variables
 		Constants.LOGGER.info("Initializing Teleport Commands (V{})! Hello {}!", Constants.VERSION, MOD_LOADER);
 
 		SAVE_DIR = Path.of(String.valueOf(server.getWorldPath(LevelResource.ROOT)));
-
-		// Construct the game directory path
-		CONFIG_DIR = Paths.get(System.getProperty("user.dir")).resolve("config");
-
+		CONFIG_DIR = Paths.get(System.getProperty("user.dir")).resolve("config"); // Construct the game directory path
 		SERVER = server;
 
 		StorageManager.STORAGE = storageValidator();

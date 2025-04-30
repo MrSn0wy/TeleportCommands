@@ -14,22 +14,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved the error messages for command suggestions.
 - Improved the messages styling for when no safe location is found while running `/back` or `/worldspawn`  
 - Improved the sending of the homes/warps when doing `/homes` or `/warps` (They now get sent in one message instead of multiple)
+- Improved the English and Dutch translations.
 - Reduced the size of the mod icon by 60% (a 40kb reduction) using some `zopflipng` black magic. (sadly this only made the mod jar 5kb smaller :<)
 
 #### Fixed
-- Fixed the markdown for the translations from being bundled with the mod jar.
+- Fixed the teleport/delete/rename buttons to work with names that have special characters by putting it in quotations (Fixes issue #12)
+- Fixed the markdown file for the translations from being bundled with the mod jar.
 - Fixed the usage of an invalid translation string when renaming a Home or Warp to a name that already exists.
 - Fixed the error handling for when a world isn't found (when going back, going home or warping).
   - It now throws a warning and gives the player a new error message (before it would give an incorrect `notFound` error)
 
 #### Added
-- added version
-- Added hover effects for warp and homes text (W.I.P)
-- Added comments to a lot of code (W.I.P)
+- Added a version variable in the mod that gets printed on startup
+- Added comments to a lot of code
+- Added a new `common.hoverCopy` translation key for when hovering over a location/dimension text in `/warps` or `/homes`.
 - Added a new `home.defaultNone` translation key for when there is no default house set. (before this would give `home.homeless` for some reason)
 - Added a new `common.worldNotFound` translation key for when a world cannot be found
 - Added a new `common.defaultPrompt` translation key for a new "Set Default" button for `/homes`
 - Added a new `common.nameExists` translation key for when that name already exists
+- Added Bulgarian translations (Thanks to a friend of mine!)
 
 ### [v1.2.2]
 - Handled a case where the client (geyser) will return the language as uppercase instead of lowercase.

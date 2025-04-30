@@ -28,3 +28,4 @@ Things to know:
 - Russian (ru_ru): [rfin0](https://github.com/rfin0)
 - Traditional Chinese (zw_tw): [hugoalh](https://github.com/hugoalh), [Dicecan](https://github.com/Dicecan)
 - Simplified Chinese (zh_cn): [Dicecan](https://github.com/Dicecan)
+- Bulgarian (bg_bg): Anonymous

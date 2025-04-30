@@ -1,10 +1,10 @@
-# Teleport Commands <img src="https://raw.githubusercontent.com/MrSn0wy/TeleportCommands/main/common/src/main/resources/teleport_commands.png" alt="Teleport Commands Logo" width="30"/>
+# Teleport Commands <img alt="Teleport Commands Logo" src="https://raw.githubusercontent.com/MrSn0wy/TeleportCommands/main/common/src/main/resources/teleport_commands.png" width="30"/>
 
 A Minecraft server-side mod that adds various teleportation related commands, like /home /tpa and /back
 
 Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CHANGELOG.md)
 
-#### Currently available commands:
+### Currently available commands:
 
 - `/worldspawn [<Disable Safety>]` - Teleports you to the world spawn (in the overworld), if given true it will not do safety checks
 - `/back [<Disable Safety>]` -  Teleports you to the location where you last died, if given true it will not do safety checks
@@ -46,6 +46,7 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 - [ ] Find the easiest way to backport the mod to older version (help)
 - [ ] Create a config to add any delays and disable commands, with commands for operators in game
 - [ ] Add a perm system
+- [ ] Optimize the translation strings (They are getting out of hand)
 - [x] Find a way to combine the mod loader specific jars into one
 - [x] Json Storage automatic updater & cleaner
 - [x] Modify /back to check if the location is safe and automatically choose a nearby location that is safe
@@ -55,9 +56,15 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 - [x] Add Quilt support and NeoForge
 
 
-### Want to help?
+#### Want to help?
 
 1. You can create a translation file so other people can use the mod in their native language: [translations.md](./common/src/main/resources/assets/teleport_commands/lang/translations.md)
+
+
+#### How to build
+w.i.p.
+just use correto21 and an intellij idea, then just run the build option that should appear. That's what I do :3
+
 
 #### Notes
 

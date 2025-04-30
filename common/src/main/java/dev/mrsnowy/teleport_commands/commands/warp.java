@@ -30,7 +30,7 @@ public class warp {
         commandManager.getDispatcher().register(Commands.literal("setwarp")
                 .requires(source ->
                         source.getPlayer() != null &&
-                        source.hasPermission(4)
+                                source.hasPermission(4)
                 )
                 .then(argument("name", StringArgumentType.string())
                         .executes(context -> {
@@ -50,7 +50,8 @@ public class warp {
 
         commandManager.getDispatcher().register(Commands.literal("warp")
                 .requires(source -> source.getPlayer() != null)
-                .then(argument("name", StringArgumentType.string()).suggests(new WarpSuggestionProvider())
+                .then(argument("name", StringArgumentType.string())
+                        .suggests(new WarpSuggestionProvider())
                         .executes(context -> {
                             final String name = StringArgumentType.getString(context, "name");
                             final ServerPlayer player = context.getSource().getPlayerOrException();
@@ -69,7 +70,7 @@ public class warp {
         commandManager.getDispatcher().register(Commands.literal("delwarp")
                 .requires(source ->
                         source.getPlayer() != null &&
-                        source.hasPermission(4)
+                                source.hasPermission(4)
                 )
                 .then(argument("name", StringArgumentType.string()).suggests(new WarpSuggestionProvider())
                         .executes(context -> {
@@ -90,25 +91,25 @@ public class warp {
         commandManager.getDispatcher().register(Commands.literal("renamewarp")
                 .requires(source ->
                         source.getPlayer() != null &&
-                        source.hasPermission(4)
+                                source.hasPermission(4)
                 )
                 .then(argument("name", StringArgumentType.string()).suggests(new WarpSuggestionProvider())
-                .then(argument("newName", StringArgumentType.string())
-                        .executes(context -> {
-                            final String name = StringArgumentType.getString(context, "name");
-                            final String newName = StringArgumentType.getString(context, "newName");
-                            final ServerPlayer player = context.getSource().getPlayerOrException();
+                        .then(argument("newName", StringArgumentType.string())
+                                .executes(context -> {
+                                    final String name = StringArgumentType.getString(context, "name");
+                                    final String newName = StringArgumentType.getString(context, "newName");
+                                    final ServerPlayer player = context.getSource().getPlayerOrException();
 
-                            try {
-                                RenameWarp(player, name, newName);
+                                    try {
+                                        RenameWarp(player, name, newName);
 
-                            } catch (Exception e) {
-                                Constants.LOGGER.error("Error while renaming the warp!", e);
-                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.renameError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
-                            }
-                            return 0;
-                        }))));
+                                    } catch (Exception e) {
+                                        Constants.LOGGER.error("Error while renaming the warp!", e);
+                                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.renameError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                        return 1;
+                                    }
+                                    return 0;
+                                }))));
 
         commandManager.getDispatcher().register(Commands.literal("warps")
                 .requires(source -> source.getPlayer() != null)
@@ -129,6 +130,7 @@ public class warp {
 
 
     private static void SetWarp(ServerPlayer player, String warpName) throws Exception {
+        System.out.println(warpName);
         warpName = warpName.toLowerCase();
 
         BlockPos blockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
@@ -252,8 +254,8 @@ public class warp {
 
         // make da message
         message.append(getTranslatedText("commands.teleport_commands.warps.warps", player)
-                        .withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
-                );
+                    .withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
+            );
 
         for (NamedLocation currentWarp : warps) {
 
@@ -283,8 +285,8 @@ public class warp {
                             .withStyle(style ->
                                     style.withClickEvent(
                                             new ClickEvent(
-                                                ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                                String.format("X%d Y%d Z%d", currentWarp.getX(), currentWarp.getY(), currentWarp.getZ())
+                                                    ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                    String.format("X%d Y%d Z%d", currentWarp.getX(), currentWarp.getY(), currentWarp.getZ())
                                             )
                                     )
                             )
@@ -300,16 +302,16 @@ public class warp {
                             .withStyle(style ->
                                     style.withClickEvent(
                                             new ClickEvent(
-                                                ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                                currentWarp.getWorldString()
+                                                    ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                    currentWarp.getWorldString()
                                             )
                                     )
                             )
                             .withStyle(style -> style
                                     .withHoverEvent(
                                             new HoverEvent(
-                                                HoverEvent.Action.SHOW_TEXT,
-                                                getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                                    HoverEvent.Action.SHOW_TEXT,
+                                                    getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
                                             )
                                     )
                             )
@@ -325,7 +327,7 @@ public class warp {
                             .withStyle(style ->
                                     style.withClickEvent(new ClickEvent(
                                             ClickEvent.Action.RUN_COMMAND,
-                                            String.format("/warp %s", currentWarp.getName())
+                                            String.format("/warp \"%s\"", currentWarp.getName())
                                     ))
                             )
                     )
@@ -334,24 +336,24 @@ public class warp {
             // Rename and delete buttons if admin
             if (canModify) {
                 message.append(getTranslatedText("commands.teleport_commands.common.rename", player)
-                            .withStyle(ChatFormatting.BLUE)
-                            .withStyle(style -> style
-                                    .withClickEvent(new ClickEvent(
-                                            ClickEvent.Action.SUGGEST_COMMAND,
-                                            String.format("/renamewarp %s ", currentWarp.getName()))
-                                    )
-                            )
-                    )
-                    .append(" ")
-                    .append(getTranslatedText("commands.teleport_commands.common.delete", player)
-                            .withStyle(ChatFormatting.RED)
-                            .withStyle(style -> style
-                                    .withClickEvent(new ClickEvent(
-                                            ClickEvent.Action.SUGGEST_COMMAND,
-                                            String.format("/delwarp %s", currentWarp.getName()))
-                                    )
-                            )
-                    );
+                        .withStyle(ChatFormatting.BLUE)
+                        .withStyle(style -> style
+                                .withClickEvent(new ClickEvent(
+                                        ClickEvent.Action.SUGGEST_COMMAND,
+                                        String.format("/renamewarp \"%s\" ", currentWarp.getName()))
+                                )
+                        )
+                )
+                .append(" ")
+                .append(getTranslatedText("commands.teleport_commands.common.delete", player)
+                        .withStyle(ChatFormatting.RED)
+                        .withStyle(style -> style
+                                .withClickEvent(new ClickEvent(
+                                        ClickEvent.Action.SUGGEST_COMMAND,
+                                        String.format("/delwarp \"%s\"", currentWarp.getName()))
+                                )
+                        )
+                );
             }
 
             // linebreak
