@@ -1,11 +1,13 @@
 # Changelog
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### [W.I.P]
+### [1.3.1]
+- Updated Russian translations (Thanks to [rfin0](https://github.com/rfin0)!)
+
+### [1.3.0]
 #### Changed
 - Storage is loaded in memory instead of reading it again and again, Improves speed and IO usage, however there might be slightly higher passive memory usage.
 - Added a new merged jar file that combines the jars of the mod-loaders into one. (Thanks to [forgix](https://github.com/PacifistMC/Forgix)!) (This will also from now on be published on Modrinth)
