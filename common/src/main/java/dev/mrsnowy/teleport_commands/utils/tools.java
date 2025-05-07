@@ -32,13 +32,13 @@ public class tools {
         // teleportation effects & sounds before teleporting
         world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 20, 0.0D, 0.0D, 0.0D, 0.01);
         world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
-        world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
+        world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.getLocation()), SoundSource.PLAYERS, 0.4f, 1.0f);
 
         // check if the player is currently flying
         boolean flying = player.getAbilities().flying;
 
         // teleport!
-        player.teleportTo(world, coords.x, coords.y, coords.z, Set.of(), player.getYRot(), player.getXRot(), false);
+        player.teleportTo(world, coords.x, coords.y, coords.z, player.getYRot(), player.getXRot());
 
         // Restore flying when teleporting trough dimensions
         if (flying) {
@@ -47,7 +47,7 @@ public class tools {
         }
 
         // teleportation sound after teleport
-        world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
+        world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.getLocation()), SoundSource.PLAYERS, 0.4f, 1.0f);
 
         // delay visual effects so the player can see it when switching dimensions
         Timer timer = new Timer();
