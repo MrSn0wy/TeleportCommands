@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [1.3.1]
 - Updated Russian translations (Thanks to [rfin0](https://github.com/rfin0)!)
+- Changed the text color to red when running `/delhome` and the home isn't found. This is now consistent with `/delwarp`
 
 ### [1.3.0]
 #### Changed

@@ -275,7 +275,7 @@ public class home {
         // Get the home from the player
         Optional<NamedLocation> optionalHome = playerStorage.getHome(homeName);
         if (optionalHome.isEmpty()) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.AQUA), true);
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
             return;
         }
 
