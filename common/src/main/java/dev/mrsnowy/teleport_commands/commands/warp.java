@@ -284,33 +284,31 @@ public class warp {
                             .withStyle(ChatFormatting.LIGHT_PURPLE)
                             .withStyle(style ->
                                     style.withClickEvent(
-                                            new ClickEvent(
-                                                    ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                            new ClickEvent.CopyToClipboard(
                                                     String.format("X%d Y%d Z%d", currentWarp.getX(), currentWarp.getY(), currentWarp.getZ())
                                             )
                                     )
                             )
                             .withStyle(style ->
-                                    style.withHoverEvent(new HoverEvent(
-                                            HoverEvent.Action.SHOW_TEXT,
-                                            getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
-                                    ))
+                                    style.withHoverEvent(
+                                            new HoverEvent.ShowText(
+                                                    getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                            )
+                                    )
                             )
                     )
                     .append(Component.literal(dimension)
                             .withStyle(ChatFormatting.DARK_PURPLE)
                             .withStyle(style ->
                                     style.withClickEvent(
-                                            new ClickEvent(
-                                                    ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                            new ClickEvent.CopyToClipboard(
                                                     currentWarp.getWorldString()
                                             )
                                     )
                             )
                             .withStyle(style -> style
                                     .withHoverEvent(
-                                            new HoverEvent(
-                                                    HoverEvent.Action.SHOW_TEXT,
+                                            new HoverEvent.ShowText(
                                                     getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
                                             )
                                     )
@@ -325,10 +323,11 @@ public class warp {
                     .append(getTranslatedText("commands.teleport_commands.common.tp", player)
                             .withStyle(ChatFormatting.GREEN)
                             .withStyle(style ->
-                                    style.withClickEvent(new ClickEvent(
-                                            ClickEvent.Action.RUN_COMMAND,
-                                            String.format("/warp \"%s\"", currentWarp.getName())
-                                    ))
+                                    style.withClickEvent(
+                                            new ClickEvent.RunCommand(
+                                                    String.format("/warp \"%s\"", currentWarp.getName())
+                                            )
+                                    )
                             )
                     )
                     .append(" ");
@@ -338,9 +337,10 @@ public class warp {
                 message.append(getTranslatedText("commands.teleport_commands.common.rename", player)
                         .withStyle(ChatFormatting.BLUE)
                         .withStyle(style -> style
-                                .withClickEvent(new ClickEvent(
-                                        ClickEvent.Action.SUGGEST_COMMAND,
-                                        String.format("/renamewarp \"%s\" ", currentWarp.getName()))
+                                .withClickEvent(
+                                        new ClickEvent.SuggestCommand(
+                                                String.format("/renamewarp \"%s\" ", currentWarp.getName())
+                                        )
                                 )
                         )
                 )
@@ -348,9 +348,10 @@ public class warp {
                 .append(getTranslatedText("commands.teleport_commands.common.delete", player)
                         .withStyle(ChatFormatting.RED)
                         .withStyle(style -> style
-                                .withClickEvent(new ClickEvent(
-                                        ClickEvent.Action.SUGGEST_COMMAND,
-                                        String.format("/delwarp \"%s\"", currentWarp.getName()))
+                                .withClickEvent(
+                                        new ClickEvent.SuggestCommand(
+                                                String.format("/delwarp \"%s\"", currentWarp.getName())
+                                        )
                                 )
                         )
                 );

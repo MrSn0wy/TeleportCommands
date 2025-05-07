@@ -94,7 +94,10 @@ public class worldspawn {
                         .append("\n")
                         .append(getTranslatedText("commands.teleport_commands.common.forceTeleport", player)
                                 .withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD)
-                                .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/worldspawn true")))
+                                .withStyle(style -> style.withClickEvent(
+                                                new ClickEvent.RunCommand("/worldspawn true")
+                                        )
+                                )
                         )
                         .append("\n"), false);
             }

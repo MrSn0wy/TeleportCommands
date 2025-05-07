@@ -95,7 +95,8 @@ public class home {
 
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while deleting a home! => ", e);
-                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.deleteError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.deleteError", player)
+                                        .withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
                             return 0;
@@ -116,7 +117,8 @@ public class home {
 
                                     } catch (Exception e) {
                                         Constants.LOGGER.error("Error while renaming a home! => ", e);
-                                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.renameError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.renameError", player)
+                                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                         return 1;
                                     }
                                     return 0;
@@ -275,7 +277,7 @@ public class home {
         // Get the home from the player
         Optional<NamedLocation> optionalHome = playerStorage.getHome(homeName);
         if (optionalHome.isEmpty()) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.AQUA), true);
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.home.notFound", player).withStyle(ChatFormatting.RED), true);
             return;
         }
 
@@ -417,34 +419,34 @@ public class home {
                             .withStyle(ChatFormatting.LIGHT_PURPLE)
                             .withStyle(style ->
                                     style.withClickEvent(
-                                            new ClickEvent(
-                                                    ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                            new ClickEvent.CopyToClipboard(
                                                     String.format("X%d Y%d Z%d", currentHome.getX(), currentHome.getY(), currentHome.getZ())
                                             )
                                     )
                             )
                             .withStyle(style ->
-                                    style.withHoverEvent(new HoverEvent(
-                                            HoverEvent.Action.SHOW_TEXT,
-                                            getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
-                                    ))
+                                    style.withHoverEvent(
+                                            new HoverEvent.ShowText(
+                                                    getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                            )
+                                    )
                             )
                     )
                     .append(Component.literal(dimension)
                             .withStyle(ChatFormatting.DARK_PURPLE)
                             .withStyle(style ->
                                     style.withClickEvent(
-                                            new ClickEvent(
-                                                    ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                            new ClickEvent.CopyToClipboard(
                                                     currentHome.getWorldString()
                                             )
                                     )
                             )
                             .withStyle(style ->
-                                    style.withHoverEvent(new HoverEvent(
-                                            HoverEvent.Action.SHOW_TEXT,
-                                            getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
-                                    ))
+                                    style.withHoverEvent(
+                                            new HoverEvent.ShowText(
+                                                    getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                            )
+                                    )
                             )
                     );
 
@@ -459,8 +461,7 @@ public class home {
                             .withStyle(ChatFormatting.GREEN)
                             .withStyle(style ->
                                     style.withClickEvent(
-                                            new ClickEvent(
-                                                    ClickEvent.Action.RUN_COMMAND,
+                                            new ClickEvent.RunCommand(
                                                     String.format("/home \"%s\"", currentHome.getName())
                                             )
                                     )
@@ -471,8 +472,7 @@ public class home {
                             .withStyle(ChatFormatting.BLUE)
                             .withStyle(style ->
                                     style.withClickEvent(
-                                            new ClickEvent(
-                                                    ClickEvent.Action.SUGGEST_COMMAND,
+                                            new ClickEvent.SuggestCommand(
                                                     String.format("/renamehome \"%s\" ", currentHome.getName())
                                             )
                                     )
@@ -486,8 +486,7 @@ public class home {
                         .withStyle(ChatFormatting.DARK_AQUA)
                         .withStyle(style ->
                                 style.withClickEvent(
-                                        new ClickEvent(
-                                                ClickEvent.Action.RUN_COMMAND,
+                                        new ClickEvent.RunCommand(
                                                 String.format("/defaulthome \"%s\"", currentHome.getName())
                                         )
                                 )
@@ -500,8 +499,7 @@ public class home {
                     .withStyle(ChatFormatting.RED)
                     .withStyle(style ->
                             style.withClickEvent(
-                                    new ClickEvent(
-                                            ClickEvent.Action.SUGGEST_COMMAND,
+                                    new ClickEvent.SuggestCommand(
                                             String.format("/delhome \"%s\"", currentHome.getName())
                                     )
                             )

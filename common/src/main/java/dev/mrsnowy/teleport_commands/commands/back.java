@@ -115,7 +115,7 @@ public class back {
                         .append("\n")
                         .append(getTranslatedText("commands.teleport_commands.common.forceTeleport", player)
                                 .withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD)
-                                .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/back true")))
+                                .withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/back true")))
                         )
                         .append("\n"), false);
                 return;
