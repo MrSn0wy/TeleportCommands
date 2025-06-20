@@ -15,7 +15,7 @@
   "commands.teleport_commands.home.rename": "家已重命名",
   "commands.teleport_commands.home.renameError": "重命名家時發生錯誤!",
   "commands.teleport_commands.home.default": "默認的家設置",
-  "commands.teleport_commands.home.defaultNone": "No default home set!",
+  "commands.teleport_commands.home.defaultNone": "沒有設置默認的家!",
   "commands.teleport_commands.home.defaultError": "變更默認家時發生錯誤!",
   "commands.teleport_commands.home.defaultSame": "家已經設定為默認了!",
   "commands.teleport_commands.home.notFound": "沒有找到家!",
@@ -61,9 +61,9 @@
   "commands.teleport_commands.common.rename": "[重命名]",
   "commands.teleport_commands.common.delete": "[刪除]",
   "commands.teleport_commands.common.default": "(默認)",
-  "commands.teleport_commands.common.defaultPrompt": "[Set Default]",
+  "commands.teleport_commands.common.defaultPrompt": "[設為默認]",
   "commands.teleport_commands.common.noLocation": "找不到位置!",
   "commands.teleport_commands.common.hoverCopy": "點擊以複製!",
-  "commands.teleport_commands.common.worldNotFound": "World not found!",
-  "commands.teleport_commands.common.nameExists": "That name already exists!"
+  "commands.teleport_commands.common.worldNotFound": "沒有找到世界!",
+  "commands.teleport_commands.common.nameExists": "該名稱已存在!"
 }
