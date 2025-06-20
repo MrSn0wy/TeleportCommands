@@ -41,7 +41,7 @@
   "commands.teleport_commands.warps.error": "獲取傳送點時發生錯誤！",
   "commands.teleport_commands.warps.warps": "傳送點列表：",
 
-  "commands.teleport_commands.tpa.self": "傳送給自己嗎？這很簡單。",
+  "commands.teleport_commands.tpa.self": "這很簡單。",
   "commands.teleport_commands.tpa.alreadySent": "已向 %0% 送出傳送請求",
   "commands.teleport_commands.tpa.received": "收到來自 %1% 的 Tpa%0% 請求",
   "commands.teleport_commands.tpa.sent": "已向 %1% 送出 Tpa%0% 請求",
