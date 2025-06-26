@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [1.3.2]
+- Added Traditional Chinese (Hong Kong) translations. (Thanks to [hugoalh](https://github.com/hugoalh))
+- Updated Traditional Chinese (Taiwan) and Simplified Chinese translations. (Thanks to [hugoalh](https://github.com/hugoalh))
+- Fixed a bug which caused `/back` locations to persist when in single player and joining a different world.
+
 ### [1.3.1]
 - Updated Russian translations (Thanks to [rfin0](https://github.com/rfin0)!)
 - Changed the text color to red when running `/delhome` and the home isn't found. This is now consistent with `/delwarp`

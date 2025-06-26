@@ -47,6 +47,7 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 - [ ] Create a config to add any delays and disable commands, with commands for operators in game
 - [ ] Add a perm system
 - [ ] Optimize the translation strings (They are getting out of hand)
+- [ ] Potentially setup a better translation system (Maybe I will self-host texterify)
 - [x] Find a way to combine the mod loader specific jars into one
 - [x] Json Storage automatic updater & cleaner
 - [x] Modify /back to check if the location is safe and automatically choose a nearby location that is safe
