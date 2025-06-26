@@ -33,4 +33,8 @@ public class DeathLocationStorage {
             deathLocation.setWorld(world);
         }
     }
+
+    public static void clearDeathLocations() {
+        deathLocations.clear();
+    }
 }

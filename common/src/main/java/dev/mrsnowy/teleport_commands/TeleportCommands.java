@@ -34,7 +34,8 @@ public class TeleportCommands {
 		CONFIG_DIR = Paths.get(System.getProperty("user.dir")).resolve("config"); // Construct the game directory path
 		SERVER = server;
 
-		StorageManager.STORAGE = storageValidator();
+		StorageManager.STORAGE = storageValidator(); // Initialize the storage file
+		DeathLocationStorage.clearDeathLocations(); // Clear data of death locations.
 
 		// initialize commands, also allows me to easily disable any when there is a config
 		Commands commandManager = server.getCommands();

@@ -26,6 +26,7 @@ Things to know:
 - Hungarian (hu_hu): [Martin Morningstar](https://github.com/RMI637)
 - Italian (it_it): [Vlad Andrei Morariu](https://github.com/VladAndreiMorariu)
 - Russian (ru_ru): [rfin0](https://github.com/rfin0)
-- Traditional Chinese (zw_tw): [hugoalh](https://github.com/hugoalh), [Dicecan](https://github.com/Dicecan)
+- Traditional Chinese - Taiwan (zw_tw): [hugoalh](https://github.com/hugoalh), [Dicecan](https://github.com/Dicecan)
+- Traditional Chinese - Hong Kong (zh_hk): [Dicecan](https://github.com/Dicecan)
 - Simplified Chinese (zh_cn): [Dicecan](https://github.com/Dicecan)
 - Bulgarian (bg_bg): Anonymous
