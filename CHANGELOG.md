@@ -5,8 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### [1.3.2]
-- Added Traditional Chinese (Hong Kong) translations. (Thanks to [hugoalh](https://github.com/hugoalh))
-- Updated Traditional Chinese (Taiwan) and Simplified Chinese translations. (Thanks to [hugoalh](https://github.com/hugoalh))
+- Added Traditional Chinese (Hong Kong) translations. (Thanks to [Dicecan](https://github.com/Dicecan)
+- Updated Traditional Chinese (Taiwan) and Simplified Chinese translations. (Thanks to [Dicecan](https://github.com/Dicecan))
 - Fixed a bug which caused `/back` locations to persist when in single player and joining a different world.
 
 ### [1.3.1]
@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the usage of an invalid translation string when renaming a Home or Warp to a name that already exists.
 - Fixed the error handling for when a world isn't found (when going back, going home or warping).
   - It now throws a warning and gives the player a new error message (before it would give an incorrect `notFound` error)
+- Fixed Traditional Chinese - Taiwan (Thanks to [Dicecan](https://github.com/Dicecan)!)
 
 #### Added
 - Added a version variable in the mod that gets printed on startup
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a new `common.worldNotFound` translation key for when a world cannot be found
 - Added a new `common.defaultPrompt` translation key for a new "Set Default" button for `/homes`
 - Added a new `common.nameExists` translation key for when that name already exists
+- Added Simplified Chinese (Thanks to [Dicecan](https://github.com/Dicecan)!)
 - Added Bulgarian translations (Thanks to a friend of mine!)
 
 ### [v1.2.2]
