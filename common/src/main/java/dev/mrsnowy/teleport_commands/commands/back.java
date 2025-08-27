@@ -1,5 +1,6 @@
 package dev.mrsnowy.teleport_commands.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import dev.mrsnowy.teleport_commands.Constants;
 
@@ -9,6 +10,7 @@ import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
 import dev.mrsnowy.teleport_commands.common.DeathLocation;
 import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
@@ -22,9 +24,9 @@ import static net.minecraft.commands.Commands.argument;
 
 public class back {
 
-    public static void register(Commands commandManager) {
+    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
 
-        commandManager.getDispatcher().register(Commands.literal("back")
+        commandDispatcher.register(Commands.literal("back")
             .requires(source -> source.getPlayer() != null)
             .executes(context -> {
                 final ServerPlayer player = context.getSource().getPlayerOrException();

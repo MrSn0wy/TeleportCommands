@@ -6,7 +6,8 @@
   "compatibilityLevel": "JAVA_${java_version}",
   "mixins": [
     "ServerStartMixin",
-    "PlayerDeathMixin"
+    "PlayerDeathMixin",
+    "CommandsMixin"
   ],
   "client": [],
   "server": [],

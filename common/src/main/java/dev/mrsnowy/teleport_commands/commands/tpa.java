@@ -2,10 +2,12 @@ package dev.mrsnowy.teleport_commands.commands;
 
 import java.util.*;
 
+import com.mojang.brigadier.CommandDispatcher;
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.suggestions.tpaSuggestionProvider;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
@@ -33,9 +35,9 @@ public class tpa {
         }
     }
 
-    public static void register(Commands commandManager) {
+    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
 
-        commandManager.getDispatcher().register(Commands.literal("tpa")
+        commandDispatcher.register(Commands.literal("tpa")
                 .requires(source -> source.getPlayer() != null)
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(context -> {
@@ -54,7 +56,7 @@ public class tpa {
                             return 0;
                         })));
 
-        commandManager.getDispatcher().register(Commands.literal("tpahere")
+        commandDispatcher.register(Commands.literal("tpahere")
                 .requires(source -> source.getPlayer() != null)
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(context -> {
@@ -71,7 +73,7 @@ public class tpa {
                             return 0;
                         })));
 
-        commandManager.getDispatcher().register(Commands.literal("tpaaccept")
+        commandDispatcher.register(Commands.literal("tpaaccept")
                 .requires(source -> source.getPlayer() != null)
                 .then(Commands.argument("player", EntityArgument.player()).suggests(new tpaSuggestionProvider())
                         .executes(context -> {
@@ -89,7 +91,7 @@ public class tpa {
                             return 0;
                         })));
 
-        commandManager.getDispatcher().register(Commands.literal("tpadeny")
+        commandDispatcher.register(Commands.literal("tpadeny")
                 .requires(source -> source.getPlayer() != null)
                 .then(Commands.argument("player", EntityArgument.player()).suggests(new tpaSuggestionProvider())
                         .executes(context -> {
