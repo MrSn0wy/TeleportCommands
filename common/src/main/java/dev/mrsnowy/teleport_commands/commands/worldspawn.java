@@ -1,9 +1,11 @@
 package dev.mrsnowy.teleport_commands.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
@@ -22,8 +24,8 @@ import static net.minecraft.world.level.Level.OVERWORLD;
 
 public class worldspawn {
 
-    public static void register(Commands commandManager) {
-        commandManager.getDispatcher().register(Commands.literal("worldspawn")
+    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
+        commandDispatcher.register(Commands.literal("worldspawn")
                 .requires(source -> source.getPlayer() != null)
                 .executes(context -> {
                     final ServerPlayer player = context.getSource().getPlayerOrException();

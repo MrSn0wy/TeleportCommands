@@ -1,11 +1,13 @@
 package dev.mrsnowy.teleport_commands.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.suggestions.WarpSuggestionProvider;
 import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
@@ -25,9 +27,9 @@ import static dev.mrsnowy.teleport_commands.utils.tools.getTranslatedText;
 import static net.minecraft.commands.Commands.argument;
 
 public class warp {
-    public static void register(Commands commandManager) {
+    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
 
-        commandManager.getDispatcher().register(Commands.literal("setwarp")
+        commandDispatcher.register(Commands.literal("setwarp")
                 .requires(source ->
                         source.getPlayer() != null &&
                                 source.hasPermission(4)
@@ -48,7 +50,7 @@ public class warp {
                             return 0;
                         })));
 
-        commandManager.getDispatcher().register(Commands.literal("warp")
+        commandDispatcher.register(Commands.literal("warp")
                 .requires(source -> source.getPlayer() != null)
                 .then(argument("name", StringArgumentType.string())
                         .suggests(new WarpSuggestionProvider())
@@ -67,7 +69,7 @@ public class warp {
                             return 0;
                         })));
 
-        commandManager.getDispatcher().register(Commands.literal("delwarp")
+        commandDispatcher.register(Commands.literal("delwarp")
                 .requires(source ->
                         source.getPlayer() != null &&
                                 source.hasPermission(4)
@@ -88,7 +90,7 @@ public class warp {
                             return 0;
                         })));
 
-        commandManager.getDispatcher().register(Commands.literal("renamewarp")
+        commandDispatcher.register(Commands.literal("renamewarp")
                 .requires(source ->
                         source.getPlayer() != null &&
                                 source.hasPermission(4)
@@ -111,7 +113,7 @@ public class warp {
                                     return 0;
                                 }))));
 
-        commandManager.getDispatcher().register(Commands.literal("warps")
+        commandDispatcher.register(Commands.literal("warps")
                 .requires(source -> source.getPlayer() != null)
                 .executes(context -> {
                     final ServerPlayer player = context.getSource().getPlayerOrException();

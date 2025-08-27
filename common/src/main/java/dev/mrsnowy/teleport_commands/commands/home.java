@@ -1,5 +1,6 @@
 package dev.mrsnowy.teleport_commands.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
@@ -28,9 +30,9 @@ import static net.minecraft.commands.Commands.argument;
 import static dev.mrsnowy.teleport_commands.utils.tools.Teleporter;
 
 public class home {
-    public static void register(Commands commandManager) {
+    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
 
-        commandManager.getDispatcher().register(Commands.literal("sethome")
+        commandDispatcher.register(Commands.literal("sethome")
                 .requires(source -> source.getPlayer() != null)
                 .then(argument("name", StringArgumentType.string())
                         .executes(context -> {
@@ -49,7 +51,7 @@ public class home {
                         })));
 
 
-        commandManager.getDispatcher().register(Commands.literal("home")
+        commandDispatcher.register(Commands.literal("home")
                 .requires(source -> source.getPlayer() != null)
                 .executes(context -> {
                     final ServerPlayer player = context.getSource().getPlayerOrException();
@@ -82,7 +84,7 @@ public class home {
                             return 0;
                         })));
 
-        commandManager.getDispatcher().register(Commands.literal("delhome")
+        commandDispatcher.register(Commands.literal("delhome")
                 .requires(source -> source.getPlayer() != null)
                 .then(argument("name", StringArgumentType.string())
                         .suggests(new HomeSuggestionProvider())
@@ -101,7 +103,7 @@ public class home {
                             return 0;
                         })));
 
-        commandManager.getDispatcher().register(Commands.literal("renamehome")
+        commandDispatcher.register(Commands.literal("renamehome")
                 .requires(source -> source.getPlayer() != null)
                 .then(argument("name", StringArgumentType.string())
                         .suggests(new HomeSuggestionProvider())
@@ -123,7 +125,7 @@ public class home {
                                 }))));
 
 
-        commandManager.getDispatcher().register(Commands.literal("defaulthome")
+        commandDispatcher.register(Commands.literal("defaulthome")
                 .requires(source -> source.getPlayer() != null)
                 .then(argument("name", StringArgumentType.string()).suggests(new HomeSuggestionProvider())
                         .executes(context -> {
@@ -141,7 +143,7 @@ public class home {
                             return 0;
                         })));
 
-        commandManager.getDispatcher().register(Commands.literal("homes")
+        commandDispatcher.register(Commands.literal("homes")
                 .requires(source -> source.getPlayer() != null)
                 .executes(context -> {
                     final ServerPlayer player = context.getSource().getPlayerOrException();

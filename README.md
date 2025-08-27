@@ -33,7 +33,6 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 <br>
 
 ### TODO:
-
 #### Planned commands:
 - [ ] `/wild` - Teleports you to a random location in the Overworld
 - [x] `/worldspawn` - Teleports you to the worldspawn
@@ -57,18 +56,30 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 - [x] Add Quilt support and NeoForge
 
 
-#### Want to help?
-
+### Want to help?
 1. You can create a translation file so other people can use the mod in their native language: [translations.md](./common/src/main/resources/assets/teleport_commands/lang/translations.md)
 
 
-#### How to build
-w.i.p.
-just use correto21 and an intellij idea, then just run the build option that should appear. That's what I do :3
+### How to build
+#### Getting the correct environment
+If you are on nixos you can simply go into the folder of where you cloned the repo, and run `nix develop .`. This will give you the environment I use (apart from the IDE) :3.
 
+On any other linux distro, just install the jetbrains jdk, or try openjdk21.
 
-#### Notes
+On windows probably go to the openjdk website and install the 21 version? idk goodluck.
 
+#### Building
+Then on linux just do `./gradlew build` and to make it in a single mod jar `./gradlew mergeJars`.
+
+Or on windows, just do `.\gradlew.bat build` and `.\gradlew.bat mergeJars`.
+Note that this isn't tested for windows, but I think that is how it works.
+
+#### Getting the jars
+Then you can find your jars in `fabric/build/libs/` (for fabric), `neoforge/build/libs/` (for neoforge) or `merged/build/libs/` (if you made the merged jar file).
+
+If you have any issues just make an issue or contact me on Discord `@mrsnowy_`
+
+### Notes
 Colors: 
 - Green = When something succeeds and an action will happen
 - Aqua = When something needs attention

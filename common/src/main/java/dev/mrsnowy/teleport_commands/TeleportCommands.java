@@ -1,9 +1,11 @@
 package dev.mrsnowy.teleport_commands;
 
 import com.google.gson.*;
+import com.mojang.brigadier.CommandDispatcher;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.commands.*;
 import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,15 +39,16 @@ public class TeleportCommands {
 		StorageManager.STORAGE = storageValidator(); // Initialize the storage file
 		DeathLocationStorage.clearDeathLocations(); // Clear data of death locations.
 
-		// initialize commands, also allows me to easily disable any when there is a config
-		Commands commandManager = server.getCommands();
-		back.register(commandManager);
-		home.register(commandManager);
-		tpa.register(commandManager);
-		warp.register(commandManager);
-		worldspawn.register(commandManager);
 	}
 
+    // initialize commands, also allows me to easily disable any when there is a config
+    public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
+        back.register(dispatcher);
+        home.register(dispatcher);
+        tpa.register(dispatcher);
+        warp.register(dispatcher);
+        worldspawn.register(dispatcher);
+    }
 
 	// Runs when the playerDeath mixin calls it, updates the /back command position
 	public static void onPlayerDeath(ServerPlayer player) {
