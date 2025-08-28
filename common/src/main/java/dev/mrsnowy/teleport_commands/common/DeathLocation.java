@@ -9,21 +9,15 @@ import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 public class DeathLocation {
-    private final String UUID;
     private BlockPos pos;
     private String world;
 
-    public DeathLocation(String uuid, BlockPos pos, String world) {
-        this.UUID = uuid;
+    public DeathLocation(BlockPos pos, String world) {
         this.pos = pos;
         this.world = world;
     }
 
     // -----
-
-    public String getUUID() {
-        return UUID;
-    }
 
     public BlockPos getBlockPos() {
         return pos;

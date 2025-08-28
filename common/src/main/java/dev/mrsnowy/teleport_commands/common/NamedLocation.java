@@ -56,7 +56,6 @@ public class NamedLocation {
         return StreamSupport.stream( TeleportCommands.SERVER.getAllLevels().spliterator(), false ) // woa, this looks silly
                 .filter(level -> Objects.equals( level.dimension().location().toString(), this.world ))
                 .findFirst();
-
     }
 
     // -----
