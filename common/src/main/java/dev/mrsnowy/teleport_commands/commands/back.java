@@ -63,24 +63,21 @@ public class back {
 
     // -----
 
-
     // Gets the DeathLocation of the player and teleports the player to it
     private static void ToDeathLocation(ServerPlayer player, boolean safetyDisabled) throws Exception {
+        DeathLocation deathLocation = DeathLocationStorage
+                .getDeathLocation(player.getStringUUID())
+                .orElse(null);
 
-        Optional<DeathLocation> optionalDeathLocation = DeathLocationStorage.getDeathLocation(player.getStringUUID());
-
-        if (optionalDeathLocation.isEmpty()) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player)
-                    .withStyle(ChatFormatting.RED), true);
+        if (deathLocation == null) {
+            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player).withStyle(ChatFormatting.RED), true);
             return;
         }
 
-        DeathLocation deathLocation = optionalDeathLocation.get();
-
         // Get the world, otherwise give a warning and error message
-        Optional<ServerLevel> optionalWorld = deathLocation.getWorld();
+        ServerLevel deathLocationWorld = deathLocation.getWorld().orElse(null);
 
-        if (optionalWorld.isEmpty()) {
+        if (deathLocationWorld == null) {
             Constants.LOGGER.warn("({}) Error while going back! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
                     player.getName().getString(),
                     deathLocation.getWorldString(),
@@ -92,7 +89,6 @@ public class back {
             return;
         }
 
-        ServerLevel deathLocationWorld = optionalWorld.get();
         BlockPos teleportBlockPos;
 
         // Sets the teleportBlockPos based on if it should do safety checking
@@ -100,29 +96,28 @@ public class back {
             Optional<BlockPos> safeBlockPos = getSafeBlockPos(deathLocation.getBlockPos(), deathLocationWorld);
 
             // Check if there is a safe BlockPos
-            if (safeBlockPos.isPresent()) {
-                teleportBlockPos = safeBlockPos.get();
-
-            } else {
+            if (safeBlockPos.isEmpty()) {
                 // asks the player if they want to teleport anyway
                 player.displayClientMessage(
                         Component.empty()
-                        .append(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player)
-                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
-                        )
-                        .append("\n")
-                        .append(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player)
-                                .withStyle(ChatFormatting.WHITE)
-                        )
-                        .append("\n")
-                        .append(getTranslatedText("commands.teleport_commands.common.forceTeleport", player)
-                                .withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD)
-                                .withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/back true")))
-                        )
-                        .append("\n"), false);
+                                .append(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player)
+                                        .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
+                                )
+                                .append("\n")
+                                .append(getTranslatedText("commands.teleport_commands.common.safetyIsForLosers", player)
+                                        .withStyle(ChatFormatting.WHITE)
+                                )
+                                .append("\n")
+                                .append(getTranslatedText("commands.teleport_commands.common.forceTeleport", player)
+                                        .withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD)
+                                        .withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/back true")))
+                                )
+                                .append("\n"), false);
                 return;
-            }
 
+            } else {
+                teleportBlockPos = safeBlockPos.get();
+            }
         } else {
             // no checking needed, just set it.
             teleportBlockPos = deathLocation.getBlockPos();
@@ -137,7 +132,7 @@ public class back {
             Vec3 teleportPos = new Vec3(teleportBlockPos.getX() + 0.5, teleportBlockPos.getY(), teleportBlockPos.getZ() + 0.5);
 
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
-            Teleporter(player, deathLocationWorld, teleportPos);
+            tools.Teleporter(player, deathLocationWorld, teleportPos);
         }
     }
 }
