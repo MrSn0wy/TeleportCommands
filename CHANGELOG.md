@@ -6,6 +6,7 @@ and this project kind of adheres to [Semantic Versioning](https://semver.org/spe
 
 ### [1.3.4]
 - Updated Italian translations (Thanks to [Jump-333](https://github.com/Jump-333)!)
+- Turned DeathLocation into a Hashmap
 
 ### [1.3.3]
 - Fixed commands not registering when running `/reload`.
