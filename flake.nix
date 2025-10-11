@@ -1,5 +1,5 @@
 {
-  description = "Flake for developing snowstorm!";
+  description = "Flake for developing TeleportCommands!";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
