@@ -53,7 +53,7 @@ public class TeleportCommands {
 	// Runs when the playerDeath mixin calls it, updates the /back command position
 	public static void onPlayerDeath(ServerPlayer player) {
 		BlockPos pos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
-		String world = player.serverLevel().dimension().location().toString();
+		String world = player.level().dimension().location().toString();
 		String uuid = player.getStringUUID();
 
 		DeathLocationStorage.setDeathLocation(uuid, pos, world);
