@@ -13,6 +13,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
@@ -200,16 +201,16 @@ public class tpa {
             ServerPlayer destinationPlayer = tpaStorage.get().here ? ToPlayer : FromPlayer;
             ServerPlayer toSentPlayer = tpaStorage.get().here ? FromPlayer : ToPlayer;
 
-            Optional<BlockPos> teleportData = getSafeBlockPos(destinationPlayer.blockPosition(), destinationPlayer.serverLevel());
+            Optional<BlockPos> teleportData = getSafeBlockPos(destinationPlayer.blockPosition(), (ServerLevel) destinationPlayer.level());
 
             if (teleportData.isPresent()) {
                 BlockPos safeBlockPos = teleportData.get();
                 Vec3 teleportPos = new Vec3(safeBlockPos.getX() + 0.5, safeBlockPos.getY(), safeBlockPos.getZ() + 0.5);
 
-                Teleporter(toSentPlayer, destinationPlayer.serverLevel(), teleportPos);
+                Teleporter(toSentPlayer, (ServerLevel) destinationPlayer.level(), teleportPos);
             } else {
                 // if no safe location then just teleport to the player
-                Teleporter(toSentPlayer, destinationPlayer.serverLevel(), destinationPlayer.position());
+                Teleporter(toSentPlayer, (ServerLevel) destinationPlayer.level(), destinationPlayer.position());
             }
 
             // if the player teleported then these messages get sent && the request gets removed

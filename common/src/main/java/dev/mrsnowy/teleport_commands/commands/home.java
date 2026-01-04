@@ -169,7 +169,7 @@ public class home {
     private static void SetHome(ServerPlayer player, String homeName) throws Exception {
         homeName = homeName.toLowerCase();
         BlockPos blockPos = player.blockPosition();
-        String worldString = player.serverLevel().dimension().location().toString();
+        String worldString = player.level().dimension().location().toString();
 
         // Gets the player's storage and creates it if it doesn't exist
         Player playerStorage = StorageManager.STORAGE.addPlayer(player.getStringUUID());
