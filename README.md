@@ -4,7 +4,7 @@ A Minecraft server-side mod that adds various teleportation related commands, li
 
 Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CHANGELOG.md)
 
-### Currently available commands:
+## Currently available commands:
 
 - `/worldspawn [<Disable Safety>]` - Teleports you to the world spawn (in the overworld), if given true it will not do safety checks
 - `/back [<Disable Safety>]` -  Teleports you to the location where you last died, if given true it will not do safety checks
@@ -32,14 +32,14 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 
 <br>
 
-### TODO:
-#### Planned commands:
+## TODO:
+### Planned commands:
 - [ ] `/wild` - Teleports you to a random location in the Overworld
 - [x] `/worldspawn` - Teleports you to the worldspawn
-- [ ] `/spawn <dimension>` - Teleports you to your spawnpoint in a dimension, defaults to your current dimension
+- [ ] `/spawn <dimension>` - Teleports you to your spawn point in a dimension, defaults to your current dimension
 - [ ] `/previous` - Go to the last teleported location
 
-#### Improvements:
+### Improvements:
 - [ ] Look into changing the mod into the more safe and sane kotlin (I love java)
 - [ ] Add game tests
 - [ ] Find the easiest way to backport the mod to older version (help)
@@ -56,31 +56,34 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 - [x] Add Quilt support and NeoForge
 
 
-### Want to help?
+## Want to help?
 1. You can create a translation file so other people can use the mod in their native language: [translations.md](./common/src/main/resources/assets/teleport_commands/lang/translations.md)
 
 
-### How to build
-#### Getting the correct environment
+## How to build
+### Getting the correct environment
+#### Nixos
 If you are on nixos you can simply go into the folder of where you cloned the repo, and run `nix develop .`. This will give you the environment I use (apart from the IDE) :3.
 
-On any other linux distro, just install the jetbrains jdk, or try openjdk21.
+#### Generic linux
+On any other linux distro, just install the jetbrains jdk, or try openjdk25.
 
-On windows probably go to the openjdk website and install the 21 version? idk goodluck.
+#### Windows
+On windows probably go to the openjdk website and install the 25 version? Idk goodluck.
 
-#### Building
-Then on linux just do `./gradlew build` and to make it in a single mod jar `./gradlew mergeJars`.
+### Building
+Then on linux just run `./gradlew build`. To make it into a single mod jar just run `./gradlew mergeJars`.
 
 Or on windows, just do `.\gradlew.bat build` and `.\gradlew.bat mergeJars`.
 Note that this isn't tested for windows, but I think that is how it works.
 
-#### Getting the jars
+### Getting the jars
 Then you can find your jars in `fabric/build/libs/` (for fabric), `neoforge/build/libs/` (for neoforge) or `merged/build/libs/` (if you made the merged jar file).
 
 If you have any issues just make an issue or contact me on Discord `@mrsnowy_`
 
-### Notes
-Colors: 
+## Random notes lol
+Text Colors: 
 - Green = When something succeeds and an action will happen
 - Aqua = When something needs attention
 - White = When something is done
