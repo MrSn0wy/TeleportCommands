@@ -6,6 +6,7 @@ import dev.mrsnowy.teleport_commands.Constants;
 
 import java.util.*;
 
+import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
 import dev.mrsnowy.teleport_commands.common.DeathLocation;
 import dev.mrsnowy.teleport_commands.utils.tools;
@@ -23,8 +24,10 @@ import static dev.mrsnowy.teleport_commands.utils.tools.*;
 import static net.minecraft.commands.Commands.argument;
 
 public class back {
+    TeleportCommands teleportCommands;
 
-    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
+    public back(CommandDispatcher<CommandSourceStack> commandDispatcher, TeleportCommands teleportCommands) {
+        this.teleportCommands = teleportCommands;
 
         commandDispatcher.register(Commands.literal("back")
             .requires(source -> source.getPlayer() != null)
@@ -64,8 +67,8 @@ public class back {
     // -----
 
     // Gets the DeathLocation of the player and teleports the player to it
-    private static void ToDeathLocation(ServerPlayer player, boolean safetyDisabled) throws Exception {
-        DeathLocation deathLocation = DeathLocationStorage
+    private void ToDeathLocation(ServerPlayer player, boolean safetyDisabled) throws Exception {
+        DeathLocation deathLocation = teleportCommands.deathLocationStorage
                 .getDeathLocation(player.getStringUUID())
                 .orElse(null);
 
@@ -132,7 +135,7 @@ public class back {
             Vec3 teleportPos = new Vec3(teleportBlockPos.getX() + 0.5, teleportBlockPos.getY(), teleportBlockPos.getZ() + 0.5);
 
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
-            tools.Teleporter(player, deathLocationWorld, teleportPos);
+            teleportCommands.tools.Teleporter(player, deathLocationWorld, teleportPos);
         }
     }
 }

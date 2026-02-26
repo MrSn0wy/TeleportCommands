@@ -7,15 +7,15 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class DeathLocationStorage {
-    private static final HashMap<String, DeathLocation> deathLocations = new HashMap<>();
+    private final HashMap<String, DeathLocation> deathLocations = new HashMap<>();
 
     // filters the deathLocationList and finds the one with the matching player uuid (if there is one)
-    public static Optional<DeathLocation> getDeathLocation(String uuid) {
+    public Optional<DeathLocation> getDeathLocation(String uuid) {
         return Optional.ofNullable(deathLocations.get(uuid));
     }
 
     // updates the deathLocation of a player, if there is no existing entry it will create a new deathLocation.
-    public static void setDeathLocation(String uuid, BlockPos pos, String world) {
+    public void setDeathLocation(String uuid, BlockPos pos, String world) {
 
         if (deathLocations.containsKey(uuid)) {
             // modify existing deathLocation
@@ -29,7 +29,7 @@ public class DeathLocationStorage {
         }
     }
 
-    public static void clearDeathLocations() {
+    public void clearDeathLocations() {
         deathLocations.clear();
     }
 }

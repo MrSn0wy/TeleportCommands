@@ -10,13 +10,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 public class ConfigManager {
-    public static Path CONFIG_FILE;
-    public static ConfigClass CONFIG;
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final int defaultVersion = new ConfigClass().getVersion();
+    public Path CONFIG_FILE;
+    public ConfigClass CONFIG;
+    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private final int defaultVersion = new ConfigClass().getVersion();
 
-    public static void ConfigInit() {
-        CONFIG_FILE = TeleportCommands.CONFIG_DIR.resolve("teleport_commands.json");
+    public ConfigManager() {
+        CONFIG_FILE = TeleportCommands.TeleportCommands.configDir.resolve("teleport_commands.json");
 
         try {
             ConfigLoader();
@@ -28,9 +28,9 @@ public class ConfigManager {
         }
     }
 
-    public static void ConfigLoader() throws Exception {
+    public void ConfigLoader() throws Exception {
         if (!CONFIG_FILE.toFile().exists() || CONFIG_FILE.toFile().length() == 0) {
-            Files.createDirectories(TeleportCommands.CONFIG_DIR);
+            Files.createDirectories(TeleportCommands.configDir);
 
             Constants.LOGGER.warn("Config file was not found or was empty! Initializing config");
             CONFIG = new ConfigClass();
@@ -53,7 +53,7 @@ public class ConfigManager {
     }
 
     /// This function checks what version the config file is and migrates it to the current version of the mod.
-    public static void ConfigMigrator() throws Exception {
+    public void ConfigMigrator() throws Exception {
         FileReader reader = new FileReader(CONFIG_FILE.toFile());
         JsonObject jsonObject = GSON.fromJson(reader, JsonObject.class);
 
@@ -76,14 +76,14 @@ public class ConfigManager {
         }
     }
 
-    public static void ConfigSaver() throws Exception {
+    public void ConfigSaver() throws Exception {
         // todo! maybe throttle saves?
         byte[] json = GSON.toJson( ConfigManager.CONFIG ).getBytes();
 
         Files.write(CONFIG_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
-    public static class ConfigClass {
+    public class ConfigClass {
         private final int version = 0;
         public Teleporting teleporting = new Teleporting();
         public Back back = new Back();
@@ -96,7 +96,7 @@ public class ConfigManager {
             return version;
         }
 
-        public static final class Teleporting {
+        public final class Teleporting {
             private int delay = 5;
             private boolean whileMoving = true;
             private boolean whileFighting = false;

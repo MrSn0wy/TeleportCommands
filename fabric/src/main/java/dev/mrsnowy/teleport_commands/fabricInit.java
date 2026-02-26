@@ -10,6 +10,6 @@ public class fabricInit implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		TeleportCommands.MOD_LOADER = "Fabric";
+		TeleportCommands.modLoader = "Fabric";
 	}
 }

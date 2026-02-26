@@ -18,15 +18,15 @@ import java.util.Optional;
 import static java.util.Collections.unmodifiableList;
 
 public class StorageManager {
-    public static Path STORAGE_FOLDER;
-    public static Path STORAGE_FILE;
-    public static StorageClass STORAGE;
-    private static final Gson GSON = new GsonBuilder().create();
-    private static final int defaultVersion = new StorageClass().getVersion();
+    public Path STORAGE_FOLDER;
+    public Path STORAGE_FILE;
+    public StorageClass STORAGE;
+    private final Gson GSON = new GsonBuilder().create();
+    private final int defaultVersion = new StorageClass().getVersion();
 
     /// Initializes the StorageManager class and loads the storage from the filesystem.
-    public static void StorageInit() {
-        STORAGE_FOLDER = TeleportCommands.SAVE_DIR.resolve("TeleportCommands/");
+    public StorageManager() {
+        STORAGE_FOLDER = TeleportCommands.TeleportCommands.saveDir.resolve("TeleportCommands/");
         STORAGE_FILE = STORAGE_FOLDER.resolve("storage.json");
 
         try {
@@ -40,7 +40,7 @@ public class StorageManager {
     }
 
     /// Loads the storage from the filesystem
-    public static void StorageLoader() throws Exception {
+    public void StorageLoader() throws Exception {
 
         if (!STORAGE_FILE.toFile().exists() || STORAGE_FILE.toFile().length() == 0) {
             Constants.LOGGER.warn("Storage file was not found or was empty! Initializing storage");
@@ -68,7 +68,7 @@ public class StorageManager {
     }
 
     /// This function checks what version the storage file is and migrates it to the current version of the mod.
-    public static void StorageMigrator() throws Exception {
+    public void StorageMigrator() throws Exception {
         FileReader reader = new FileReader(STORAGE_FILE.toFile());
         JsonObject jsonObject = GSON.fromJson(reader, JsonObject.class);
 
@@ -120,15 +120,15 @@ public class StorageManager {
     }
 
     /// Saves the storage to the filesystem
-    public static void StorageSaver() throws Exception {
+    public void StorageSaver() throws Exception {
         // todo! maybe throttle saves?
-        byte[] json = GSON.toJson( StorageManager.STORAGE ).getBytes();
+        byte[] json = GSON.toJson( this.STORAGE ).getBytes();
 
         Files.write(STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
 
-    public static class StorageClass {
+    public class StorageClass {
         private final int version = 1;
         private final ArrayList<NamedLocation> Warps = new ArrayList<>();
         private final ArrayList<Player> Players = new ArrayList<>();
@@ -144,7 +144,7 @@ public class StorageManager {
                 List<NamedLocation> homes = player.getHomes();
 
                 // Delete any homes with an invalid world_id (if enabled in config)
-                if (ConfigManager.CONFIG.home.isDeleteInvalid()) {
+                if (TeleportCommands.TeleportCommands.config.CONFIG.home.isDeleteInvalid()) {
                     homes.removeIf(home -> home.getWorld().isEmpty());
                 }
 
@@ -155,7 +155,7 @@ public class StorageManager {
             }
 
             // Delete any warps with an invalid world_id (if enabled in config)
-            if (ConfigManager.CONFIG.warp.isDeleteInvalid()) {
+            if (TeleportCommands.TeleportCommands.config.CONFIG.warp.isDeleteInvalid()) {
                 Warps.removeIf(warp -> warp.getWorld().isEmpty());
             }
 
