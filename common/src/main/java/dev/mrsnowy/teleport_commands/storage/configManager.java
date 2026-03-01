@@ -9,17 +9,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class ConfigManager {
+public class configManager {
     public Path CONFIG_FILE;
     public ConfigClass CONFIG;
+
     private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final int defaultVersion = new ConfigClass().getVersion();
+    private final TeleportCommands teleportCommands;
 
-    public ConfigManager() {
-        CONFIG_FILE = TeleportCommands.TeleportCommands.configDir.resolve("teleport_commands.json");
+    public configManager(TeleportCommands teleportCommands) {
+        this.teleportCommands = teleportCommands;
+        CONFIG_FILE = teleportCommands.configDir.resolve("teleport_commands.json");
 
         try {
-            ConfigLoader();
+            configLoader();
 
         } catch (Exception e) {
             // crashing is probably better here, otherwise the whole mod will be broken
@@ -28,32 +31,33 @@ public class ConfigManager {
         }
     }
 
-    public void ConfigLoader() throws Exception {
+    /// This function loads the config from disk
+    public void configLoader() throws Exception {
         if (!CONFIG_FILE.toFile().exists() || CONFIG_FILE.toFile().length() == 0) {
-            Files.createDirectories(TeleportCommands.configDir);
+            Files.createDirectories(teleportCommands.configDir);
 
             Constants.LOGGER.warn("Config file was not found or was empty! Initializing config");
             CONFIG = new ConfigClass();
-            ConfigSaver();
+            configSaver();
             Constants.LOGGER.info("Config created successfully!");
         }
 
-        ConfigMigrator();
+        configMigrator();
 
         FileReader reader = new FileReader(CONFIG_FILE.toFile());
         CONFIG = GSON.fromJson(reader, ConfigClass.class);
         if (CONFIG == null) {
             Constants.LOGGER.warn("Config file was empty! Loading defaults...");
             CONFIG = new ConfigClass();
-            ConfigSaver();
+            configSaver();
         }
 
-        ConfigSaver(); // Save it so any missing values get added to the file.
+        configSaver(); // Save it so any missing values get added to the file.
         Constants.LOGGER.info("Config loaded successfully!");
     }
 
     /// This function checks what version the config file is and migrates it to the current version of the mod.
-    public void ConfigMigrator() throws Exception {
+    public void configMigrator() throws Exception {
         FileReader reader = new FileReader(CONFIG_FILE.toFile());
         JsonObject jsonObject = GSON.fromJson(reader, JsonObject.class);
 
@@ -76,14 +80,15 @@ public class ConfigManager {
         }
     }
 
-    public void ConfigSaver() throws Exception {
+    /// Saves the config to disk
+    public void configSaver() throws Exception {
         // todo! maybe throttle saves?
-        byte[] json = GSON.toJson( ConfigManager.CONFIG ).getBytes();
+        byte[] json = GSON.toJson(CONFIG).getBytes();
 
         Files.write(CONFIG_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
-    public class ConfigClass {
+    public static class ConfigClass {
         private final int version = 0;
         public Teleporting teleporting = new Teleporting();
         public Back back = new Back();
@@ -96,7 +101,7 @@ public class ConfigManager {
             return version;
         }
 
-        public final class Teleporting {
+        public static final class Teleporting {
             private int delay = 5;
             private boolean whileMoving = true;
             private boolean whileFighting = false;
@@ -135,7 +140,7 @@ public class ConfigManager {
             }
         }
 
-        public final class Back {
+        public static final class Back {
             private boolean enabled = true;
             private boolean deleteAfterTeleport = false;
 
@@ -156,7 +161,7 @@ public class ConfigManager {
             }
         }
 
-        public final class Home {
+        public static final class Home {
             private boolean enabled = true;
             private int playerMaximum = 20;
             private boolean deleteInvalid = false;
@@ -186,7 +191,7 @@ public class ConfigManager {
             }
         }
 
-        public final class Tpa {
+        public static final class Tpa {
             private boolean enabled = true;
 
             public boolean isEnabled() {
@@ -198,7 +203,7 @@ public class ConfigManager {
             }
         }
 
-        public final class Warp {
+        public static final class Warp {
             private boolean enabled = true;
             private boolean deleteInvalid = false;
 
@@ -219,7 +224,7 @@ public class ConfigManager {
             }
         }
 
-        public final class WorldSpawn {
+        public static final class WorldSpawn {
             private boolean enabled = true;
             private String world_id = "minecraft:overworld";
 

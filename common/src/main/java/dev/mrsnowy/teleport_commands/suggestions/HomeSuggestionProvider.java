@@ -9,19 +9,25 @@ import dev.mrsnowy.teleport_commands.Constants;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.common.Player;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 
-import static dev.mrsnowy.teleport_commands.storage.StorageManager.STORAGE;
 
 public class HomeSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
+    private final TeleportCommands teleportCommands;
+
+    public HomeSuggestionProvider(TeleportCommands teleportCommands) {
+        this.teleportCommands = teleportCommands;
+    }
+
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         try {
             ServerPlayer player = context.getSource().getPlayerOrException();
-            Optional<Player> optionalPlayerStorage = STORAGE.getPlayer(player.getStringUUID());
+            Optional<Player> optionalPlayerStorage = teleportCommands.storageManager.STORAGE.getPlayer(player.getStringUUID());
 
             if (optionalPlayerStorage.isPresent()) {
                 Player playerStorage = optionalPlayerStorage.get();

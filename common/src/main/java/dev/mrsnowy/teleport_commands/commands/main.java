@@ -6,7 +6,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.storage.ConfigManager;
+import dev.mrsnowy.teleport_commands.storage.configManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -16,8 +16,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Arrays;
-
-import static dev.mrsnowy.teleport_commands.utils.tools.*;
 
 public class main {
 
@@ -45,7 +43,7 @@ public class main {
                 .then(Commands.literal("reloadConfig")
                         .executes(context -> {
                             try {
-                                ConfigManager.ConfigLoader();
+                                configManager.configLoader();
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Failed to reload config!", e);
                                 throw new SimpleCommandExceptionType(Component.literal(e.toString())).create();

@@ -11,89 +11,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
-import dev.mrsnowy.teleport_commands.storage.ConfigManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.phys.Vec3;
 
 import static dev.mrsnowy.teleport_commands.Constants.MOD_ID;
-import static net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT;
 
 
 public class tools {
-    private final TeleportCommands teleportCommands;
-
-    private final Set<String> unsafeCollisionFreeBlocks = Set.of("block.minecraft.lava", "block.minecraft.flowing_lava", "block.minecraft.end_portal", "block.minecraft.end_gateway","block.minecraft.fire", "block.minecraft.soul_fire", "block.minecraft.powder_snow", "block.minecraft.nether_portal");
-
-    private final Map<UUID, PlayerData> playerData = new HashMap<>();
-
-    private class PlayerData {
-        long lastTeleportTime = 0;
-        long lastHitTime = 0;
-        Vec3 lastPosition = Vec3.ZERO;
-    }
-
-    public tools(TeleportCommands teleportCommands) {
-        this.teleportCommands = teleportCommands;
-    }
-
-    /// Teleport the player :P
-    public void Teleporter(ServerPlayer player, ServerLevel world, Vec3 coords) {
-        // Check if user is allowed to teleport by config settings
-
-        int delay = teleportCommands.config.CONFIG.teleporting.getDelay();
-
-        // save when they last teleported and check delay
-
-        // save pos and check if they have moved.
-
-        // check if they got hit? whileFighting
-
-        // save when they last got hit and if it exceeds fightCooldown
 
 
-        // teleportation effects & sounds before teleporting
-        world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 20, 0.0D, 0.0D, 0.0D, 0.01);
-        world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
-        world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
-
-        // check if the player is currently flying
-        boolean flying = player.getAbilities().flying;
-
-        // teleport!
-        player.teleportTo(world, coords.x, coords.y, coords.z, Set.of(), player.getYRot(), player.getXRot(), false);
-
-        // Restore flying when teleporting trough dimensions
-        if (flying) {
-            player.getAbilities().flying = true;
-            player.onUpdateAbilities();
-        }
-
-        // teleportation sound after teleport
-        world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
-
-        // delay visual effects so the player can see it when switching dimensions
-        Timer timer = new Timer();
-        timer.schedule(
-            new TimerTask() {
-                @Override
-                public void run() {
-                    world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() , player.getZ(), 20, 0.0D, 1.0D, 0.0D, 0.01);
-                    world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.03);
-                }
-            }, 100 // hopefully a good delay, ~ 2 ticks
-        );
-    }
-
+    private static final Set<String> unsafeCollisionFreeBlocks = Set.of("block.minecraft.lava", "block.minecraft.flowing_lava", "block.minecraft.end_portal", "block.minecraft.end_gateway","block.minecraft.fire", "block.minecraft.soul_fire", "block.minecraft.powder_snow", "block.minecraft.nether_portal");
 
     // checks a 7x7x7 location around the player in order to find a safe place to teleport them to.
-    public Optional<BlockPos> getSafeBlockPos(BlockPos blockPos, ServerLevel world) {
+    public static Optional<BlockPos> getSafeBlockPos(BlockPos blockPos, ServerLevel world) {
         int row = 1;
         int rows = 3;
 
@@ -137,7 +70,7 @@ public class tools {
 
 
     // Gets the translated text for each player based on their language, this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear!)
-    public MutableComponent getTranslatedText(String key, ServerPlayer player, MutableComponent... args) {
+    public static MutableComponent getTranslatedText(String key, ServerPlayer player, MutableComponent... args) {
         //todo! maybe make this also loaded in memory?
         String language = player.clientInformation().language().toLowerCase();
         String regex = "%(\\d+)%";
@@ -222,7 +155,7 @@ public class tools {
 
 
     // Gets the ids of all the worlds
-    public List<String> getWorldIds() {
+    public static List<String> getWorldIds() {
         return StreamSupport.stream(teleportCommands.server.getAllLevels().spliterator(), false)
                 .map(level -> level.dimension().location().toString())
                 .toList();
@@ -230,7 +163,7 @@ public class tools {
 
 
     // checks if a BlockPos is safe, used by the teleportSafetyChecker.
-    private boolean isBlockPosSafe(BlockPos bottomPlayer, ServerLevel world) {
+    private static boolean isBlockPosSafe(BlockPos bottomPlayer, ServerLevel world) {
 
         // get the block below the player
         BlockPos belowPlayer = new BlockPos(bottomPlayer.getX(), bottomPlayer.getY() -1, bottomPlayer.getZ()); // below the player

@@ -21,12 +21,15 @@ public class StorageManager {
     public Path STORAGE_FOLDER;
     public Path STORAGE_FILE;
     public StorageClass STORAGE;
+
     private final Gson GSON = new GsonBuilder().create();
     private final int defaultVersion = new StorageClass().getVersion();
+    private final TeleportCommands teleportCommands;
 
     /// Initializes the StorageManager class and loads the storage from the filesystem.
-    public StorageManager() {
-        STORAGE_FOLDER = TeleportCommands.TeleportCommands.saveDir.resolve("TeleportCommands/");
+    public StorageManager(TeleportCommands teleportCommands) {
+        this.teleportCommands = teleportCommands;
+        STORAGE_FOLDER = teleportCommands.saveDir.resolve("TeleportCommands/");
         STORAGE_FILE = STORAGE_FOLDER.resolve("storage.json");
 
         try {
@@ -144,7 +147,7 @@ public class StorageManager {
                 List<NamedLocation> homes = player.getHomes();
 
                 // Delete any homes with an invalid world_id (if enabled in config)
-                if (TeleportCommands.TeleportCommands.config.CONFIG.home.isDeleteInvalid()) {
+                if (teleportCommands.config.CONFIG.home.isDeleteInvalid()) {
                     homes.removeIf(home -> home.getWorld().isEmpty());
                 }
 
@@ -155,7 +158,7 @@ public class StorageManager {
             }
 
             // Delete any warps with an invalid world_id (if enabled in config)
-            if (TeleportCommands.TeleportCommands.config.CONFIG.warp.isDeleteInvalid()) {
+            if (teleportCommands.config.CONFIG.warp.isDeleteInvalid()) {
                 Warps.removeIf(warp -> warp.getWorld().isEmpty());
             }
 

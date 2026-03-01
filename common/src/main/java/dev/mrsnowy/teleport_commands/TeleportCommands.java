@@ -4,7 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.commands.*;
 import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
-import dev.mrsnowy.teleport_commands.storage.ConfigManager;
+import dev.mrsnowy.teleport_commands.storage.configManager;
+import dev.mrsnowy.teleport_commands.utils.teleporter;
 import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
@@ -21,9 +22,9 @@ public class TeleportCommands {
 	public Path configDir;
 	public MinecraftServer server;
 	public StorageManager storageManager;
-	public ConfigManager config;
+	public configManager config;
 	public DeathLocationStorage deathLocationStorage;
-	public tools tools;
+	public teleporter teleporter;
 
 	// Gets ran when the server starts, initializes the mod :3
 	public void initializeMod(MinecraftServer server) {
@@ -32,11 +33,11 @@ public class TeleportCommands {
 		saveDir = Path.of(String.valueOf(server.getWorldPath(LevelResource.ROOT)));
 		configDir = Paths.get(System.getProperty("user.dir")).resolve("config");
 		this.server = server;
-		this.tools = new tools();
-		this.storageManager = new StorageManager();
-		this.config = new ConfigManager();
 
+		storageManager = new StorageManager(this);
+		config = new configManager(this);
 		deathLocationStorage = new DeathLocationStorage();
+		teleporter = new teleporter(this);
 	}
 
     // initialize commands, also allows me to easily disable any when there is a config

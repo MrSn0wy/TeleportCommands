@@ -29,7 +29,7 @@ public class DeathLocationStorage {
         }
     }
 
-    public void clearDeathLocations() {
-        deathLocations.clear();
-    }
+//    public void clearDeathLocations() {
+//        deathLocations.clear();
+//    }
 }
