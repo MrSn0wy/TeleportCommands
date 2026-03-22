@@ -6,7 +6,6 @@ import dev.mrsnowy.teleport_commands.commands.*;
 import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
 import dev.mrsnowy.teleport_commands.storage.configManager;
 import dev.mrsnowy.teleport_commands.utils.teleporter;
-import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class TeleportCommands {
+	public static TeleportCommands INSTANCE;
 	public String modLoader;
 	public Path saveDir;
 	public Path configDir;
@@ -28,6 +28,7 @@ public class TeleportCommands {
 
 	// Gets ran when the server starts, initializes the mod :3
 	public void initializeMod(MinecraftServer server) {
+		INSTANCE = this;
 		Constants.LOGGER.info("Initializing Teleport Commands (V{})! Hello {}!", Constants.VERSION, modLoader);
 
 		saveDir = Path.of(String.valueOf(server.getWorldPath(LevelResource.ROOT)));
@@ -44,8 +45,8 @@ public class TeleportCommands {
     public void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         new back(dispatcher, this);
         home.register(dispatcher);
-        tpa.register(dispatcher);
-        warp.register(dispatcher);
+        new tpa(dispatcher, this);
+        new warp(dispatcher, this);
         worldspawn.register(dispatcher);
         main.register(dispatcher);
     }

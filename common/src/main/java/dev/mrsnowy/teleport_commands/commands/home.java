@@ -172,7 +172,7 @@ public class home {
         String worldString = player.serverLevel().dimension().location().toString();
 
         // Gets the player's storage and creates it if it doesn't exist
-        Player playerStorage = StorageManager.STORAGE.addPlayer(player.getStringUUID());
+        Player playerStorage = StorageManager.storage.addPlayer(player.getStringUUID());
 
         // Create the NamedLocation
         NamedLocation warp = new NamedLocation(homeName, blockPos, worldString);

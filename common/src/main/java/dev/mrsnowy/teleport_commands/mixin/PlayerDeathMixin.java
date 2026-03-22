@@ -12,7 +12,16 @@ public class PlayerDeathMixin {
 
     @Inject(method = "die", at = @At("HEAD"))
     private void notifyDeath(CallbackInfo info) {
+        TeleportCommands.INSTANCE.onPlayerDeath((ServerPlayer) (Object) this);
+    }
 
-        TeleportCommands.onPlayerDeath((ServerPlayer) (Object) this);
+    @Inject(method = "onEnterCombat", at = @At("TAIL"))
+    private void combatEntered(CallbackInfo info) {
+//        TeleportCommands.INSTANCE.onPlayerDeath((ServerPlayer) (Object) this);
+    }
+
+    @Inject(method = "onLeaveCombat", at = @At("TAIL"))
+    private void combatLeft(CallbackInfo info) {
+//        TeleportCommands.INSTANCE.onPlayerDeath((ServerPlayer) (Object) this);
     }
 }

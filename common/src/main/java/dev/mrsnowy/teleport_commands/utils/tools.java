@@ -14,6 +14,7 @@ import java.util.stream.StreamSupport;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -21,8 +22,6 @@ import static dev.mrsnowy.teleport_commands.Constants.MOD_ID;
 
 
 public class tools {
-
-
     private static final Set<String> unsafeCollisionFreeBlocks = Set.of("block.minecraft.lava", "block.minecraft.flowing_lava", "block.minecraft.end_portal", "block.minecraft.end_gateway","block.minecraft.fire", "block.minecraft.soul_fire", "block.minecraft.powder_snow", "block.minecraft.nether_portal");
 
     // checks a 7x7x7 location around the player in order to find a safe place to teleport them to.
@@ -155,8 +154,8 @@ public class tools {
 
 
     // Gets the ids of all the worlds
-    public static List<String> getWorldIds() {
-        return StreamSupport.stream(teleportCommands.server.getAllLevels().spliterator(), false)
+    public static List<String> getWorldIds(MinecraftServer server) {
+        return StreamSupport.stream(server.getAllLevels().spliterator(), false)
                 .map(level -> level.dimension().location().toString())
                 .toList();
     }

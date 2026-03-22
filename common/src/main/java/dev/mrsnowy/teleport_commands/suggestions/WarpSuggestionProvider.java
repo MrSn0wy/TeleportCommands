@@ -7,7 +7,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -26,7 +25,7 @@ public class WarpSuggestionProvider implements SuggestionProvider<CommandSourceS
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         try {
-            List<NamedLocation> WarpStorage = teleportCommands.storageManager.STORAGE.getWarps();
+            List<NamedLocation> WarpStorage = teleportCommands.storageManager.storage.getWarps();
 
             for (NamedLocation currentWarp : WarpStorage) {
                 builder.suggest(currentWarp.getName());

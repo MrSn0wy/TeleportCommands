@@ -27,7 +27,7 @@ public class HomeSuggestionProvider implements SuggestionProvider<CommandSourceS
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         try {
             ServerPlayer player = context.getSource().getPlayerOrException();
-            Optional<Player> optionalPlayerStorage = teleportCommands.storageManager.STORAGE.getPlayer(player.getStringUUID());
+            Optional<Player> optionalPlayerStorage = teleportCommands.storageManager.storage.getPlayer(player.getStringUUID());
 
             if (optionalPlayerStorage.isPresent()) {
                 Player playerStorage = optionalPlayerStorage.get();

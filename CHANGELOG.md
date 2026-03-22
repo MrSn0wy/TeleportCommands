@@ -6,7 +6,9 @@ and this project kind of adheres to [Semantic Versioning](https://semver.org/spe
 
 ### WIP [1.4.0]
 #### Changed
-- The loading logic of the storage file
+- the loading logic of the storage file.
+- most static classes to non-static, should prevent leaks.
+- Changed out java Timers for a tick-based timer.
 
 #### Added
 - **a config file!**

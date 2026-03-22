@@ -3,6 +3,7 @@ package dev.mrsnowy.teleport_commands.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.mrsnowy.teleport_commands.Constants;
+import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.suggestions.WarpSuggestionProvider;
 import dev.mrsnowy.teleport_commands.utils.tools;
@@ -21,13 +22,14 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
-import static dev.mrsnowy.teleport_commands.storage.StorageManager.*;
-import static dev.mrsnowy.teleport_commands.utils.tools.Teleporter;
 import static dev.mrsnowy.teleport_commands.utils.tools.getTranslatedText;
 import static net.minecraft.commands.Commands.argument;
 
 public class warp {
-    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
+    TeleportCommands teleportCommands;
+
+    public warp(CommandDispatcher<CommandSourceStack> commandDispatcher, TeleportCommands teleportCommands) {
+        this.teleportCommands = teleportCommands;
 
         commandDispatcher.register(Commands.literal("setwarp")
                 .requires(source ->
@@ -131,7 +133,7 @@ public class warp {
     }
 
 
-    private static void SetWarp(ServerPlayer player, String warpName) throws Exception {
+    private void SetWarp(ServerPlayer player, String warpName) throws Exception {
         System.out.println(warpName);
         warpName = warpName.toLowerCase();
 
@@ -142,7 +144,7 @@ public class warp {
         NamedLocation warp = new NamedLocation(warpName, blockPos, worldString);
 
         // Adds the warp, returns true if the warp already exists
-        boolean warpExists = STORAGE.addWarp(warp);
+        boolean warpExists = teleportCommands.storageManager.storage.addWarp(warp);
 
         if (warpExists) {
             // Display error message that the warp already exists

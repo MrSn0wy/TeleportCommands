@@ -10,16 +10,16 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 public class configManager {
-    public Path CONFIG_FILE;
-    public ConfigClass CONFIG;
+    public Path configFile;
+    public ConfigClass config;
 
-    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final int defaultVersion = new ConfigClass().getVersion();
     private final TeleportCommands teleportCommands;
 
     public configManager(TeleportCommands teleportCommands) {
         this.teleportCommands = teleportCommands;
-        CONFIG_FILE = teleportCommands.configDir.resolve("teleport_commands.json");
+        configFile = teleportCommands.configDir.resolve("teleport_commands.json");
 
         try {
             configLoader();
@@ -33,22 +33,22 @@ public class configManager {
 
     /// This function loads the config from disk
     public void configLoader() throws Exception {
-        if (!CONFIG_FILE.toFile().exists() || CONFIG_FILE.toFile().length() == 0) {
+        if (!configFile.toFile().exists() || configFile.toFile().length() == 0) {
             Files.createDirectories(teleportCommands.configDir);
 
             Constants.LOGGER.warn("Config file was not found or was empty! Initializing config");
-            CONFIG = new ConfigClass();
+            config = new ConfigClass();
             configSaver();
             Constants.LOGGER.info("Config created successfully!");
         }
 
         configMigrator();
 
-        FileReader reader = new FileReader(CONFIG_FILE.toFile());
-        CONFIG = GSON.fromJson(reader, ConfigClass.class);
-        if (CONFIG == null) {
+        FileReader reader = new FileReader(configFile.toFile());
+        config = gson.fromJson(reader, ConfigClass.class);
+        if (config == null) {
             Constants.LOGGER.warn("Config file was empty! Loading defaults...");
-            CONFIG = new ConfigClass();
+            config = new ConfigClass();
             configSaver();
         }
 
@@ -58,8 +58,8 @@ public class configManager {
 
     /// This function checks what version the config file is and migrates it to the current version of the mod.
     public void configMigrator() throws Exception {
-        FileReader reader = new FileReader(CONFIG_FILE.toFile());
-        JsonObject jsonObject = GSON.fromJson(reader, JsonObject.class);
+        FileReader reader = new FileReader(configFile.toFile());
+        JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
 
         int version = jsonObject.has("version") ? jsonObject.get("version").getAsInt() : 0;
 
@@ -74,7 +74,7 @@ public class configManager {
         } else if (version > defaultVersion) {
             String message = String.format("Teleport Commands: The config file's version is newer than the supported version, found v%s, expected <= v%s.\n" +
                             "If you intentionally backported then you can attempt to downgrade the config file located at this location: \"%s\".\n",
-                    version, defaultVersion, CONFIG_FILE.toAbsolutePath());
+                    version, defaultVersion, configFile.toAbsolutePath());
 
             throw new IllegalStateException(message);
         }
@@ -83,9 +83,9 @@ public class configManager {
     /// Saves the config to disk
     public void configSaver() throws Exception {
         // todo! maybe throttle saves?
-        byte[] json = GSON.toJson(CONFIG).getBytes();
+        byte[] json = gson.toJson(config).getBytes();
 
-        Files.write(CONFIG_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+        Files.write(configFile, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
     public static class ConfigClass {
@@ -102,9 +102,15 @@ public class configManager {
         }
 
         public static final class Teleporting {
-            private int delay = 5;
+            /// Delay before teleporting
+            private int delay = 3;
+            /// Cooldown before they can teleport again
+            private int cooldown = 5;
+            /// Allow moving while teleporting
             private boolean whileMoving = true;
+            /// Allow fighting while teleporting
             private boolean whileFighting = false;
+            /// Cooldown after fighting before they can teleport again
             private int fightCooldown = 10;
 
             public int getDelay() {
@@ -138,10 +144,19 @@ public class configManager {
             public void setFightCooldown(int fightCooldown) {
                 this.fightCooldown = fightCooldown;
             }
+
+            public int getCooldown() {
+                return cooldown;
+            }
+
+            public void setCooldown(int cooldown) {
+                this.cooldown = cooldown;
+            }
         }
 
         public static final class Back {
             private boolean enabled = true;
+            /// Deletes the /back after teleporting, so you cant call /back twice.
             private boolean deleteAfterTeleport = false;
 
             public boolean isEnabled() {
@@ -163,7 +178,9 @@ public class configManager {
 
         public static final class Home {
             private boolean enabled = true;
+            /// The maximum amount of homes a player can have
             private int playerMaximum = 20;
+            /// If a home with an invalid dimension should get automatically deleted
             private boolean deleteInvalid = false;
 
             public boolean isEnabled() {
@@ -205,6 +222,7 @@ public class configManager {
 
         public static final class Warp {
             private boolean enabled = true;
+            /// If a warp with an invalid dimension should get automatically deleted
             private boolean deleteInvalid = false;
 
             public boolean isEnabled() {

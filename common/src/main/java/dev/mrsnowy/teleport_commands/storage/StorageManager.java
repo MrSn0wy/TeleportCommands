@@ -18,19 +18,19 @@ import java.util.Optional;
 import static java.util.Collections.unmodifiableList;
 
 public class StorageManager {
-    public Path STORAGE_FOLDER;
-    public Path STORAGE_FILE;
-    public StorageClass STORAGE;
+    public Path storageFolder;
+    public Path storageFile;
+    public StorageClass storage;
 
-    private final Gson GSON = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder().create();
     private final int defaultVersion = new StorageClass().getVersion();
     private final TeleportCommands teleportCommands;
 
     /// Initializes the StorageManager class and loads the storage from the filesystem.
     public StorageManager(TeleportCommands teleportCommands) {
         this.teleportCommands = teleportCommands;
-        STORAGE_FOLDER = teleportCommands.saveDir.resolve("TeleportCommands/");
-        STORAGE_FILE = STORAGE_FOLDER.resolve("storage.json");
+        storageFolder = teleportCommands.saveDir.resolve("TeleportCommands/");
+        storageFile = storageFolder.resolve("storage.json");
 
         try {
             StorageLoader();
@@ -45,26 +45,26 @@ public class StorageManager {
     /// Loads the storage from the filesystem
     public void StorageLoader() throws Exception {
 
-        if (!STORAGE_FILE.toFile().exists() || STORAGE_FILE.toFile().length() == 0) {
+        if (!storageFile.toFile().exists() || storageFile.toFile().length() == 0) {
             Constants.LOGGER.warn("Storage file was not found or was empty! Initializing storage");
 
-            Files.createDirectories(STORAGE_FOLDER);
-            STORAGE = new StorageClass();
+            Files.createDirectories(storageFolder);
+            storage = new StorageClass();
             StorageSaver();
             Constants.LOGGER.info("Storage created successfully!");
         }
 
         StorageMigrator();
 
-        FileReader reader = new FileReader(STORAGE_FILE.toFile());
-        STORAGE = GSON.fromJson(reader, StorageClass.class);
-        if (STORAGE == null) {
+        FileReader reader = new FileReader(storageFile.toFile());
+        storage = gson.fromJson(reader, StorageClass.class);
+        if (storage == null) {
             Constants.LOGGER.warn("Storage file was empty! Initializing storage");
-            STORAGE = new StorageClass();
+            storage = new StorageClass();
             StorageSaver();
         }
 
-        STORAGE.cleanup();
+        storage.cleanup();
 
         StorageSaver(); // Save it so any missing values get added to the file.
         Constants.LOGGER.info("Storage loaded successfully!");
@@ -72,8 +72,8 @@ public class StorageManager {
 
     /// This function checks what version the storage file is and migrates it to the current version of the mod.
     public void StorageMigrator() throws Exception {
-        FileReader reader = new FileReader(STORAGE_FILE.toFile());
-        JsonObject jsonObject = GSON.fromJson(reader, JsonObject.class);
+        FileReader reader = new FileReader(storageFile.toFile());
+        JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
 
         int version = jsonObject.has("version") ? jsonObject.get("version").getAsInt() : 0;
 
@@ -109,14 +109,14 @@ public class StorageManager {
             }
 
             // Save the storage :3
-            byte[] json = GSON.toJson(jsonObject, JsonArray.class).getBytes();
-            Files.write(STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+            byte[] json = gson.toJson(jsonObject, JsonArray.class).getBytes();
+            Files.write(storageFile, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
 
             Constants.LOGGER.info("Storage file migrated to v{} successfully!", defaultVersion);
         } else if (version > defaultVersion) {
             String message = String.format("Teleport Commands: The storage file's version is newer than the supported version, found v%s, expected <= v%s.\n" +
                             "If you intentionally backported then you can attempt to downgrade the storage file located at this location: \"%s\".\n",
-                    version, defaultVersion, STORAGE_FILE.toAbsolutePath());
+                    version, defaultVersion, storageFile.toAbsolutePath());
 
             throw new IllegalStateException(message);
         }
@@ -125,9 +125,9 @@ public class StorageManager {
     /// Saves the storage to the filesystem
     public void StorageSaver() throws Exception {
         // todo! maybe throttle saves?
-        byte[] json = GSON.toJson( this.STORAGE ).getBytes();
+        byte[] json = gson.toJson( this.storage).getBytes();
 
-        Files.write(STORAGE_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+        Files.write(storageFile, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
 
@@ -147,7 +147,7 @@ public class StorageManager {
                 List<NamedLocation> homes = player.getHomes();
 
                 // Delete any homes with an invalid world_id (if enabled in config)
-                if (teleportCommands.config.CONFIG.home.isDeleteInvalid()) {
+                if (teleportCommands.config.config.home.isDeleteInvalid()) {
                     homes.removeIf(home -> home.getWorld().isEmpty());
                 }
 
@@ -158,7 +158,7 @@ public class StorageManager {
             }
 
             // Delete any warps with an invalid world_id (if enabled in config)
-            if (teleportCommands.config.CONFIG.warp.isDeleteInvalid()) {
+            if (teleportCommands.config.config.warp.isDeleteInvalid()) {
                 Warps.removeIf(warp -> warp.getWorld().isEmpty());
             }
 

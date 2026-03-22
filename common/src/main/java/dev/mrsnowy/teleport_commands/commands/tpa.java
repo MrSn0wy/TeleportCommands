@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.mrsnowy.teleport_commands.Constants;
+import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.suggestions.tpaSuggestionProvider;
 
 import net.minecraft.ChatFormatting;
@@ -19,10 +20,11 @@ import net.minecraft.world.phys.Vec3;
 import static dev.mrsnowy.teleport_commands.utils.tools.*;
 
 public class tpa {
+    TeleportCommands teleportCommands;
 
-    public static final ArrayList<tpaArrayClass> tpaList = new ArrayList<>();
+    public final ArrayList<tpaArrayClass> tpaList = new ArrayList<>();
 
-    public static class tpaArrayClass {
+    public class tpaArrayClass {
         public final String InitPlayer;
         public final String RecPlayer;
         final boolean here;
@@ -35,7 +37,8 @@ public class tpa {
         }
     }
 
-    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
+    public tpa(CommandDispatcher<CommandSourceStack> commandDispatcher, TeleportCommands teleportCommands) {
+        this.teleportCommands = teleportCommands;
 
         commandDispatcher.register(Commands.literal("tpa")
                 .requires(source -> source.getPlayer() != null)
@@ -112,8 +115,8 @@ public class tpa {
     }
 
 
-    private static void tpaCommandHandler(ServerPlayer FromPlayer, ServerPlayer ToPlayer, boolean here) throws NullPointerException {
-        long playerTpaList = tpa.tpaList.stream()
+    private void tpaCommandHandler(ServerPlayer FromPlayer, ServerPlayer ToPlayer, boolean here) throws NullPointerException {
+        long playerTpaList = tpaList.stream()
                 .filter(tpa -> Objects.equals(FromPlayer.getStringUUID(), tpa.InitPlayer))
                 .filter(tpa -> Objects.equals(ToPlayer.getStringUUID(), tpa.RecPlayer))
                 .count();
@@ -183,7 +186,7 @@ public class tpa {
         }
     }
 
-    private static void tpaAccept(ServerPlayer FromPlayer, ServerPlayer ToPlayer) {
+    private void tpaAccept(ServerPlayer FromPlayer, ServerPlayer ToPlayer) {
         if (FromPlayer == ToPlayer) {
             FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.self", FromPlayer).withStyle(ChatFormatting.AQUA), true);
             return;
@@ -206,10 +209,10 @@ public class tpa {
                 BlockPos safeBlockPos = teleportData.get();
                 Vec3 teleportPos = new Vec3(safeBlockPos.getX() + 0.5, safeBlockPos.getY(), safeBlockPos.getZ() + 0.5);
 
-                Teleporter(toSentPlayer, destinationPlayer.serverLevel(), teleportPos);
+                teleportCommands.teleporter.teleportQueue(toSentPlayer, destinationPlayer.serverLevel(), teleportPos);
             } else {
                 // if no safe location then just teleport to the player
-                Teleporter(toSentPlayer, destinationPlayer.serverLevel(), destinationPlayer.position());
+                teleportCommands.teleporter.teleportQueue(toSentPlayer, destinationPlayer.serverLevel(), destinationPlayer.position());
             }
 
             // if the player teleported then these messages get sent && the request gets removed
@@ -223,7 +226,7 @@ public class tpa {
         }
     }
 
-    private static void tpaDeny(ServerPlayer FromPlayer, ServerPlayer ToPlayer) {
+    private void tpaDeny(ServerPlayer FromPlayer, ServerPlayer ToPlayer) {
         if (FromPlayer == ToPlayer) {
             FromPlayer.displayClientMessage(getTranslatedText("commands.teleport_commands.tpa.self", FromPlayer).withStyle(ChatFormatting.AQUA),true);
 

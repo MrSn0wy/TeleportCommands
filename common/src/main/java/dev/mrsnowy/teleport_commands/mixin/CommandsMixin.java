@@ -20,6 +20,6 @@ public class CommandsMixin {
         Commands self = (Commands) (Object) this;
         CommandDispatcher<CommandSourceStack> dispatcher = self.getDispatcher();
 
-        TeleportCommands.registerCommands(dispatcher);
+        TeleportCommands.INSTANCE.registerCommands(dispatcher);
     }
 }
