@@ -156,7 +156,7 @@ public class warp {
         }
     }
 
-    private static void GoToWarp(ServerPlayer player, String warpName) throws Exception {
+    private static void GoToWarp(ServerPlayer player, String warpName) {
         warpName = warpName.toLowerCase();
 
         // Gets warp
@@ -244,7 +244,7 @@ public class warp {
         }
     }
 
-    private static void PrintWarps(ServerPlayer player) throws Exception {
+    private static void PrintWarps(ServerPlayer player) {
         // Get warps
         List<NamedLocation> warps = STORAGE.getWarps();
 
