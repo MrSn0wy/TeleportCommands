@@ -14,6 +14,8 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
 
 import java.util.Arrays;
 
@@ -68,7 +70,7 @@ public class main {
                         }
 
                         try {
-                            player.displayClientMessage(Component.literal("meow " + string), true);
+                            player.sendSystemMessage(Component.literal("meow " + string), true);
 
                         } catch (Exception e) {
                             Constants.LOGGER.error("Error while disabling a command! => ", e);
@@ -94,7 +96,7 @@ public class main {
                         }
 
                         try {
-                            player.displayClientMessage(Component.literal("meow " + string), true);
+                            player.sendSystemMessage(Component.literal("meow " + string), true);
 
                         } catch (Exception e) {
                             Constants.LOGGER.error("Error while disabling a command! => ", e);
