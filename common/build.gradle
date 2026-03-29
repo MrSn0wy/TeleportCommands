@@ -3,17 +3,28 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 neoForge {
-    neoFormVersion = neo_form_version
+    // neoFormVersion = neo_form_version
     // Automatically enable AccessTransformers if the file exists
     def at = file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-    /*parchment {
+    enable {
+        version = neoforge_version
+        neoFormVersion = neo_form_version
+        disableRecompilation = true
+    }
+    parchment {
         minecraftVersion = parchment_minecraft
         mappingsVersion = parchment_version
-    }*/
+    }
 }
 
 dependencies {
