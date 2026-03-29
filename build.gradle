@@ -27,3 +27,14 @@ forgix {
         jarLocation = "build/libs/${mod_id}-fabric-${minecraft_version}-v${version}.jar"
     }
 }
+
+allprojects {
+    tasks.configureEach {
+        if (it.hasProperty("options") && it.options.hasProperty("compilerArgs")) {
+            it.options.compilerArgs += ['--enable-preview']
+        }
+        if (it.hasProperty("jvmArgs")) {
+            it.jvmArgs += ['--enable-preview']
+        }
+    }
+}
