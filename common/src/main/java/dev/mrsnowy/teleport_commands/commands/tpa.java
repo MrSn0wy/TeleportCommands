@@ -38,7 +38,7 @@ public class tpa {
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
 
         commandDispatcher.register(Commands.literal("tpa")
-                .requires(source -> source.getPlayer() != null)
+                .requires(_ -> true)
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
@@ -57,7 +57,7 @@ public class tpa {
                         })));
 
         commandDispatcher.register(Commands.literal("tpahere")
-                .requires(source -> source.getPlayer() != null)
+                .requires(_ -> true)
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
@@ -74,7 +74,7 @@ public class tpa {
                         })));
 
         commandDispatcher.register(Commands.literal("tpaaccept")
-                .requires(source -> source.getPlayer() != null)
+                .requires(_ -> true)
                 .then(Commands.argument("player", EntityArgument.player()).suggests(new tpaSuggestionProvider())
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
@@ -92,7 +92,7 @@ public class tpa {
                         })));
 
         commandDispatcher.register(Commands.literal("tpadeny")
-                .requires(source -> source.getPlayer() != null)
+                .requires(_ -> true)
                 .then(Commands.argument("player", EntityArgument.player()).suggests(new tpaSuggestionProvider())
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
