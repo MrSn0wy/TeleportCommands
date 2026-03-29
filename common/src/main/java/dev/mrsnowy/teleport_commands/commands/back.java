@@ -36,7 +36,7 @@ public class back {
 
                 } catch (Exception e) {
                     Constants.LOGGER.error("Error while going back! => ", e);
-                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                    player.sendSystemMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                     return 1;
                 }
                 return 0;
@@ -52,7 +52,7 @@ public class back {
 
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while going back! => ", e);
-                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                        player.sendSystemMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
                     return 0;
@@ -70,7 +70,7 @@ public class back {
                 .orElse(null);
 
         if (deathLocation == null) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player).withStyle(ChatFormatting.RED), true);
+            player.sendSystemMessage(getTranslatedText("commands.teleport_commands.common.noLocation", player).withStyle(ChatFormatting.RED), true);
             return;
         }
 
@@ -83,7 +83,7 @@ public class back {
                     deathLocation.getWorldString(),
                     tools.getWorldIds());
 
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.worldNotFound", player)
+            player.sendSystemMessage(getTranslatedText("commands.teleport_commands.common.worldNotFound", player)
                     .withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
 
             return;
@@ -98,7 +98,7 @@ public class back {
             // Check if there is a safe BlockPos
             if (safeBlockPos.isEmpty()) {
                 // asks the player if they want to teleport anyway
-                player.displayClientMessage(
+                player.sendSystemMessage(
                         Component.empty()
                                 .append(getTranslatedText("commands.teleport_commands.common.noSafeLocation", player)
                                         .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
@@ -125,13 +125,13 @@ public class back {
 
         // check if the player is already at this location (in the same world)
         if (player.blockPosition().equals(teleportBlockPos) && player.level() == deathLocationWorld) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.same", player).withStyle(ChatFormatting.AQUA), true);
+            player.sendSystemMessage(getTranslatedText("commands.teleport_commands.back.same", player).withStyle(ChatFormatting.AQUA), true);
 
         } else {
             // teleport the player!
             Vec3 teleportPos = new Vec3(teleportBlockPos.getX() + 0.5, teleportBlockPos.getY(), teleportBlockPos.getZ() + 0.5);
 
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
+            player.sendSystemMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
             tools.Teleporter(player, deathLocationWorld, teleportPos);
         }
     }
