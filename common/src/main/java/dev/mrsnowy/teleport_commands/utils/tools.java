@@ -195,7 +195,7 @@ public class tools {
     // Gets the ids of all the worlds
     public static List<String> getWorldIds() {
         return StreamSupport.stream(TeleportCommands.SERVER.getAllLevels().spliterator(), false)
-                .map(level -> level.dimension().location().toString())
+                .map(level -> level.dimension().identifier().toString())
                 .toList();
     }
 
