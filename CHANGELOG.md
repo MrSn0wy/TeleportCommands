@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project kind of adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [v1.4.0]
+- Added support for 26.1
+- Changed Java version to `25`
+
 ### WIP [1.4.0]
 #### Changed
 - The loading logic of the storage file
