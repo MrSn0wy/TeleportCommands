@@ -30,8 +30,9 @@ public class TeleportCommands {
 		CONFIG_DIR = Paths.get(System.getProperty("user.dir")).resolve("config"); // Construct the game directory path
 		SERVER = server;
 
+		ConfigManager.ConfigInit();
 		StorageManager.StorageInit(); // Initialize the storage file
-        ConfigManager.ConfigInit();
+
 		DeathLocationStorage.clearDeathLocations(); // Clear data of death locations.
 	}
 
