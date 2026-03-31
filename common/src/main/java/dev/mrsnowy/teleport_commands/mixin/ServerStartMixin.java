@@ -20,7 +20,7 @@ public class ServerStartMixin {
 
     @Inject(method = "tickServer", at = @At(value = "TAIL"))
     private void tickServer(BooleanSupplier hasTimeLeft, CallbackInfo info) {
-        TeleportCommands.INSTANCE.teleporter.checkPlayerData((MinecraftServer) (Object) this);
+        TeleportCommands.INSTANCE.teleporter.tick((MinecraftServer) (Object) this);
 
         // todo! do the same for TPA
     }

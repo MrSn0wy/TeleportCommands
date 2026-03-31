@@ -209,10 +209,10 @@ public class tpa {
                 BlockPos safeBlockPos = teleportData.get();
                 Vec3 teleportPos = new Vec3(safeBlockPos.getX() + 0.5, safeBlockPos.getY(), safeBlockPos.getZ() + 0.5);
 
-                teleportCommands.teleporter.teleportQueue(toSentPlayer, destinationPlayer.serverLevel(), teleportPos);
+                teleportCommands.teleporter.queue(toSentPlayer, destinationPlayer.serverLevel(), teleportPos);
             } else {
                 // if no safe location then just teleport to the player
-                teleportCommands.teleporter.teleportQueue(toSentPlayer, destinationPlayer.serverLevel(), destinationPlayer.position());
+                teleportCommands.teleporter.queue(toSentPlayer, destinationPlayer.serverLevel(), destinationPlayer.position());
             }
 
             // if the player teleported then these messages get sent && the request gets removed

@@ -3,6 +3,7 @@ package dev.mrsnowy.teleport_commands.storage;
 import com.google.gson.*;
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
+import dev.mrsnowy.teleport_commands.utils.tools;
 
 import java.io.FileReader;
 import java.nio.file.Files;
@@ -88,7 +89,7 @@ public class configManager {
         Files.write(configFile, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
-    public static class ConfigClass {
+    public class ConfigClass {
         private final int version = 0;
         public Teleporting teleporting = new Teleporting();
         public Back back = new Back();
@@ -101,61 +102,67 @@ public class configManager {
             return version;
         }
 
-        public static final class Teleporting {
-            /// Delay before teleporting
-            private int delay = 3;
-            /// Cooldown before they can teleport again
-            private int cooldown = 5;
+        public final class Teleporting {
+            /// Delay (in ticks) before teleporting
+            private int delay = 60;
+            /// Cooldown (in ticks) before a player can teleport again
+            private int cooldown = 100;
             /// Allow moving while teleporting
-            private boolean whileMoving = true;
+            private boolean allowMoving = true;
             /// Allow fighting while teleporting
-            private boolean whileFighting = false;
-            /// Cooldown after fighting before they can teleport again
-            private int fightCooldown = 10;
+            private boolean allowFighting = false;
+            /// Cooldown (in ticks) after fighting before a player can teleport again
+            private int fightCooldown = 200;
 
             public int getDelay() {
                 return delay;
             }
 
-            public void setDelay(int delay) {
+            public void setDelay(int delay) throws Exception {
                 this.delay = delay;
+                configSaver();
             }
 
-            public boolean isWhileMoving() {
-                return whileMoving;
+            public boolean isAllowMoving() {
+                return allowMoving;
             }
 
-            public void setWhileMoving(boolean whileMoving) {
-                this.whileMoving = whileMoving;
+            public void setAllowMoving(boolean allowMoving) throws Exception {
+                this.allowMoving = allowMoving;
+                configSaver();
             }
 
-            public boolean isWhileFighting() {
-                return whileFighting;
+            public boolean isAllowFighting() {
+                return allowFighting;
             }
 
-            public void setWhileFighting(boolean whileFighting) {
-                this.whileFighting = whileFighting;
+            public void setAllowFighting(boolean allowFighting) throws Exception {
+                this.allowFighting = allowFighting;
+                configSaver();
             }
 
             public int getFightCooldown() {
                 return fightCooldown;
             }
 
-            public void setFightCooldown(int fightCooldown) {
+            public void setFightCooldown(int fightCooldown) throws Exception {
                 this.fightCooldown = fightCooldown;
+                configSaver();
             }
 
             public int getCooldown() {
                 return cooldown;
             }
 
-            public void setCooldown(int cooldown) {
+            public void setCooldown(int cooldown) throws Exception {
                 this.cooldown = cooldown;
+                configSaver();
             }
         }
 
-        public static final class Back {
+        public final class Back {
             private boolean enabled = true;
+            private String command = "back"; // TODO! do this for more commands
             /// Deletes the /back after teleporting, so you cant call /back twice.
             private boolean deleteAfterTeleport = false;
 
@@ -163,20 +170,32 @@ public class configManager {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) {
+            public void setEnabled(boolean enabled) throws Exception {
                 this.enabled = enabled;
+                configSaver();
+            }
+
+            public String getCommand() {
+                return command;
+            }
+
+            public void setCommand(String command) throws Exception {
+                this.command = command;
+                configSaver();
+                tools.reloadResources(teleportCommands.server); // Reload the commands
             }
 
             public boolean isDeleteAfterTeleport() {
                 return deleteAfterTeleport;
             }
 
-            public void setDeleteAfterTeleport(boolean deleteAfterTeleport) {
+            public void setDeleteAfterTeleport(boolean deleteAfterTeleport) throws Exception {
                 this.deleteAfterTeleport = deleteAfterTeleport;
+                configSaver();
             }
         }
 
-        public static final class Home {
+        public final class Home {
             private boolean enabled = true;
             /// The maximum amount of homes a player can have
             private int playerMaximum = 20;
@@ -187,41 +206,46 @@ public class configManager {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) {
+            public void setEnabled(boolean enabled) throws Exception {
                 this.enabled = enabled;
+                configSaver();
             }
 
             public int getPlayerMaximum() {
                 return playerMaximum;
             }
 
-            public void setPlayerMaximum(int playerMaximum) {
+            public void setPlayerMaximum(int playerMaximum) throws Exception {
                 this.playerMaximum = playerMaximum;
+                configSaver();
             }
 
             public boolean isDeleteInvalid() {
                 return deleteInvalid;
             }
 
-            public void setDeleteInvalid(boolean deleteInvalid) {
+            public void setDeleteInvalid(boolean deleteInvalid) throws Exception {
                 this.deleteInvalid = deleteInvalid;
+                configSaver();
             }
         }
 
-        public static final class Tpa {
+        public final class Tpa {
             private boolean enabled = true;
 
             public boolean isEnabled() {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) {
+            public void setEnabled(boolean enabled) throws Exception {
                 this.enabled = enabled;
+                configSaver();
             }
         }
 
-        public static final class Warp {
+        public final class Warp {
             private boolean enabled = true;
+
             /// If a warp with an invalid dimension should get automatically deleted
             private boolean deleteInvalid = false;
 
@@ -229,43 +253,57 @@ public class configManager {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) {
+            public void setEnabled(boolean enabled) throws Exception {
                 this.enabled = enabled;
+                configSaver();
             }
 
             public boolean isDeleteInvalid() {
                 return deleteInvalid;
             }
 
-            public void setDeleteInvalid(boolean deleteInvalid) {
+            public void setDeleteInvalid(boolean deleteInvalid) throws Exception {
                 this.deleteInvalid = deleteInvalid;
+                configSaver();
             }
         }
 
-        public static final class WorldSpawn {
+        public final class WorldSpawn {
             private boolean enabled = true;
+            private String command = "worldspawn";
             private String world_id = "minecraft:overworld";
 
             public boolean isEnabled() {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) {
+            public void setEnabled(boolean enabled) throws Exception {
                 this.enabled = enabled;
+                configSaver();
             }
 
             public String getWorld_id() {
                 return world_id;
             }
 
-            public void setWorld_id(String world_id) {
+            public void setWorld_id(String world_id) throws Exception {
                 this.world_id = world_id;
+                configSaver();
+            }
+
+            public String getCommand() {
+                return command;
+            }
+
+            public void setCommand(String command) throws Exception {
+                this.command = command;
+                configSaver();
+                tools.reloadResources(teleportCommands.server); // Reload the commands
             }
         }
     }
 
     // --- Ideas! ---
-    // Make config options for disabling certain commands
     // Make config options for renaming certain commands
     // Make config option for changing required permission level for certain commands
     // Make config for setting max homes

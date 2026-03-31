@@ -185,4 +185,10 @@ public class tools {
         }
         return false; // it's not safe!
     }
+
+    /// This function reloads "reloadable resources" which includes commands
+    public static void reloadResources(MinecraftServer server) {
+        Collection<String> collection = server.getPackRepository().getSelectedIds();
+        server.reloadResources(collection);
+    }
 }

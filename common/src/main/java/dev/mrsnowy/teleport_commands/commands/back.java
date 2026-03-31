@@ -7,7 +7,6 @@ import dev.mrsnowy.teleport_commands.Constants;
 import java.util.*;
 
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
 import dev.mrsnowy.teleport_commands.common.DeathLocation;
 import dev.mrsnowy.teleport_commands.utils.tools;
 import net.minecraft.ChatFormatting;
@@ -84,7 +83,7 @@ public class back {
             Constants.LOGGER.warn("({}) Error while going back! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",
                     player.getName().getString(),
                     deathLocation.getWorldString(),
-                    tools.getWorldIds());
+                    tools.getWorldIds(teleportCommands.server));
 
             player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.worldNotFound", player)
                     .withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
@@ -134,8 +133,8 @@ public class back {
             // teleport the player!
             Vec3 teleportPos = new Vec3(teleportBlockPos.getX() + 0.5, teleportBlockPos.getY(), teleportBlockPos.getZ() + 0.5);
 
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
-            teleportCommands.tools.Teleporter(player, deathLocationWorld, teleportPos);
+//            player.displayClientMessage(getTranslatedText("commands.teleport_commands.back.go", player), true);
+            teleportCommands.teleporter.queue(player, deathLocationWorld, teleportPos, "commands.teleport_commands.back.go");
         }
     }
 }
