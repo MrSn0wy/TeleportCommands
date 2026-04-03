@@ -15,10 +15,10 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static dev.mrsnowy.teleport_commands.utils.tools.getTranslatedText;
+import static dev.mrsnowy.teleport_commands.utils.Language.getTranslation;
 import static net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT;
 
-public class teleporter {
+public class Teleporter {
     private final TeleportCommands teleportCommands;
     private final Map<UUID, PlayerData> players = new HashMap<>();
 
@@ -58,7 +58,7 @@ public class teleporter {
 
     // ----
 
-    public teleporter(TeleportCommands teleportCommands) {
+    public Teleporter(TeleportCommands teleportCommands) {
         this.teleportCommands = teleportCommands;
     }
 
@@ -83,7 +83,7 @@ public class teleporter {
             if (wasOnCooldown && !data.teleportOnCooldown && !data.fightOnCooldown) {
                 ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
                 if (player != null) {
-                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.teleport.ready", player).withStyle(ChatFormatting.WHITE), true);
+                    player.displayClientMessage(getTranslation("commands.teleport_commands.teleport.ready", player).withStyle(ChatFormatting.WHITE), true);
                 }
             }
 
@@ -102,7 +102,7 @@ public class teleporter {
                     // check if this is a whole number
                     float secondsLeft = (float) (data.pendingTeleport.teleportDelayUntil - currentTick) / data.pendingTeleport.tps;
                     if ((secondsLeft % 1) == 0 && player != null) {
-                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.teleport.progress", player).withStyle(ChatFormatting.WHITE), true);
+                        player.displayClientMessage(getTranslation("commands.teleport_commands.teleport.progress", player).withStyle(ChatFormatting.WHITE), true);
                     }
                 }
             }
@@ -137,7 +137,7 @@ public class teleporter {
             int ticksLeft = data.pendingTeleport.teleportDelayUntil - currentTick;
             int secondsLeft = (int) Math.ceil( (double) ticksLeft / data.pendingTeleport.tps);
 
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.teleport.delay", player,
+            player.displayClientMessage(getTranslation("commands.teleport_commands.teleport.delay", player,
                     Component.literal(String.valueOf(secondsLeft)),
                     Component.literal(String.valueOf(ticksLeft))
             ).withStyle(ChatFormatting.WHITE), false);
@@ -151,7 +151,7 @@ public class teleporter {
             int ticksLeft = cooldownUntil - currentTick;
             int secondsLeft = (int) Math.ceil( (double) ticksLeft / tps);
 
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.teleport.cooldown", player,
+            player.displayClientMessage(getTranslation("commands.teleport_commands.teleport.cooldown", player,
                     Component.literal(String.valueOf(secondsLeft)),
                     Component.literal(String.valueOf(ticksLeft))
             ).withStyle(ChatFormatting.WHITE), false);
@@ -170,27 +170,20 @@ public class teleporter {
             // bypass the delay
             teleport(player, world, coords, completionMessage);
         }
-
-
-        // save pos and check if they have moved.
-
-        // check if they got hit? whileFighting
-
-        // save when they last got hit and if it exceeds fightCooldown
-
     }
 
     ///  Teleports the player :P
-    private void teleport(ServerPlayer player, ServerLevel world, Vec3 coords, String completionMessage) {
+    private void teleport(ServerPlayer player, ServerLevel to_world, Vec3 to_coords, String completionMessage) {
         // teleportation effects & sounds before teleporting
-        world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 20, 0.0D, 0.0D, 0.0D, 0.01);
-        world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
-        world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
+        ServerLevel from_world = player.serverLevel();
+        from_world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 20, 0.0D, 0.0D, 0.0D, 0.01);
+        from_world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
+        from_world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
 
         boolean flying = player.getAbilities().flying;
 
-        player.displayClientMessage(getTranslatedText(completionMessage, player).withStyle(ChatFormatting.WHITE), true);
-        player.teleportTo(world, coords.x, coords.y, coords.z, Set.of(), player.getYRot(), player.getXRot(), false);
+        player.displayClientMessage(getTranslation(completionMessage, player).withStyle(ChatFormatting.WHITE), true);
+        player.teleportTo(to_world, to_coords.x, to_coords.y, to_coords.z, Set.of(), player.getYRot(), player.getXRot(), false);
 
         // Restore flying when teleporting trough dimensions
         if (flying) {
@@ -199,15 +192,15 @@ public class teleporter {
         }
 
         // teleportation sound && effects after teleport
-        world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
-        world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() , player.getZ(), 20, 0.0D, 1.0D, 0.0D, 0.01);
-        world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.03);
+        to_world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
+        to_world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() , player.getZ(), 20, 0.0D, 1.0D, 0.0D, 0.01);
+        to_world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 0.0D, 0.0D, 0.03);
     }
 
-
+    /// This function gets called by the mixin to notify that the player has moved
     public void reportPlayerMoved(ServerPlayer player) {
         if (teleportCommands.config.config.teleporting.isAllowMoving()) {
-            return; // The config option isn't disabled
+            return; // The config option is disabled
         }
 
         PlayerData data = players.get(player.getUUID());
@@ -217,16 +210,17 @@ public class teleporter {
             boolean tooFar = data.pendingTeleport.startingCoords.closerThan(pos, 1.5); // Checks if they moved more than one block (1.5 for diagonals)
 
             if (tooFar) {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.teleport.moving", player).withStyle(ChatFormatting.WHITE), true);
+                player.displayClientMessage(getTranslation("commands.teleport_commands.teleport.moving", player).withStyle(ChatFormatting.WHITE), true);
                 data.pendingTeleport = null;
             }
 
         }
     }
 
+    /// This function gets called by the mixin to notify that the player got damaged
     public void reportPlayerHurt(ServerPlayer player) {
         if (teleportCommands.config.config.teleporting.isAllowFighting()) {
-            return; // The config option isn't disabled
+            return; // The config option is disabled
         }
 
         PlayerData data = players.get(player.getUUID());
@@ -238,10 +232,9 @@ public class teleporter {
             data.fightOnCooldown = true;
 
             if (data.pendingTeleport != null) {
-                player.displayClientMessage(getTranslatedText("commands.teleport_commands.teleport.fighting", player).withStyle(ChatFormatting.WHITE), true);
+                player.displayClientMessage(getTranslation("commands.teleport_commands.teleport.fighting", player).withStyle(ChatFormatting.WHITE), true);
                 data.pendingTeleport = null;
             }
         }
-
     }
 }

@@ -6,7 +6,7 @@ import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
 import dev.mrsnowy.teleport_commands.common.NamedLocation;
 import dev.mrsnowy.teleport_commands.suggestions.WarpSuggestionProvider;
-import dev.mrsnowy.teleport_commands.utils.tools;
+import dev.mrsnowy.teleport_commands.utils.Tools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -22,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
-import static dev.mrsnowy.teleport_commands.utils.tools.getTranslatedText;
+import static dev.mrsnowy.teleport_commands.utils.Tools.getTranslation;
 import static net.minecraft.commands.Commands.argument;
 
 public class warp {
@@ -46,7 +46,7 @@ public class warp {
 
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while setting the warp!", e);
-                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.setError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                player.displayClientMessage(getTranslation("commands.teleport_commands.warp.setError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
                             return 0;
@@ -65,7 +65,7 @@ public class warp {
 
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while going to the warp!",e);
-                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                player.displayClientMessage(getTranslation("commands.teleport_commands.warp.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
                             return 0;
@@ -86,7 +86,7 @@ public class warp {
 
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while deleting to the warp!", e);
-                                player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.deleteError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                player.displayClientMessage(getTranslation("commands.teleport_commands.warp.deleteError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                 return 1;
                             }
                             return 0;
@@ -109,7 +109,7 @@ public class warp {
 
                                     } catch (Exception e) {
                                         Constants.LOGGER.error("Error while renaming the warp!", e);
-                                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.renameError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                                        player.displayClientMessage(getTranslation("commands.teleport_commands.warp.renameError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                                         return 1;
                                     }
                                     return 0;
@@ -125,7 +125,7 @@ public class warp {
 
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while printing warps!", e);
-                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.warps.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+                        player.displayClientMessage(getTranslation("commands.teleport_commands.warps.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
                         return 1;
                     }
                     return 0;
@@ -148,11 +148,11 @@ public class warp {
 
         if (warpExists) {
             // Display error message that the warp already exists
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.exists", player).withStyle(ChatFormatting.RED), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.exists", player).withStyle(ChatFormatting.RED), true);
 
         } else {
             // Display message that the home as been set
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.set", player), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.set", player), true);
         }
     }
 
@@ -162,7 +162,7 @@ public class warp {
         // Gets warp
         Optional<NamedLocation> optionalWarp = STORAGE.getWarp(warpName);
         if (optionalWarp.isEmpty()) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.notFound", player).withStyle(ChatFormatting.RED), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.notFound", player).withStyle(ChatFormatting.RED), true);
             return;
         }
 
@@ -176,9 +176,9 @@ public class warp {
                     player.getName().getString(),
                     warp.getName(),
                     warp.getWorldString(),
-                    tools.getWorldIds());
+                    Tools.getWorldIds());
 
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.worldNotFound", player)
+            player.displayClientMessage(getTranslation("commands.teleport_commands.common.worldNotFound", player)
                     .withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
 
             return;
@@ -190,13 +190,13 @@ public class warp {
 
         // Check if the player is already at this location (in the same world)
         if (player.blockPosition().equals(teleportBlockPos) && player.level() == warpWorld) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.goSame", player).withStyle(ChatFormatting.AQUA), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.goSame", player).withStyle(ChatFormatting.AQUA), true);
 
         } else {
             // Teleport the player!
             Vec3 teleportPos = new Vec3(teleportBlockPos.getX() + 0.5, teleportBlockPos.getY(), teleportBlockPos.getZ() + 0.5);
 
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.go", player), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.go", player), true);
             Teleporter(player, warpWorld, teleportPos);
         }
     }
@@ -211,11 +211,11 @@ public class warp {
             // Delete the warp
             STORAGE.removeWarp(optionalWarp.get());
 
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.delete", player), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.delete", player), true);
 
         } else {
             // the warp is not found
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.notFound", player).withStyle(ChatFormatting.RED), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.notFound", player).withStyle(ChatFormatting.RED), true);
         }
     }
 
@@ -225,7 +225,7 @@ public class warp {
 
         // check if there is no existing warp with the new name
         if (STORAGE.getWarp(newWarpName).isPresent()) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.nameExists", player).withStyle(ChatFormatting.RED), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.common.nameExists", player).withStyle(ChatFormatting.RED), true);
             return;
         }
 
@@ -236,11 +236,11 @@ public class warp {
 
             // set the new name
             warpToRename.get().setName(newWarpName);
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.rename", player), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.rename", player), true);
 
         } else {
             // the warp is not found
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.notFound", player).withStyle(ChatFormatting.RED), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.notFound", player).withStyle(ChatFormatting.RED), true);
         }
     }
 
@@ -250,14 +250,14 @@ public class warp {
 
         // Check if there are any warps lol
         if (warps.isEmpty()) {
-            player.displayClientMessage(getTranslatedText("commands.teleport_commands.warp.homeless", player).withStyle(ChatFormatting.AQUA), true);
+            player.displayClientMessage(getTranslation("commands.teleport_commands.warp.homeless", player).withStyle(ChatFormatting.AQUA), true);
             return;
         }
 
         MutableComponent message = Component.empty();
 
         // make da message
-        message.append(getTranslatedText("commands.teleport_commands.warps.warps", player)
+        message.append(getTranslation("commands.teleport_commands.warps.warps", player)
                     .withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD)
             );
 
@@ -296,7 +296,7 @@ public class warp {
                             .withStyle(style ->
                                     style.withHoverEvent(
                                             new HoverEvent.ShowText(
-                                                    getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                                    getTranslation("commands.teleport_commands.common.hoverCopy", player)
                                             )
                                     )
                             )
@@ -313,7 +313,7 @@ public class warp {
                             .withStyle(style -> style
                                     .withHoverEvent(
                                             new HoverEvent.ShowText(
-                                                    getTranslatedText("commands.teleport_commands.common.hoverCopy", player)
+                                                    getTranslation("commands.teleport_commands.common.hoverCopy", player)
                                             )
                                     )
                             )
@@ -324,7 +324,7 @@ public class warp {
 
             // Teleport button
             message.append(Component.literal("     | ").withStyle(ChatFormatting.AQUA))
-                    .append(getTranslatedText("commands.teleport_commands.common.tp", player)
+                    .append(getTranslation("commands.teleport_commands.common.tp", player)
                             .withStyle(ChatFormatting.GREEN)
                             .withStyle(style ->
                                     style.withClickEvent(
@@ -338,7 +338,7 @@ public class warp {
 
             // Rename and delete buttons if admin
             if (canModify) {
-                message.append(getTranslatedText("commands.teleport_commands.common.rename", player)
+                message.append(getTranslation("commands.teleport_commands.common.rename", player)
                         .withStyle(ChatFormatting.BLUE)
                         .withStyle(style -> style
                                 .withClickEvent(
@@ -349,7 +349,7 @@ public class warp {
                         )
                 )
                 .append(" ")
-                .append(getTranslatedText("commands.teleport_commands.common.delete", player)
+                .append(getTranslation("commands.teleport_commands.common.delete", player)
                         .withStyle(ChatFormatting.RED)
                         .withStyle(style -> style
                                 .withClickEvent(

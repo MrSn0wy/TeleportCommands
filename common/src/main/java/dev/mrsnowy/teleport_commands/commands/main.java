@@ -6,7 +6,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.storage.configManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -16,6 +15,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Arrays;
+
+import static dev.mrsnowy.teleport_commands.utils.Language.getTranslation;
 
 public class main {
 
@@ -43,7 +44,7 @@ public class main {
                 .then(Commands.literal("reloadConfig")
                         .executes(context -> {
                             try {
-                                configManager.configLoader();
+//                                ConfigManager.configLoader();
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Failed to reload config!", e);
                                 throw new SimpleCommandExceptionType(Component.literal(e.toString())).create();
@@ -71,7 +72,7 @@ public class main {
                         } catch (Exception e) {
                             Constants.LOGGER.error("Error while disabling a command! => ", e);
                             // TODO replace the error below with something normal?
-                            throw new SimpleCommandExceptionType(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD)).create();
+                            throw new SimpleCommandExceptionType(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD)).create();
                         }
                         return 0;
                     })
@@ -97,7 +98,7 @@ public class main {
                         } catch (Exception e) {
                             Constants.LOGGER.error("Error while disabling a command! => ", e);
                             // TODO replace the error below with something normal?
-                            throw new SimpleCommandExceptionType(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD)).create();
+                            throw new SimpleCommandExceptionType(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD)).create();
                         }
                         return 0;
                     })
@@ -106,7 +107,7 @@ public class main {
             .then(Commands.literal("reload")
                 .requires(source -> source.hasPermission(4)) // Require OP
                 .executes(context -> {
-                    TeleportCommands.registerCommands(context.getSource().dispatcher());
+                    TeleportCommands.INSTANCE.registerCommands(context.getSource().dispatcher());
                     return 0;
                 }))
 

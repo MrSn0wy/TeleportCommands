@@ -4,8 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
 import dev.mrsnowy.teleport_commands.commands.*;
 import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
-import dev.mrsnowy.teleport_commands.storage.configManager;
-import dev.mrsnowy.teleport_commands.utils.teleporter;
+import dev.mrsnowy.teleport_commands.storage.ConfigManager;
+import dev.mrsnowy.teleport_commands.utils.Teleporter;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,11 +22,11 @@ public class TeleportCommands {
 	public Path configDir;
 	public MinecraftServer server;
 	public StorageManager storageManager;
-	public configManager config;
+	public ConfigManager config;
 	public DeathLocationStorage deathLocationStorage;
-	public teleporter teleporter;
+	public Teleporter teleporter;
 
-	// Gets ran when the server starts, initializes the mod :3
+	/// Gets ran when the server starts, initializes the mod :3
 	public void initializeMod(MinecraftServer server) {
 		INSTANCE = this;
 		Constants.LOGGER.info("Initializing Teleport Commands (V{})! Hello {}!", Constants.VERSION, modLoader);
@@ -36,14 +36,14 @@ public class TeleportCommands {
 		this.server = server;
 
 		storageManager = new StorageManager(this);
-		config = new configManager(this);
+		config = new ConfigManager(this);
 		deathLocationStorage = new DeathLocationStorage();
-		teleporter = new teleporter(this);
+		teleporter = new Teleporter(this);
 	}
 
-    // initialize commands, also allows me to easily disable any when there is a config
+    /// initialize commands, also allows me to easily disable any when there is a config
     public void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
-        new back(dispatcher, this);
+        back.register(dispatcher);
         home.register(dispatcher);
         new tpa(dispatcher, this);
         new warp(dispatcher, this);
@@ -51,7 +51,7 @@ public class TeleportCommands {
         main.register(dispatcher);
     }
 
-	// Runs when the playerDeath mixin calls it, updates the /back command position
+	/// Runs when the playerDeath mixin calls it, updates the /back command position
 	public void onPlayerDeath(ServerPlayer player) {
 		BlockPos pos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
 		String world = player.serverLevel().dimension().location().toString();

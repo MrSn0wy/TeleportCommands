@@ -1,27 +1,23 @@
 package dev.mrsnowy.teleport_commands.utils;
 
 import com.google.gson.*;
-import dev.mrsnowy.teleport_commands.Constants;
-import dev.mrsnowy.teleport_commands.TeleportCommands;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
-import static dev.mrsnowy.teleport_commands.Constants.MOD_ID;
+import static dev.mrsnowy.teleport_commands.utils.Language.getTranslation;
 
 
-public class tools {
+public class Tools {
     private static final Set<String> unsafeCollisionFreeBlocks = Set.of("block.minecraft.lava", "block.minecraft.flowing_lava", "block.minecraft.end_portal", "block.minecraft.end_gateway","block.minecraft.fire", "block.minecraft.soul_fire", "block.minecraft.powder_snow", "block.minecraft.nether_portal");
 
     // checks a 7x7x7 location around the player in order to find a safe place to teleport them to.
@@ -67,91 +63,24 @@ public class tools {
         }
     }
 
-
-    // Gets the translated text for each player based on their language, this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear!)
-    public static MutableComponent getTranslatedText(String key, ServerPlayer player, MutableComponent... args) {
-        //todo! maybe make this also loaded in memory?
-        String language = player.clientInformation().language().toLowerCase();
-        String regex = "%(\\d+)%";
-        Pattern pattern = Pattern.compile(regex);
-
-//        MinecraftServer server = player.getServer();
-
-//         MinecraftServer.ServerResourcePackInfo silly2 = server.getResourceManager().listResources()
-
-//        java.util.stream.Stream<net.minecraft.server.packs.PackResources> SILLY = server.getResourceManager().listPacks();
-//
-//        SILLY.forEach(pack -> {
-//            Constants.LOGGER.info("{} : {} : {}", pack.packId(), pack.location(), pack.getClass());
-//        });
-
-//        player.displayClientMessage(Component.literal(.toString()), false);
-
-        // the try catch stuff is so wacky, but it works fine and I don't need to check everything
-        try {
-            String filePath = String.format("/assets/%s/lang/%s.json", MOD_ID, language);
-            InputStream stream = TeleportCommands.class.getResourceAsStream(filePath);
-
-            Reader reader = new InputStreamReader(Objects.requireNonNull(stream, String.format("Couldn't find the required language file for \"%s\"", language)), StandardCharsets.UTF_8);
-            JsonElement json = JsonParser.parseReader(reader);
-            String translation = json.getAsJsonObject().get(key).getAsString();
-
-
-            // Adds the optional MutableComponents in the correct places
-            Matcher matcher = pattern.matcher(Objects.requireNonNull(translation));
-
-            MutableComponent component = Component.literal("");
-            int lastIndex = 0;
-
-            while (matcher.find()) {
-                component.append(Component.literal(translation.substring(lastIndex, matcher.start())));
-
-                int index = Integer.parseInt(matcher.group(1));
-                component.append(args[index]);
-
-                lastIndex = matcher.end();
-            }
-            component.append(translation.substring(lastIndex));
-
-            return component;
-
-        } catch (Exception e) {
-
-            try {
-                if (!Objects.equals(language, "en_us")) {
-//                    TeleportCommands.LOGGER.warn("Key \"{}\" not found in the language: {}, falling back to default (en_us)", key, language);
-
-                    String filePath = String.format("/assets/%s/lang/en_us.json", MOD_ID);
-                    InputStream stream = TeleportCommands.class.getResourceAsStream(filePath);
-
-                    Reader reader = new InputStreamReader(Objects.requireNonNull(stream, String.format("Couldn't find the required language file for \"%s\"", language)), StandardCharsets.UTF_8);
-                    JsonElement json = JsonParser.parseReader(reader);
-                    String translation = json.getAsJsonObject().get(key).getAsString();
-
-                    // Adds the optional MutableComponents in the correct places
-                    Matcher matcher = pattern.matcher(Objects.requireNonNull(translation, "translation cannot be null"));
-
-                    MutableComponent component = Component.literal("");
-                    int lastIndex = 0;
-
-                    while (matcher.find()) {
-                        component.append(Component.literal(translation.substring(lastIndex, matcher.start())));
-
-                        int index = Integer.parseInt(matcher.group(1));
-                        component.append(args[index]);
-
-                        lastIndex = matcher.end();
-                    }
-                    component.append(translation.substring(lastIndex));
-
-                    return component;
-                }
-            } catch (Exception ignored1) {}
-            Constants.LOGGER.error("Key \"{}\" not found in the default language (en_us), sending raw key as fallback.", key);
-            return Component.literal(key);
-        }
+    public static void sendSafetyWarning(ServerPlayer player, String command) {
+        // asks the player if they want to teleport anyway
+        player.displayClientMessage(
+                Component.empty()
+                        .append(getTranslation("commands.teleport_commands.common.noSafeLocation", player)
+                                .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
+                        )
+                        .append("\n")
+                        .append(getTranslation("commands.teleport_commands.common.safetyIsForLosers", player)
+                                .withStyle(ChatFormatting.WHITE)
+                        )
+                        .append("\n")
+                        .append(getTranslation("commands.teleport_commands.common.forceTeleport", player)
+                                .withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD)
+                                .withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand(command)))
+                        )
+                        .append("\n"), false);
     }
-
 
     // Gets the ids of all the worlds
     public static List<String> getWorldIds(MinecraftServer server) {

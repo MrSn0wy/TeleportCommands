@@ -3,14 +3,14 @@ package dev.mrsnowy.teleport_commands.storage;
 import com.google.gson.*;
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.utils.tools;
+import dev.mrsnowy.teleport_commands.utils.Tools;
 
 import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class configManager {
+public class ConfigManager {
     public Path configFile;
     public ConfigClass config;
 
@@ -18,7 +18,7 @@ public class configManager {
     private final int defaultVersion = new ConfigClass().getVersion();
     private final TeleportCommands teleportCommands;
 
-    public configManager(TeleportCommands teleportCommands) {
+    public ConfigManager(TeleportCommands teleportCommands) {
         this.teleportCommands = teleportCommands;
         configFile = teleportCommands.configDir.resolve("teleport_commands.json");
 
@@ -182,7 +182,7 @@ public class configManager {
             public void setCommand(String command) throws Exception {
                 this.command = command;
                 configSaver();
-                tools.reloadResources(teleportCommands.server); // Reload the commands
+                Tools.reloadResources(teleportCommands.server); // Reload the commands
             }
 
             public boolean isDeleteAfterTeleport() {
@@ -298,7 +298,7 @@ public class configManager {
             public void setCommand(String command) throws Exception {
                 this.command = command;
                 configSaver();
-                tools.reloadResources(teleportCommands.server); // Reload the commands
+                Tools.reloadResources(teleportCommands.server); // Reload the commands
             }
         }
     }

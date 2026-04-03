@@ -1,8 +1,6 @@
 package dev.mrsnowy.teleport_commands.mixin;
 
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import net.minecraft.client.renderer.item.properties.numeric.Damage;
-import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -15,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
-public class PlayerDeathMixin {
+public class ServerPlayerMixin {
 
     @Inject(method = "die", at = @At("HEAD"))
     private void notifyDeath(CallbackInfo info) {
