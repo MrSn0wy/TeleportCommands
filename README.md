@@ -4,6 +4,11 @@ A Minecraft server-side mod that adds various teleportation related commands, li
 
 Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CHANGELOG.md)
 
+> [!NOTE]
+> There is a Mirror of this repo on [Tangled](https://tangled.org)! A federated GitHub alternative based on [ATproto](https://en.wikipedia.org/wiki/AT_Protocol).
+> 
+> You can visit it **[here](https://tangled.org/did:plc:5fbqdlfpahlht7gu4c6zrdpj/TeleportCommands)**. Stars, issues and pull requests are very welcome there!
+
 ### Currently available commands:
 
 - `/worldspawn [<Disable Safety>]` - Teleports you to the world spawn (in the overworld), if given true it will not do safety checks
