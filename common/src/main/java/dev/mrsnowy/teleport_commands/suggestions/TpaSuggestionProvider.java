@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 
-public class tpaSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
+public class TpaSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         try {

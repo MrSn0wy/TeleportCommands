@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project kind of adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### WIP [1.4.0]
+#### Changed
+- the loading logic of the storage file.
+- most static classes to non-static, should prevent leaks.
+- changed out java Timers for a tick-based timer (so that it follows the server tick speed).
+- fixed the before-teleportation effects not being sent into the correct dimension when switching dimension.
+
+#### Added
+- **a config file!**
+  - The config file starts at **version 0**!
+- versioning to the storage file for better handling of migrations.
+  - We start at **version 1**, all previous version are version 0.
+- caching for loading the translation files!
+
 ### [1.3.4]
 - Updated Italian translations (Thanks to [Jump-333](https://github.com/Jump-333)!)
 - Turned DeathLocation into a Hashmap

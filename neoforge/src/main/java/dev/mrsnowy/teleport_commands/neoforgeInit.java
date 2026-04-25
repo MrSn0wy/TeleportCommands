@@ -11,7 +11,7 @@ public class neoforgeInit {
         // to load your mod. You can access NeoForge and Common code in this
         // project.
 
-        TeleportCommands.MOD_LOADER = "NeoForge";
+        TeleportCommands.modLoader = "NeoForge";
     }
 }
 

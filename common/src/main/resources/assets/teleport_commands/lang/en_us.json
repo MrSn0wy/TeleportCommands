@@ -52,6 +52,14 @@
   "commands.teleport_commands.tpa.accepted": "Request accepted",
   "commands.teleport_commands.tpa.denied": "Request denied",
 
+  "commands.teleport_commands.teleport.go": "Teleporting",
+  "commands.teleport_commands.teleport.progress": "Teleporting in %0% seconds (%1% ticks)",
+  "commands.teleport_commands.teleport.delay": "You are already teleporting! (%0% seconds / %1% ticks left)",
+  "commands.teleport_commands.teleport.ready": "Teleportation cooldowns have expired.",
+  "commands.teleport_commands.teleport.onCooldown": "You are still on cooldown!\nPlease wait %0% seconds (%1% ticks) before teleporting.",
+  "commands.teleport_commands.teleport.moving": "Teleportation has been canceled.\nPlease remain still while teleporting!",
+  "commands.teleport_commands.teleport.fighting": "Teleportation has been canceled.\nPlease do not fight while teleporting!",
+
   "commands.teleport_commands.common.teleport": "Teleporting",
   "commands.teleport_commands.common.error": "An error occurred while teleporting!",
   "commands.teleport_commands.common.noSafeLocation": "No safe location has been found!",

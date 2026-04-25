@@ -22,6 +22,7 @@
         default = pkgs.mkShell {
           packages = with pkgs; [
             jetbrains.jdk-no-jcef # Jetbrains jdk
+            just # for the justfile
             flite # Make mc not complain
 
             # Took these from https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/pr/prismlauncher/package.nix#L123

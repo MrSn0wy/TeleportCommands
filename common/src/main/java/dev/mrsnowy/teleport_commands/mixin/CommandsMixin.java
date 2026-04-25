@@ -20,6 +20,7 @@ public class CommandsMixin {
         Commands self = (Commands) (Object) this;
         CommandDispatcher<CommandSourceStack> dispatcher = self.getDispatcher();
 
-        TeleportCommands.registerCommands(dispatcher);
+        // This re-registers the commands when the server's reloadable resources get reloaded
+        TeleportCommands.INSTANCE.registerCommands(dispatcher);
     }
 }

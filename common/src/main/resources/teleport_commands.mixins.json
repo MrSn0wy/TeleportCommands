@@ -5,8 +5,8 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_${java_version}",
   "mixins": [
-    "ServerStartMixin",
-    "PlayerDeathMixin",
+    "MinecraftServerMixin",
+    "ServerPlayerMixin",
     "CommandsMixin"
   ],
   "client": [],
