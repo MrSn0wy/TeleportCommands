@@ -3,8 +3,18 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 neoForge {
-    version = neoforge_version
+    enable {
+        version = neoforge_version
+        disableRecompilation = true
+    }
+
     // Automatically enable neoforge AccessTransformers if the file exists
     def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {

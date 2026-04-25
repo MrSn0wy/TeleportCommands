@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         java:
-          - 21    # Currently min for minecraft
+          - 25    # Currently min for minecraft
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository

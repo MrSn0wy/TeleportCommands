@@ -1,15 +1,12 @@
 plugins {
     id 'multiloader-loader'
+    id "net.fabricmc.fabric-loom"
     id 'fabric-loom'
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 //    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api}"
 }
 
@@ -17,9 +14,6 @@ loom {
     def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
     if (aw.exists()) {
         accessWidenerPath.set(aw)
-    }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
     }
     runs {
         client {
@@ -37,7 +31,8 @@ loom {
     }
 }
 
+/* Update to 26.1 no needed
 // Fix for fabric - makes it so it uses the archive name I specify
 tasks.named("remapJar") {
     archiveFileName.set("${mod_id}-${project.name}-${minecraft_version}-v${version}.jar")
-}
+}*/

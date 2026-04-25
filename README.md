@@ -64,9 +64,9 @@ Here is the [Changelog](https://github.com/MrSn0wy/TeleportCommands/blob/main/CH
 #### Getting the correct environment
 If you are on nixos you can simply go into the folder of where you cloned the repo, and run `nix develop .`. This will give you the environment I use (apart from the IDE) :3.
 
-On any other linux distro, just install the jetbrains jdk, or try openjdk21.
+On any other linux distro try openjdk25.
 
-On windows probably go to the openjdk website and install the 21 version? idk goodluck.
+On windows probably go to the openjdk website and install the 25 version? idk goodluck.
 
 #### Building
 Then on linux just do `./gradlew build` and to make it in a single mod jar `./gradlew mergeJars`.

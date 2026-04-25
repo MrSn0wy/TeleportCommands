@@ -21,7 +21,8 @@
       devShells."${system}" = {
         default = pkgs.mkShell {
           packages = with pkgs; [
-            jetbrains.jdk-no-jcef # Jetbrains jdk
+            jdk25_headless
+            # jetbrains.jdk-no-jcef # Jetbrains jdk (doesn't support java 25 yet)
             flite # Make mc not complain
 
             # Took these from https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/pr/prismlauncher/package.nix#L123

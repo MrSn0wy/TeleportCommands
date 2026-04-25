@@ -26,7 +26,6 @@
 //
 //        commandManager.getDispatcher().register(Commands.literal("teleportcommands")
 //            .then(Commands.literal("help")
-//            .requires(source -> source.getPlayer() != null)
 //            .executes(context -> {
 //                final ServerPlayer player = context.getSource().getPlayerOrException();
 //
@@ -35,13 +34,12 @@
 //
 //                } catch (Exception e) {
 //                    TeleportCommands.LOGGER.error("Error while going back! => ", e);
-//                    player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+//                    player.sendSystemMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
 //                    return 1;
 //                }
 //                return 0;
 //            }))
 //            .then(argument("Disable Safety", BoolArgumentType.bool())
-//                .requires(source -> source.getPlayer() != null)
 //                .executes(context -> {
 //                    final boolean safety = BoolArgumentType.getBool(context, "Disable Safety");
 //                    final ServerPlayer player = context.getSource().getPlayerOrException();
@@ -51,7 +49,7 @@
 //
 //                    } catch (Exception e) {
 //                        TeleportCommands.LOGGER.error("Error while going back! => ", e);
-//                        player.displayClientMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
+//                        player.sendSystemMessage(getTranslatedText("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
 //                        return 1;
 //                    }
 //                    return 0;
@@ -66,11 +64,11 @@
 //    // Gets the DeathLocation of the player and teleports the player to it
 //    private static void printCommands(ServerPlayer player) throws Exception {
 //
-//        player.displayClientMessage(Component.literal("Thank you for using Teleport Commands (V)!").withStyle(ChatFormatting.AQUA), false);
-//        player.displayClientMessage(Component.literal("Teleport Commands is a server-side mod that adds various teleportation related commands").withStyle(ChatFormatting.AQUA), false);
+//        player.sendSystemMessage(Component.literal("Thank you for using Teleport Commands (V)!").withStyle(ChatFormatting.AQUA), false);
+//        player.sendSystemMessage(Component.literal("Teleport Commands is a server-side mod that adds various teleportation related commands").withStyle(ChatFormatting.AQUA), false);
 //
-//        player.displayClientMessage(Component.literal("----").withStyle(ChatFormatting.AQUA), false);
+//        player.sendSystemMessage(Component.literal("----").withStyle(ChatFormatting.AQUA), false);
 //
-//        player.displayClientMessage(Component.literal("Usage:").withStyle(ChatFormatting.AQUA), false);
+//        player.sendSystemMessage(Component.literal("Usage:").withStyle(ChatFormatting.AQUA), false);
 //    }
 //}

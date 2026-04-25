@@ -32,7 +32,7 @@ public class DeathLocation {
     // function to quickly filter the worlds and get the ServerLevel for the string
     public Optional<ServerLevel> getWorld() {
         return StreamSupport.stream( TeleportCommands.SERVER.getAllLevels().spliterator(), false ) // woa, this looks silly
-                .filter(level -> Objects.equals( level.dimension().location().toString(), this.world ))
+                .filter(level -> Objects.equals( level.dimension().identifier().toString(), this.world ))
                 .findFirst();
     }
 
