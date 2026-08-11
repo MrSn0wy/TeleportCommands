@@ -126,7 +126,7 @@ public class warp {
         System.out.println(warpName);
         warpName = warpName.toLowerCase();
 
-        BlockPos blockPos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+        BlockPos blockPos = tools.roundedBlockPos(player.position());
         String worldString = player.level().dimension().identifier().toString();
 
         // Create the NamedLocation

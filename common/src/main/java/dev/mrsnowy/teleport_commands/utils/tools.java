@@ -191,6 +191,15 @@ public class tools {
         }
     }
 
+    /// Turn a Vec3 into a BlockPos with a rounded height.
+    public static BlockPos roundedBlockPos(Vec3 pos) {
+        return new BlockPos(
+            (int) Math.floor(pos.x()),
+            (int) Math.round(pos.y()),
+            (int) Math.floor(pos.z())
+        );
+    }
+
 
     // Gets the ids of all the worlds
     public static List<String> getWorldIds() {

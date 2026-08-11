@@ -161,7 +161,7 @@ public class home {
     // Adds a new home to the homeList of a player
     private static void SetHome(ServerPlayer player, String homeName) throws Exception {
         homeName = homeName.toLowerCase();
-        BlockPos blockPos = player.blockPosition();
+        BlockPos blockPos = tools.roundedBlockPos(player.position());
         String worldString = player.level().dimension().identifier().toString();
 
         // Gets the player's storage and creates it if it doesn't exist
