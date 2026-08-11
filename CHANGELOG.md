@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project kind of adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [1.3.5]
+- Fixed `/sethome`, `/setwarp` and `deathLocation` not setting the correct height when the block under the player is not a fullblock. [(issue #32)](https://github.com/MrSn0wy/TeleportCommands/issues/32)
+
 ### [1.3.4]
 - Updated Italian translations (Thanks to [Jump-333](https://github.com/Jump-333)!)
 - Turned DeathLocation into a Hashmap

@@ -3,6 +3,7 @@ package dev.mrsnowy.teleport_commands;
 import com.google.gson.*;
 import com.mojang.brigadier.CommandDispatcher;
 import dev.mrsnowy.teleport_commands.storage.StorageManager;
+import dev.mrsnowy.teleport_commands.utils.tools;
 import dev.mrsnowy.teleport_commands.commands.*;
 import dev.mrsnowy.teleport_commands.storage.DeathLocationStorage;
 import net.minecraft.commands.CommandSourceStack;
@@ -52,11 +53,11 @@ public class TeleportCommands {
 
 	// Runs when the playerDeath mixin calls it, updates the /back command position
 	public static void onPlayerDeath(ServerPlayer player) {
-		BlockPos pos = new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ());
+	    BlockPos blockPos = tools.roundedBlockPos(player.position());
 		String world = player.serverLevel().dimension().location().toString();
 		String uuid = player.getStringUUID();
 
-		DeathLocationStorage.setDeathLocation(uuid, pos, world);
+		DeathLocationStorage.setDeathLocation(uuid, blockPos, world);
 	}
 
 	// cleans and updates Storage to the newest "version". This is painful
