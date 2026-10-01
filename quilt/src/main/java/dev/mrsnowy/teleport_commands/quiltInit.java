@@ -10,7 +10,7 @@ public class quiltInit implements ModInitializer {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
-
-        TeleportCommands.MOD_LOADER = "Quilt";
+        TeleportCommands.INSTANCE = new TeleportCommands();
+		TeleportCommands.INSTANCE.modLoader = "Quilt";
     }
 }

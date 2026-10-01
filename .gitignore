@@ -25,3 +25,10 @@ replay_*.log
 *.jfr
 
 .direnv
+
+# idk jdt-language-server likes making funne files
+.eclipse
+.project
+.factorypath
+.classpath
+.settings/

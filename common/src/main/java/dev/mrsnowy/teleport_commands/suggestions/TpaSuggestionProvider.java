@@ -15,12 +15,18 @@ import java.util.concurrent.CompletableFuture;
 
 
 public class TpaSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
+    private final tpa tpaInstance;
+
+    public TpaSuggestionProvider(tpa tpaInstance) {
+        this.tpaInstance = tpaInstance;
+    }
+
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         try {
             ServerPlayer player = context.getSource().getPlayerOrException();
 
-            List<tpa.tpaArrayClass> playerTpaList = tpa.tpaList.stream()
+            List<tpa.tpaArrayClass> playerTpaList = tpaInstance.tpaList.stream()
                     .filter(tpa -> Objects.equals(player.getStringUUID(), tpa.RecPlayer))
                     .toList();
 

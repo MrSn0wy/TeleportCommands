@@ -21,13 +21,13 @@
       devShells."${system}" = {
         default = pkgs.mkShell {
           packages = with pkgs; [
-            jetbrains.jdk-no-jcef # Jetbrains jdk
+            jetbrains.jdk-no-jcef-21 # Jetbrains jdk
             just # for the justfile
             flite # Make mc not complain
 
-            # Took these from https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/by-name/pr/prismlauncher/package.nix#L123
+            # Took these from https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/pr/prismlauncher/package.nix#L89
             # Thanks nixos packagers <3!
-            xorg.xrandr
+            xrandr
 
             glfw3-minecraft
             openal
@@ -39,10 +39,17 @@
 
             libGL
             libx11
-            xorg.libXcursor
-            xorg.libXext
-            xorg.libXrandr
-            xorg.libXxf86vm
+            libXcursor
+            libXext
+            libXrandr
+            libXxf86vm
+
+            wayland
+            libdecor
+
+            udev # oshi
+
+            vulkan-loader # VulkanMod's lwjgl
           ];
 
           LD_LIBRARY_PATH =
@@ -60,10 +67,10 @@
 
               libGL
               libx11
-              xorg.libXcursor
-              xorg.libXext
-              xorg.libXrandr
-              xorg.libXxf86vm
+              libXcursor
+              libXext
+              libXrandr
+              libXxf86vm
             ];
 
           shellHook = ''

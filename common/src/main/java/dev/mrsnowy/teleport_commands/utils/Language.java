@@ -5,11 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.mrsnowy.teleport_commands.Constants;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerPlayer;
-
-import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -18,14 +13,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 
 public class Language {
+    /// The JsonObject might be null if there is no language found!
     record languageObject(@Nullable JsonObject jsonObject, int lastUsedTick) {}
 
     private static final Map<String, languageObject> LANGUAGE_CACHE = new HashMap<>();
     private static final Pattern NUMBER_PATTERN = Pattern.compile("%(\\d+)%");
 
-    /// Attempts to retrieve the JSON file for the language, then caches it in memory.
+    /// Attempts to retrieve the JSON for the language from the cache, otherwise it reads the file and then caches it in memory.
     private static @Nullable JsonObject getLanguageJson(String language) {
         int currentTick = TeleportCommands.INSTANCE.server.getTickCount();
 
@@ -37,6 +37,7 @@ public class Language {
 
         String filePath = String.format("/assets/%s/lang/%s.json", Constants.MOD_ID, language);
         JsonObject value = null;
+
         try {
             InputStream stream = TeleportCommands.class.getResourceAsStream(filePath);
             if (stream != null) {
@@ -58,7 +59,10 @@ public class Language {
     record TranslationResult(@Nullable String value, @Nullable String error) {}
 
     /// Gets the translation from a key of a language
-    private static TranslationResult getTranslation(String language, String key) {
+    private static TranslationResult getRawTranslation(
+        String language,
+        String key
+    ) {
         try {
             JsonObject json = getLanguageJson(language);
             if (json == null) {
@@ -75,27 +79,37 @@ public class Language {
             }
 
             return new TranslationResult(translationString, null);
-
         } catch (Exception e) {
             return new TranslationResult(null, e.getMessage());
         }
     }
 
-    // Gets the translated text for each player based on their language, this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear!)
-    public static MutableComponent getTranslation(String key, ServerPlayer player, MutableComponent... args) {
+    // Gets the translated text for each player based on their language,
+    // this is fully server side and actually works (UNLIKE MOJANG'S TRANSLATED KEY'S WHICH ARE CLIENT SIDE) (I'm not mad, I swear!)
+    public static MutableComponent getTranslation(
+        String key,
+        ServerPlayer player,
+        MutableComponent... args
+    ) {
         String language = player.clientInformation().language().toLowerCase();
-        TranslationResult translationResult = getTranslation(language, key);
+        TranslationResult translationResult = getRawTranslation(language, key);
 
         if (translationResult.value == null) {
             if (!language.equals("en_us")) {
-
-                translationResult = getTranslation("en_us", key);
+                translationResult = getRawTranslation("en_us", key);
                 if (translationResult.value == null) {
-                    Constants.LOGGER.error("Error while fall-backing to default translation from \"{}\": \"{}\". Returning raw json to user.", language, translationResult.error);
+                    Constants.LOGGER.error(
+                        "Error while fall-backing to default translation from \"{}\": \"{}\". Returning raw json to user.",
+                        language,
+                        translationResult.error
+                    );
                     return Component.literal(key);
                 }
             } else {
-                Constants.LOGGER.error("Error while loading translation: \"{}\". Returning raw json to user.", translationResult.error);
+                Constants.LOGGER.error(
+                    "Error while loading translation: \"{}\". Returning raw json to user.",
+                    translationResult.error
+                );
                 return Component.literal(key);
             }
         }
@@ -123,9 +137,11 @@ public class Language {
 
             component.append(translationString.substring(lastIndex));
             return component;
-
         } catch (Exception e) {
-            Constants.LOGGER.error("Error while replacing dynamic sections in translation: \"{}\". Returning raw string to user.", e.getMessage());
+            Constants.LOGGER.error(
+                "Error while replacing dynamic sections in translation: \"{}\". Returning raw string to user.",
+                e.getMessage()
+            );
             return Component.literal(translationString);
         }
     }
@@ -134,7 +150,8 @@ public class Language {
     // TODO! hook this up!
     public static void cacheCleaner(int currentTick, int tps) {
         LANGUAGE_CACHE.entrySet().removeIf(entry -> {
-            if (entry.getValue().lastUsedTick + (120 * tps) < currentTick) {
+            // Unloads after 5 minutes TODO! make this configurable
+            if (entry.getValue().lastUsedTick + (300 * tps) < currentTick) {
                 return true;
             }
             return false;

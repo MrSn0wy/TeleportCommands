@@ -14,14 +14,13 @@ public class MinecraftServerMixin {
 
     @Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;buildServerStatus()Lnet/minecraft/network/protocol/status/ServerStatus;", ordinal = 0))
     private void runServer(CallbackInfo info) {
-
-        new TeleportCommands().initializeMod((MinecraftServer) (Object) this);
+        TeleportCommands.INSTANCE.initializeMod((MinecraftServer) (Object) this);
     }
 
     @Inject(method = "tickServer", at = @At(value = "TAIL"))
     private void tickServer(BooleanSupplier hasTimeLeft, CallbackInfo info) {
         TeleportCommands.INSTANCE.teleporter.tick((MinecraftServer) (Object) this);
 
-        // todo! do the same for TPA
+        // todo! do the same for TPA and Language cache cleaner
     }
 }

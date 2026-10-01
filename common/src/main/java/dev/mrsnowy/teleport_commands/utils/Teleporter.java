@@ -12,7 +12,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static dev.mrsnowy.teleport_commands.utils.Language.getTranslation;
@@ -107,8 +107,6 @@ public class Teleporter {
                 }
             }
 
-
-
             // remove the entry if there is no cooldowns and no teleports happening
             return (!data.teleportOnCooldown && !data.fightOnCooldown && data.pendingTeleport == null);
         });
@@ -160,7 +158,7 @@ public class Teleporter {
         }
 
         // teleport
-        int teleportingDelay = teleportCommands.config.config.teleporting.getDelay();
+        int teleportingDelay = teleportCommands.configManager.config.teleporting.getDelay();
 
         if (teleportingDelay >= 0) {
             BlockPos currentPos = player.blockPosition();
@@ -199,7 +197,7 @@ public class Teleporter {
 
     /// This function gets called by the mixin to notify that the player has moved
     public void reportPlayerMoved(ServerPlayer player) {
-        if (teleportCommands.config.config.teleporting.isAllowMoving()) {
+        if (teleportCommands.configManager.config.teleporting.isAllowMoving()) {
             return; // The config option is disabled
         }
 
@@ -219,7 +217,7 @@ public class Teleporter {
 
     /// This function gets called by the mixin to notify that the player got damaged
     public void reportPlayerHurt(ServerPlayer player) {
-        if (teleportCommands.config.config.teleporting.isAllowFighting()) {
+        if (teleportCommands.configManager.config.teleporting.isAllowFighting()) {
             return; // The config option is disabled
         }
 
@@ -228,7 +226,7 @@ public class Teleporter {
         if (data != null) {
             int currentTick = teleportCommands.server.getTickCount();
 
-            data.fightCooldownUntil = currentTick + teleportCommands.config.config.teleporting.getFightCooldown();
+            data.fightCooldownUntil = currentTick + teleportCommands.configManager.config.teleporting.getFightCooldown();
             data.fightOnCooldown = true;
 
             if (data.pendingTeleport != null) {

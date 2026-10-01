@@ -2,7 +2,6 @@ package dev.mrsnowy.teleport_commands.mixin;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.mrsnowy.teleport_commands.TeleportCommands;
-import dev.mrsnowy.teleport_commands.commands.*;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

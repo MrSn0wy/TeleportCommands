@@ -11,3 +11,15 @@ mergeJars:
 
 ide:
     nohup idea ./ >/dev/null 2>&1 &
+
+fabricClient:
+    ./gradlew :fabric:runClient
+
+fabricServer:
+    ./gradlew :fabric:runServer
+
+neoforgeClient:
+    ./gradlew :neoforge:runClient
+
+neoforgeServer:
+    ./gradlew :neoforge:runServer

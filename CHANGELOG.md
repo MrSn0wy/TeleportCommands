@@ -7,9 +7,12 @@ and this project kind of adheres to [Semantic Versioning](https://semver.org/spe
 ### WIP [1.4.0]
 #### Changed
 - the loading logic of the storage file.
-- most static classes to non-static, should prevent leaks.
+- [TODO] most static classes to non-static, should prevent leaks.
+  - Fix any lingering race conditions .........
 - changed out java Timers for a tick-based timer (so that it follows the server tick speed).
 - fixed the before-teleportation effects not being sent into the correct dimension when switching dimension.
+- [TODO] Make the mod save and unload properly on shutdown.
+- [TODO] Make the mod save together with minecraft saving mechanism.
 
 #### Added
 - **a config file!**

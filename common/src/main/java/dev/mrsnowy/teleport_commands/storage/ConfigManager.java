@@ -65,13 +65,13 @@ public class ConfigManager {
         int version = jsonObject.has("version") ? jsonObject.get("version").getAsInt() : 0;
 
         if (version < defaultVersion) {
-//            Constants.LOGGER.warn("Config file is v{}, migrating to v{}!", version, defaultVersion);
-//
-//            // Save the storage :3
-//            byte[] json = GSON.toJson(jsonObject, JsonArray.class).getBytes();
-//            Files.write(CONFIG_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
-//
-//            Constants.LOGGER.info("Config file migrated to v{} successfully!", defaultVersion);
+           // Constants.LOGGER.warn("Config file is v{}, migrating to v{}!", version, defaultVersion);
+
+           // // Save the storage :3
+           // byte[] json = GSON.toJson(jsonObject, JsonArray.class).getBytes();
+           // Files.write(CONFIG_FILE, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+
+           // Constants.LOGGER.info("Config file migrated to v{} successfully!", defaultVersion);
         } else if (version > defaultVersion) {
             String message = String.format("Teleport Commands: The config file's version is newer than the supported version, found v%s, expected <= v%s.\n" +
                             "If you intentionally backported then you can attempt to downgrade the config file located at this location: \"%s\".\n",
@@ -89,7 +89,8 @@ public class ConfigManager {
         Files.write(configFile, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
-    public class ConfigClass {
+    // GSON requires it to be static :P
+    public static class ConfigClass {
         private final int version = 0;
         public Teleporting teleporting = new Teleporting();
         public Back back = new Back();
@@ -118,45 +119,45 @@ public class ConfigManager {
                 return delay;
             }
 
-            public void setDelay(int delay) throws Exception {
+            public void setDelay(int delay, ConfigManager configManager) throws Exception {
                 this.delay = delay;
-                configSaver();
+                configManager.configSaver();
             }
 
             public boolean isAllowMoving() {
                 return allowMoving;
             }
 
-            public void setAllowMoving(boolean allowMoving) throws Exception {
+            public void setAllowMoving(boolean allowMoving, ConfigManager configManager) throws Exception {
                 this.allowMoving = allowMoving;
-                configSaver();
+                configManager.configSaver();
             }
 
             public boolean isAllowFighting() {
                 return allowFighting;
             }
 
-            public void setAllowFighting(boolean allowFighting) throws Exception {
+            public void setAllowFighting(boolean allowFighting, ConfigManager configManager) throws Exception {
                 this.allowFighting = allowFighting;
-                configSaver();
+                configManager.configSaver();
             }
 
             public int getFightCooldown() {
                 return fightCooldown;
             }
 
-            public void setFightCooldown(int fightCooldown) throws Exception {
+            public void setFightCooldown(int fightCooldown, ConfigManager configManager) throws Exception {
                 this.fightCooldown = fightCooldown;
-                configSaver();
+                configManager.configSaver();
             }
 
             public int getCooldown() {
                 return cooldown;
             }
 
-            public void setCooldown(int cooldown) throws Exception {
+            public void setCooldown(int cooldown, ConfigManager configManager) throws Exception {
                 this.cooldown = cooldown;
-                configSaver();
+                configManager.configSaver();
             }
         }
 
@@ -170,18 +171,18 @@ public class ConfigManager {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) throws Exception {
+            public void setEnabled(boolean enabled, ConfigManager configManager) throws Exception {
                 this.enabled = enabled;
-                configSaver();
+                configManager.configSaver();
             }
 
             public String getCommand() {
                 return command;
             }
 
-            public void setCommand(String command) throws Exception {
+            public void setCommand(String command, ConfigManager configManager, TeleportCommands teleportCommands) throws Exception {
                 this.command = command;
-                configSaver();
+                configManager.configSaver();
                 Tools.reloadResources(teleportCommands.server); // Reload the commands
             }
 
@@ -189,9 +190,9 @@ public class ConfigManager {
                 return deleteAfterTeleport;
             }
 
-            public void setDeleteAfterTeleport(boolean deleteAfterTeleport) throws Exception {
+            public void setDeleteAfterTeleport(boolean deleteAfterTeleport, ConfigManager configManager) throws Exception {
                 this.deleteAfterTeleport = deleteAfterTeleport;
-                configSaver();
+                configManager.configSaver();
             }
         }
 
@@ -206,27 +207,27 @@ public class ConfigManager {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) throws Exception {
+            public void setEnabled(boolean enabled, ConfigManager configManager) throws Exception {
                 this.enabled = enabled;
-                configSaver();
+                configManager.configSaver();
             }
 
             public int getPlayerMaximum() {
                 return playerMaximum;
             }
 
-            public void setPlayerMaximum(int playerMaximum) throws Exception {
+            public void setPlayerMaximum(int playerMaximum, ConfigManager configManager) throws Exception {
                 this.playerMaximum = playerMaximum;
-                configSaver();
+                configManager.configSaver();
             }
 
             public boolean isDeleteInvalid() {
                 return deleteInvalid;
             }
 
-            public void setDeleteInvalid(boolean deleteInvalid) throws Exception {
+            public void setDeleteInvalid(boolean deleteInvalid, ConfigManager configManager) throws Exception {
                 this.deleteInvalid = deleteInvalid;
-                configSaver();
+                configManager.configSaver();
             }
         }
 
@@ -237,9 +238,9 @@ public class ConfigManager {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) throws Exception {
+            public void setEnabled(boolean enabled, ConfigManager configManager) throws Exception {
                 this.enabled = enabled;
-                configSaver();
+                configManager.configSaver();
             }
         }
 
@@ -253,18 +254,18 @@ public class ConfigManager {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) throws Exception {
+            public void setEnabled(boolean enabled, ConfigManager configManager) throws Exception {
                 this.enabled = enabled;
-                configSaver();
+                configManager.configSaver();
             }
 
             public boolean isDeleteInvalid() {
                 return deleteInvalid;
             }
 
-            public void setDeleteInvalid(boolean deleteInvalid) throws Exception {
+            public void setDeleteInvalid(boolean deleteInvalid, ConfigManager configManager) throws Exception {
                 this.deleteInvalid = deleteInvalid;
-                configSaver();
+                configManager.configSaver();
             }
         }
 
@@ -277,27 +278,27 @@ public class ConfigManager {
                 return enabled;
             }
 
-            public void setEnabled(boolean enabled) throws Exception {
+            public void setEnabled(boolean enabled, ConfigManager configManager) throws Exception {
                 this.enabled = enabled;
-                configSaver();
+                configManager.configSaver();
             }
 
             public String getWorld_id() {
                 return world_id;
             }
 
-            public void setWorld_id(String world_id) throws Exception {
+            public void setWorld_id(String world_id, ConfigManager configManager) throws Exception {
                 this.world_id = world_id;
-                configSaver();
+                configManager.configSaver();
             }
 
             public String getCommand() {
                 return command;
             }
 
-            public void setCommand(String command) throws Exception {
+            public void setCommand(String command, ConfigManager configManager, TeleportCommands teleportCommands) throws Exception {
                 this.command = command;
-                configSaver();
+                configManager.configSaver();
                 Tools.reloadResources(teleportCommands.server); // Reload the commands
             }
         }

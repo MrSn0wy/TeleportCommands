@@ -28,6 +28,7 @@ public class StorageManager {
 
     /// Initializes the StorageManager class and loads the storage from the filesystem.
     public StorageManager(TeleportCommands teleportCommands) {
+        Constants.LOGGER.info("Initializing StorageManager!");
         this.teleportCommands = teleportCommands;
         storageFolder = teleportCommands.saveDir.resolve("TeleportCommands/");
         storageFile = storageFolder.resolve("storage.json");
@@ -64,7 +65,7 @@ public class StorageManager {
             StorageSaver();
         }
 
-        storage.cleanup();
+        storage.cleanup(this, teleportCommands);
 
         StorageSaver(); // Save it so any missing values get added to the file.
         Constants.LOGGER.info("Storage loaded successfully!");
@@ -130,14 +131,14 @@ public class StorageManager {
         Files.write(storageFile, json, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
 
-
-    public class StorageClass {
+    // GSON requires it to be static :P
+    public static class StorageClass {
         private final int version = 1;
         private final ArrayList<NamedLocation> Warps = new ArrayList<>();
         private final ArrayList<Player> Players = new ArrayList<>();
 
         /// Cleans up any values in the storage class
-        public void cleanup() throws Exception {
+        public void cleanup(StorageManager storageManager, TeleportCommands teleportCommands) throws Exception {
             for (Player player : Players) {
                 // Remove players with invalid UUID's
                 if (player.getUUID().isBlank()) {
@@ -147,8 +148,8 @@ public class StorageManager {
                 List<NamedLocation> homes = player.getHomes();
 
                 // Delete any homes with an invalid world_id (if enabled in config)
-                if (teleportCommands.config.config.home.isDeleteInvalid()) {
-                    homes.removeIf(home -> home.getWorld().isEmpty());
+                if (teleportCommands.configManager.config.home.isDeleteInvalid()) {
+                    homes.removeIf(home -> home.getWorld(teleportCommands.server).isEmpty());
                 }
 
                 // Remove players with no homes
@@ -158,11 +159,11 @@ public class StorageManager {
             }
 
             // Delete any warps with an invalid world_id (if enabled in config)
-            if (teleportCommands.config.config.warp.isDeleteInvalid()) {
-                Warps.removeIf(warp -> warp.getWorld().isEmpty());
+            if (teleportCommands.configManager.config.warp.isDeleteInvalid()) {
+                Warps.removeIf(warp -> warp.getWorld(teleportCommands.server).isEmpty());
             }
 
-            StorageSaver();
+            storageManager.StorageSaver();
         }
 
         public int getVersion() {
@@ -191,14 +192,14 @@ public class StorageManager {
         // -----
 
         // Adds a NamedLocation to the warp list, returns true if a warp with the same name already exists
-        public boolean addWarp(NamedLocation warp) throws Exception {
+        public boolean addWarp(NamedLocation warp, StorageManager storageManager) throws Exception {
             if (getWarp(warp.getName()).isPresent()) {
                 // Warp with same name found!
                 return true;
 
             } else {
                 Warps.add(warp);
-                StorageSaver();
+                storageManager.StorageSaver();
                 return false;
             }
         }
@@ -223,9 +224,9 @@ public class StorageManager {
         // -----
 
         // Remove a warp, if the warp isn't found then nothing will happen
-        public void removeWarp(NamedLocation warp) throws Exception {
+        public void removeWarp(NamedLocation warp, StorageManager storageManager) throws Exception {
             Warps.remove(warp);
-            StorageSaver();
+            storageManager.StorageSaver();
         }
     }
 }

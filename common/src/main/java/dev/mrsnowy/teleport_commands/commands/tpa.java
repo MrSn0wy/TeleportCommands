@@ -79,7 +79,7 @@ public class tpa {
 
         commandDispatcher.register(Commands.literal("tpaaccept")
                 .requires(source -> source.getPlayer() != null)
-                .then(Commands.argument("player", EntityArgument.player()).suggests(new TpaSuggestionProvider())
+                .then(Commands.argument("player", EntityArgument.player()).suggests(new TpaSuggestionProvider(this))
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
                             final ServerPlayer player = context.getSource().getPlayerOrException();
@@ -97,7 +97,7 @@ public class tpa {
 
         commandDispatcher.register(Commands.literal("tpadeny")
                 .requires(source -> source.getPlayer() != null)
-                .then(Commands.argument("player", EntityArgument.player()).suggests(new TpaSuggestionProvider())
+                .then(Commands.argument("player", EntityArgument.player()).suggests(new TpaSuggestionProvider(this))
                         .executes(context -> {
                             final ServerPlayer TargetPlayer = EntityArgument.getPlayer(context, "player");
                             final ServerPlayer player = context.getSource().getPlayerOrException();

@@ -19,12 +19,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
 import static dev.mrsnowy.teleport_commands.utils.Language.getTranslation;
-import static dev.mrsnowy.teleport_commands.utils.Tools.*;
 import static net.minecraft.commands.Commands.argument;
 
 public class back {
+    TeleportCommands teleportCommands;
 
-    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
+    public back(CommandDispatcher<CommandSourceStack> commandDispatcher, TeleportCommands teleportCommands) {
+        this.teleportCommands = teleportCommands;
 
         commandDispatcher.register(Commands.literal("back")
             .requires(source -> source.getPlayer() != null)
@@ -33,7 +34,7 @@ public class back {
                 ServerPlayer player = source.getPlayerOrException();
 
                 try {
-                    ToDeathLocation(player, player.server, false);
+                    ToDeathLocation(player, player.server, false, teleportCommands);
 
                 } catch (Exception e) {
                     Constants.LOGGER.error("Error while going back! => ", e);
@@ -49,7 +50,7 @@ public class back {
                     ServerPlayer player = context.getSource().getPlayerOrException();
 
                     try {
-                        ToDeathLocation(player, player.server, safety);
+                        ToDeathLocation(player, player.server, safety, teleportCommands);
 
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while going back! => ", e);
@@ -65,8 +66,7 @@ public class back {
     // -----
 
     // Gets the DeathLocation of the player and teleports the player to it
-    private static void ToDeathLocation(ServerPlayer player, MinecraftServer server, boolean safetyDisabled) throws Exception {
-        TeleportCommands teleportCommands = TeleportCommands.INSTANCE;
+    private static void ToDeathLocation(ServerPlayer player, MinecraftServer server, boolean safetyDisabled, TeleportCommands teleportCommands) throws Exception {
 
         DeathLocation deathLocation = teleportCommands.deathLocationStorage
                 .getDeathLocation(player.getStringUUID())
@@ -78,7 +78,7 @@ public class back {
         }
 
         // Get the world, otherwise give a warning and error message
-        ServerLevel deathLocationWorld = deathLocation.getWorld().orElse(null);
+        ServerLevel deathLocationWorld = deathLocation.getWorld(server).orElse(null);
 
         if (deathLocationWorld == null) {
             Constants.LOGGER.warn("({}) Error while going back! \nCouldn't find a world with the id: \"{}\" \nAvailable worlds: {}",

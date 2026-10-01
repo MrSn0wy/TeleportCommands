@@ -17,12 +17,12 @@ import java.nio.file.Paths;
 
 public class TeleportCommands {
 	public static TeleportCommands INSTANCE;
-	public String modLoader;
+	public static String modLoader;
 	public Path saveDir;
 	public Path configDir;
 	public MinecraftServer server;
 	public StorageManager storageManager;
-	public ConfigManager config;
+	public ConfigManager configManager;
 	public DeathLocationStorage deathLocationStorage;
 	public Teleporter teleporter;
 
@@ -35,16 +35,18 @@ public class TeleportCommands {
 		configDir = Paths.get(System.getProperty("user.dir")).resolve("config");
 		this.server = server;
 
+		// Race condition if storage is called before config ...
+		configManager = new ConfigManager(this);
 		storageManager = new StorageManager(this);
-		config = new ConfigManager(this);
+
 		deathLocationStorage = new DeathLocationStorage();
 		teleporter = new Teleporter(this);
 	}
 
     /// initialize commands, also allows me to easily disable any when there is a config
     public void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
-        back.register(dispatcher);
-        home.register(dispatcher);
+        new back(dispatcher, this);
+        new home(dispatcher, this);
         new tpa(dispatcher, this);
         new warp(dispatcher, this);
         worldspawn.register(dispatcher);

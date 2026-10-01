@@ -1,7 +1,7 @@
 package dev.mrsnowy.teleport_commands.common;
 
-import dev.mrsnowy.teleport_commands.TeleportCommands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 
 import java.util.Objects;
@@ -30,10 +30,10 @@ public class DeathLocation {
     }
 
     // function to quickly filter the worlds and get the ServerLevel for the string
-    public Optional<ServerLevel> getWorld() {
-        return StreamSupport.stream( TeleportCommands.server.getAllLevels().spliterator(), false ) // woa, this looks silly
-                .filter(level -> Objects.equals( level.dimension().location().toString(), this.world ))
-                .findFirst();
+    public Optional<ServerLevel> getWorld(MinecraftServer server) {
+        return StreamSupport.stream(server.getAllLevels().spliterator(), false ) // woa, this looks silly
+            .filter(level -> Objects.equals( level.dimension().location().toString(), this.world ))
+            .findFirst();
     }
 
     // ----- note to self: these don't need to be saved since this class isn't a part of the storage :3

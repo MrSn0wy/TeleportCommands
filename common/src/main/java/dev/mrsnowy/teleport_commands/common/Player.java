@@ -42,29 +42,29 @@ public class Player {
 
     // -----
 
-    public void setDefaultHome(String defaultHome) throws Exception {
+    public void setDefaultHome(String defaultHome, StorageManager storageManager) throws Exception {
         this.DefaultHome = defaultHome;
-        StorageManager.StorageSaver();
+        storageManager.StorageSaver();
     }
 
     // Adds a NamedLocation to the home list, returns true if it already exists
-    public boolean addHome(NamedLocation home) throws Exception {
+    public boolean addHome(NamedLocation home, StorageManager storageManager) throws Exception {
         if (getHome(home.getName()).isPresent()) {
             // Home with same name found!
             return true;
 
         } else {
             Homes.add(home);
-            StorageManager.StorageSaver();
+            storageManager.StorageSaver();
             return false;
         }
     }
 
     // -----
 
-    public void deleteHome(NamedLocation home) throws Exception {
+    public void deleteHome(NamedLocation home, StorageManager storageManager) throws Exception {
         Homes.remove(home);
 
-        StorageManager.StorageSaver();
+        storageManager.StorageSaver();
     }
 }
