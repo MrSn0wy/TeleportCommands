@@ -25,7 +25,7 @@ import static net.minecraft.world.level.Level.OVERWORLD;
 public class worldspawn {
 
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
-        commandDispatcher.register(Commands.literal("worldspawn")
+        commandDispatcher.register(Commands.literal(TeleportCommands.INSTANCE.configManager.config.worldSpawn.getCommand())
                 .requires(source -> source.getPlayer() != null)
                 .executes(context -> {
                     final ServerPlayer player = context.getSource().getPlayerOrException();
@@ -81,7 +81,7 @@ public class worldspawn {
                 }
 
             } else {
-                Tools.sendSafetyWarning(player, "/worldspawn true");
+                Tools.sendSafetyWarning(player, "/" + TeleportCommands.INSTANCE.configManager.config.worldSpawn.getCommand() + " true");
             }
 
         } else {

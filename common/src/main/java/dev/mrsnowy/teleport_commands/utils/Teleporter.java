@@ -45,14 +45,16 @@ public class Teleporter {
         int tps;
         /// Message that gets sent when the teleportation happens
         String completionMessage;
+        Runnable onComplete;
 
-        pendingTeleport(ServerLevel destinationWorld, Vec3 destinationCoords, BlockPos startingCoords, int teleportDelayUntil, int tps, String completionMessage) {
+        pendingTeleport(ServerLevel destinationWorld, Vec3 destinationCoords, BlockPos startingCoords, int teleportDelayUntil, int tps, String completionMessage, Runnable onComplete) {
             this.destinationWorld = destinationWorld;
             this.destinationCoords = destinationCoords;
             this.startingCoords = startingCoords;
             this.teleportDelayUntil = teleportDelayUntil;
             this.tps = tps;
             this.completionMessage = completionMessage;
+            this.onComplete = onComplete;
         }
     }
 
@@ -95,6 +97,7 @@ public class Teleporter {
                 if (currentTick >= data.pendingTeleport.teleportDelayUntil) {
                     if (player != null) {
                         teleport(player, data.pendingTeleport.destinationWorld, data.pendingTeleport.destinationCoords, data.pendingTeleport.completionMessage);
+                        data.pendingTeleport.onComplete.run();
                     }
 
                     data.pendingTeleport = null;
@@ -119,6 +122,10 @@ public class Teleporter {
 
     /// Adds the player to the teleportation queue
     public void queue(ServerPlayer player, ServerLevel world, Vec3 coords, String completionMessage) {
+        queue(player, world, coords, completionMessage, () -> {});
+    }
+
+    public void queue(ServerPlayer player, ServerLevel world, Vec3 coords, String completionMessage, Runnable onComplete) {
         // Check if user is allowed to teleport by config settings
 
         UUID playerUUID = player.getUUID();
@@ -163,10 +170,11 @@ public class Teleporter {
         if (teleportingDelay >= 0) {
             BlockPos currentPos = player.blockPosition();
 
-            data.pendingTeleport = new pendingTeleport(world, coords, currentPos, currentTick + teleportingDelay, tps, completionMessage);
+            data.pendingTeleport = new pendingTeleport(world, coords, currentPos, currentTick + teleportingDelay, tps, completionMessage, onComplete);
         } else {
             // bypass the delay
             teleport(player, world, coords, completionMessage);
+            onComplete.run();
         }
     }
 
