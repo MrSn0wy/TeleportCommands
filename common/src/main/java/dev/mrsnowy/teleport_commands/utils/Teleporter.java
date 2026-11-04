@@ -128,7 +128,7 @@ public class Teleporter {
 
         PlayerData data = players.get(playerUUID);
         int currentTick = teleportCommands.server.getTickCount();
-        int tps = (int) (1.0 / teleportCommands.server.tickRateManager().tickrate());
+        int tps = Math.max(1, Math.round(teleportCommands.server.tickRateManager().tickrate()));
 
         // Check if we are already teleporting
         if (data.pendingTeleport != null) {
@@ -163,7 +163,7 @@ public class Teleporter {
         if (teleportingDelay >= 0) {
             BlockPos currentPos = player.blockPosition();
 
-            data.pendingTeleport = new pendingTeleport(world, coords, currentPos, currentTick + (teleportingDelay * 20), tps, completionMessage);
+            data.pendingTeleport = new pendingTeleport(world, coords, currentPos, currentTick + teleportingDelay, tps, completionMessage);
         } else {
             // bypass the delay
             teleport(player, world, coords, completionMessage);
