@@ -95,12 +95,12 @@ public class Teleporter {
 
                 /// delay is over
                 if (currentTick >= data.pendingTeleport.teleportDelayUntil) {
-                    if (player != null) {
-                        teleport(player, data.pendingTeleport.destinationWorld, data.pendingTeleport.destinationCoords, data.pendingTeleport.completionMessage);
-                        data.pendingTeleport.onComplete.run();
-                    }
-
+                    pendingTeleport pending = data.pendingTeleport;
                     data.pendingTeleport = null;
+                    if (player != null) {
+                        teleport(player, pending.destinationWorld, pending.destinationCoords, pending.completionMessage);
+                        pending.onComplete.run();
+                    }
                 } else {
                     // check if this is a whole number
                     float secondsLeft = (float) (data.pendingTeleport.teleportDelayUntil - currentTick) / data.pendingTeleport.tps;
