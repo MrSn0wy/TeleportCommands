@@ -205,7 +205,7 @@ public class Teleporter {
 
         if (data != null && data.pendingTeleport != null) {
             BlockPos pos = player.blockPosition();
-            boolean tooFar = data.pendingTeleport.startingCoords.closerThan(pos, 1.5); // Checks if they moved more than one block (1.5 for diagonals)
+            boolean tooFar = !data.pendingTeleport.startingCoords.closerThan(pos, 1.5); // Checks if they moved more than one block (1.5 for diagonals)
 
             if (tooFar) {
                 player.displayClientMessage(getTranslation("commands.teleport_commands.teleport.moving", player).withStyle(ChatFormatting.WHITE), true);
