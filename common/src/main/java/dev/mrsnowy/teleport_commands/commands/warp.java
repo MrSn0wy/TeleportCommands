@@ -47,7 +47,7 @@ public class warp {
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while setting the warp!", e);
                         player.displayClientMessage(Language.getTranslation("commands.teleport_commands.warp.setError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return 1;
+                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                     }
                     return 0;
                 })
@@ -68,7 +68,7 @@ public class warp {
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while going to the warp!",e);
                         player.displayClientMessage(Language.getTranslation("commands.teleport_commands.warp.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return 1;
+                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                     }
                     return 0;
                 })
@@ -91,7 +91,7 @@ public class warp {
                         } catch (Exception e) {
                             Constants.LOGGER.error("Error while deleting to the warp!", e);
                             player.displayClientMessage(Language.getTranslation("commands.teleport_commands.warp.deleteError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                            return 1;
+                            throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                         }
                         return 0;
                     })
@@ -115,7 +115,7 @@ public class warp {
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while renaming the warp!", e);
                                 player.displayClientMessage(Language.getTranslation("commands.teleport_commands.warp.renameError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
                             return 0;
                         })
@@ -133,7 +133,7 @@ public class warp {
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while printing warps!", e);
                         player.displayClientMessage(Language.getTranslation("commands.teleport_commands.warps.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return 1;
+                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                     }
                     return 0;
                 })

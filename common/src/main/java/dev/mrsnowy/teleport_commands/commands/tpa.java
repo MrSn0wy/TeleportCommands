@@ -55,7 +55,7 @@ public class tpa {
                                 // this shouldn't happen with any of these commands, but if it does happen I am at least printing it to the logs and catching it.
                                 // if it appears that this can happen then I'll add error messages for the client, for now the default minecraft ones will do
                                 Constants.LOGGER.error("Error while sending a tpa request! => ", e);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
                             return 0;
                         })));
@@ -72,7 +72,7 @@ public class tpa {
 
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while sending a tpahere request! => ", e);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
                             return 0;
                         })));
@@ -89,7 +89,7 @@ public class tpa {
 
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while accepting a tpa(here) request! => ", e);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
 
                             return 0;
@@ -108,7 +108,7 @@ public class tpa {
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while denying a tpa(here) request! => ", e);
                                 player.displayClientMessage(getTranslation("commands.teleport_commands.home.setError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
 
                             return 0;

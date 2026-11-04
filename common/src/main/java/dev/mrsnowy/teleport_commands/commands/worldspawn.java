@@ -36,7 +36,7 @@ public class worldspawn {
                     } catch (Exception error) {
                         Constants.LOGGER.error("Error while going to the worldspawn! => ", error);
                         player.displayClientMessage(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return 1;
+                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                     }
                     return 0;
                 })
@@ -52,7 +52,7 @@ public class worldspawn {
                             } catch (Exception error) {
                                 Constants.LOGGER.error("Error while going to the worldspawn! => ", error);
                                 player.displayClientMessage(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
                             return 0;
                         })));

@@ -39,7 +39,7 @@ public class back {
                 } catch (Exception e) {
                     Constants.LOGGER.error("Error while going back! => ", e);
                     player.displayClientMessage(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                    return 1;
+                    throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                 }
                 return 0;
             })
@@ -55,7 +55,7 @@ public class back {
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while going back! => ", e);
                         player.displayClientMessage(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return 1;
+                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                     }
                     return 0;
                 }))
