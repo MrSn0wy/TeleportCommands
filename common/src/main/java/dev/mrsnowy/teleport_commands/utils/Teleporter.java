@@ -178,6 +178,11 @@ public class Teleporter {
         from_world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
         from_world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
 
+        PlayerData data = players.computeIfAbsent(player.getUUID(), ignored -> new PlayerData());
+        int cooldown = teleportCommands.configManager.config.teleporting.getCooldown();
+        data.teleportCooldownUntil = teleportCommands.server.getTickCount() + Math.max(0, cooldown);
+        data.teleportOnCooldown = cooldown > 0;
+
         boolean flying = player.getAbilities().flying;
 
         player.displayClientMessage(getTranslation(completionMessage, player).withStyle(ChatFormatting.WHITE), true);
@@ -221,7 +226,7 @@ public class Teleporter {
             return; // The config option is disabled
         }
 
-        PlayerData data = players.get(player.getUUID());
+        PlayerData data = players.computeIfAbsent(player.getUUID(), ignored -> new PlayerData());
 
         if (data != null) {
             int currentTick = teleportCommands.server.getTickCount();
