@@ -27,7 +27,7 @@ public class back {
     public back(CommandDispatcher<CommandSourceStack> commandDispatcher, TeleportCommands teleportCommands) {
         this.teleportCommands = teleportCommands;
 
-        commandDispatcher.register(Commands.literal("back")
+        commandDispatcher.register(Commands.literal(teleportCommands.configManager.config.back.getCommand())
             .requires(source -> source.getPlayer() != null)
             .executes(context -> {
                 CommandSourceStack source = context.getSource();
@@ -39,7 +39,7 @@ public class back {
                 } catch (Exception e) {
                     Constants.LOGGER.error("Error while going back! => ", e);
                     player.displayClientMessage(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                    return 1;
+                    throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                 }
                 return 0;
             })
@@ -55,7 +55,7 @@ public class back {
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while going back! => ", e);
                         player.displayClientMessage(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return 1;
+                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                     }
                     return 0;
                 }))
@@ -100,7 +100,7 @@ public class back {
 
             // Check if there is a safe BlockPos
             if (safeBlockPos.isEmpty()) {
-                Tools.sendSafetyWarning(player, "/back true");
+                Tools.sendSafetyWarning(player, "/" + teleportCommands.configManager.config.back.getCommand() + " true");
                 return;
 
             } else {
@@ -119,7 +119,11 @@ public class back {
             // teleport the player!
             Vec3 teleportPos = new Vec3(teleportBlockPos.getX() + 0.5, teleportBlockPos.getY(), teleportBlockPos.getZ() + 0.5);
 
-            teleportCommands.teleporter.queue(player, deathLocationWorld, teleportPos, "commands.teleport_commands.back.go");
+            teleportCommands.teleporter.queue(player, deathLocationWorld, teleportPos, "commands.teleport_commands.back.go", () -> {
+                if (teleportCommands.configManager.config.back.isDeleteAfterTeleport()) {
+                    teleportCommands.deathLocationStorage.removeDeathLocation(player.getStringUUID(), deathLocation);
+                }
+            });
         }
     }
 }

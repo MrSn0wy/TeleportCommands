@@ -45,14 +45,16 @@ public class Teleporter {
         int tps;
         /// Message that gets sent when the teleportation happens
         String completionMessage;
+        Runnable onComplete;
 
-        pendingTeleport(ServerLevel destinationWorld, Vec3 destinationCoords, BlockPos startingCoords, int teleportDelayUntil, int tps, String completionMessage) {
+        pendingTeleport(ServerLevel destinationWorld, Vec3 destinationCoords, BlockPos startingCoords, int teleportDelayUntil, int tps, String completionMessage, Runnable onComplete) {
             this.destinationWorld = destinationWorld;
             this.destinationCoords = destinationCoords;
             this.startingCoords = startingCoords;
             this.teleportDelayUntil = teleportDelayUntil;
             this.tps = tps;
             this.completionMessage = completionMessage;
+            this.onComplete = onComplete;
         }
     }
 
@@ -93,11 +95,12 @@ public class Teleporter {
 
                 /// delay is over
                 if (currentTick >= data.pendingTeleport.teleportDelayUntil) {
-                    if (player != null) {
-                        teleport(player, data.pendingTeleport.destinationWorld, data.pendingTeleport.destinationCoords, data.pendingTeleport.completionMessage);
-                    }
-
+                    pendingTeleport pending = data.pendingTeleport;
                     data.pendingTeleport = null;
+                    if (player != null) {
+                        teleport(player, pending.destinationWorld, pending.destinationCoords, pending.completionMessage);
+                        pending.onComplete.run();
+                    }
                 } else {
                     // check if this is a whole number
                     float secondsLeft = (float) (data.pendingTeleport.teleportDelayUntil - currentTick) / data.pendingTeleport.tps;
@@ -119,6 +122,10 @@ public class Teleporter {
 
     /// Adds the player to the teleportation queue
     public void queue(ServerPlayer player, ServerLevel world, Vec3 coords, String completionMessage) {
+        queue(player, world, coords, completionMessage, () -> {});
+    }
+
+    public void queue(ServerPlayer player, ServerLevel world, Vec3 coords, String completionMessage, Runnable onComplete) {
         // Check if user is allowed to teleport by config settings
 
         UUID playerUUID = player.getUUID();
@@ -128,7 +135,7 @@ public class Teleporter {
 
         PlayerData data = players.get(playerUUID);
         int currentTick = teleportCommands.server.getTickCount();
-        int tps = (int) (1.0 / teleportCommands.server.tickRateManager().tickrate());
+        int tps = Math.max(1, Math.round(teleportCommands.server.tickRateManager().tickrate()));
 
         // Check if we are already teleporting
         if (data.pendingTeleport != null) {
@@ -163,10 +170,11 @@ public class Teleporter {
         if (teleportingDelay >= 0) {
             BlockPos currentPos = player.blockPosition();
 
-            data.pendingTeleport = new pendingTeleport(world, coords, currentPos, currentTick + (teleportingDelay * 20), tps, completionMessage);
+            data.pendingTeleport = new pendingTeleport(world, coords, currentPos, currentTick + teleportingDelay, tps, completionMessage, onComplete);
         } else {
             // bypass the delay
             teleport(player, world, coords, completionMessage);
+            onComplete.run();
         }
     }
 
@@ -177,6 +185,11 @@ public class Teleporter {
         from_world.sendParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 20, 0.0D, 0.0D, 0.0D, 0.01);
         from_world.sendParticles(ParticleTypes.WHITE_SMOKE, player.getX(), player.getY(), player.getZ(), 15, 0.0D, 1.0D, 0.0D, 0.03);
         from_world.playSound(null, player.blockPosition(), SoundEvent.createVariableRangeEvent(ENDERMAN_TELEPORT.location()), SoundSource.PLAYERS, 0.4f, 1.0f);
+
+        PlayerData data = players.computeIfAbsent(player.getUUID(), ignored -> new PlayerData());
+        int cooldown = teleportCommands.configManager.config.teleporting.getCooldown();
+        data.teleportCooldownUntil = teleportCommands.server.getTickCount() + Math.max(0, cooldown);
+        data.teleportOnCooldown = cooldown > 0;
 
         boolean flying = player.getAbilities().flying;
 
@@ -205,7 +218,7 @@ public class Teleporter {
 
         if (data != null && data.pendingTeleport != null) {
             BlockPos pos = player.blockPosition();
-            boolean tooFar = data.pendingTeleport.startingCoords.closerThan(pos, 1.5); // Checks if they moved more than one block (1.5 for diagonals)
+            boolean tooFar = !data.pendingTeleport.startingCoords.closerThan(pos, 1.5); // Checks if they moved more than one block (1.5 for diagonals)
 
             if (tooFar) {
                 player.displayClientMessage(getTranslation("commands.teleport_commands.teleport.moving", player).withStyle(ChatFormatting.WHITE), true);
@@ -221,7 +234,7 @@ public class Teleporter {
             return; // The config option is disabled
         }
 
-        PlayerData data = players.get(player.getUUID());
+        PlayerData data = players.computeIfAbsent(player.getUUID(), ignored -> new PlayerData());
 
         if (data != null) {
             int currentTick = teleportCommands.server.getTickCount();

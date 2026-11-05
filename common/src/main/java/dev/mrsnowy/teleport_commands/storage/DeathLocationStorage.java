@@ -14,19 +14,14 @@ public class DeathLocationStorage {
         return Optional.ofNullable(deathLocations.get(uuid));
     }
 
+    public void removeDeathLocation(String uuid, DeathLocation expected) {
+        deathLocations.remove(uuid, expected);
+    }
+
     // updates the deathLocation of a player, if there is no existing entry it will create a new deathLocation.
     public void setDeathLocation(String uuid, BlockPos pos, String world) {
 
-        if (deathLocations.containsKey(uuid)) {
-            // modify existing deathLocation
-            DeathLocation deathLocation = deathLocations.get(uuid);
-            deathLocation.setBlockPos(pos);
-            deathLocation.setWorld(world);
-        } else {
-            // create a new deathLocation
-            DeathLocation deathLocation = new DeathLocation(pos, world);
-            deathLocations.put(uuid, deathLocation);
-        }
+        deathLocations.put(uuid, new DeathLocation(pos, world));
     }
 
 //    public void clearDeathLocations() {

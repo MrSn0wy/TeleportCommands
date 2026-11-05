@@ -25,7 +25,7 @@ import static net.minecraft.world.level.Level.OVERWORLD;
 public class worldspawn {
 
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
-        commandDispatcher.register(Commands.literal("worldspawn")
+        commandDispatcher.register(Commands.literal(TeleportCommands.INSTANCE.configManager.config.worldSpawn.getCommand())
                 .requires(source -> source.getPlayer() != null)
                 .executes(context -> {
                     final ServerPlayer player = context.getSource().getPlayerOrException();
@@ -36,7 +36,7 @@ public class worldspawn {
                     } catch (Exception error) {
                         Constants.LOGGER.error("Error while going to the worldspawn! => ", error);
                         player.displayClientMessage(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return 1;
+                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                     }
                     return 0;
                 })
@@ -52,7 +52,7 @@ public class worldspawn {
                             } catch (Exception error) {
                                 Constants.LOGGER.error("Error while going to the worldspawn! => ", error);
                                 player.displayClientMessage(getTranslation("commands.teleport_commands.common.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
                             return 0;
                         })));
@@ -81,7 +81,7 @@ public class worldspawn {
                 }
 
             } else {
-                Tools.sendSafetyWarning(player, "/worldspawn true");
+                Tools.sendSafetyWarning(player, "/" + TeleportCommands.INSTANCE.configManager.config.worldSpawn.getCommand() + " true");
             }
 
         } else {

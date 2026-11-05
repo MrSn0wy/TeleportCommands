@@ -45,11 +45,11 @@ public class TeleportCommands {
 
     /// initialize commands, also allows me to easily disable any when there is a config
     public void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
-        new back(dispatcher, this);
-        new home(dispatcher, this);
-        new tpa(dispatcher, this);
-        new warp(dispatcher, this);
-        worldspawn.register(dispatcher);
+        if (configManager.config.back.isEnabled()) new back(dispatcher, this);
+        if (configManager.config.home.isEnabled()) new home(dispatcher, this);
+        if (configManager.config.tpa.isEnabled()) new tpa(dispatcher, this);
+        if (configManager.config.warp.isEnabled()) new warp(dispatcher, this);
+        if (configManager.config.worldSpawn.isEnabled()) worldspawn.register(dispatcher);
         main.register(dispatcher);
     }
 

@@ -48,7 +48,7 @@ public class home {
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while setting a home! => ", e);
                                 player.displayClientMessage(getTranslation("commands.teleport_commands.home.setError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
                             return 0;
                         })));
@@ -65,7 +65,7 @@ public class home {
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while going home! => ", e);
                         player.displayClientMessage(getTranslation("commands.teleport_commands.home.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return 1;
+                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                     }
                     return 0;
                 })
@@ -82,7 +82,7 @@ public class home {
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while going to a specific home! => ", e);
                                 player.displayClientMessage(getTranslation("commands.teleport_commands.home.goError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
                             return 0;
                         })));
@@ -102,7 +102,7 @@ public class home {
                                 Constants.LOGGER.error("Error while deleting a home! => ", e);
                                 player.displayClientMessage(getTranslation("commands.teleport_commands.home.deleteError", player)
                                         .withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
                             return 0;
                         })));
@@ -124,7 +124,7 @@ public class home {
                                         Constants.LOGGER.error("Error while renaming a home! => ", e);
                                         player.displayClientMessage(getTranslation("commands.teleport_commands.home.renameError", player)
                                                 .withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                        return 1;
+                                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                                     }
                                     return 0;
                                 }))));
@@ -143,7 +143,7 @@ public class home {
                             } catch (Exception e) {
                                 Constants.LOGGER.error("Error while setting the default home! => ", e);
                                 player.displayClientMessage(getTranslation("commands.teleport_commands.home.defaultError", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                                return 1;
+                                throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                             }
                             return 0;
                         })));
@@ -159,7 +159,7 @@ public class home {
                     } catch (Exception e) {
                         Constants.LOGGER.error("Error while printing the homes! => ", e);
                         player.displayClientMessage(getTranslation("commands.teleport_commands.homes.error", player).withStyle(ChatFormatting.RED, ChatFormatting.BOLD), true);
-                        return 1;
+                        throw new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Teleport command failed; see server log.")).create();
                     }
                     return 0;
                 }));
